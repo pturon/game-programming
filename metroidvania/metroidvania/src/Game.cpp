@@ -1,7 +1,7 @@
 #include "../include/Game.h"
 
 Game::Game() {
-
+	hero = new Hero();
 }
 
 Game::~Game() {
@@ -25,7 +25,9 @@ void Game::init(const char* title, int width, int height, bool fullscreen) {
 			SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 		}
 
-		isRunning = true; 
+		hero->init(renderer);
+
+		isRunning = true; 		
 	
 	}
 	else {
@@ -52,6 +54,7 @@ void Game::update() {
 void Game::render() {
 	SDL_RenderClear(renderer);
 	//render stuff
+	hero->render();
 	SDL_RenderPresent(renderer);
 }
 

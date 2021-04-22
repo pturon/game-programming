@@ -1,6 +1,8 @@
 #ifndef Game_h
 #define Game_h
 #include "SDL.h"
+#include "SDL_image.h"
+#include "Hero.h"
 #include <stdio.h>
 #include <iostream>
 
@@ -23,6 +25,7 @@ private:
 	bool isRunning;
 	SDL_Window* window;
 	SDL_Renderer* renderer;
+	Hero* hero; 
 
 };
 
