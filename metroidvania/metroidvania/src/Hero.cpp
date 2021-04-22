@@ -2,9 +2,8 @@
 
 
 
-Hero::Hero(SDL_Renderer* r) {
-	renderer = r;
-	playerTexture = TextureManager::loadTexture("assets/hero.png", renderer);
+Hero::Hero() {	
+	playerTexture = TextureManager::loadTexture("assets/hero.png");
 }
 
 Hero::~Hero() {
@@ -26,7 +25,7 @@ void Hero::update() {
 }
 
 void Hero::render() {
-	SDL_RenderCopy(renderer, playerTexture, &srcRect, &destRect);
+	SDL_RenderCopy(Game::renderer, playerTexture, &srcRect, &destRect);
 }
 
 void Hero::clean() {

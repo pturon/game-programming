@@ -2,6 +2,8 @@
 
 Hero* hero;
 
+SDL_Renderer* Game::renderer = nullptr;
+
 Game::Game() {
 	
 }

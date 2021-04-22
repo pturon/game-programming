@@ -5,7 +5,7 @@
 
 class Hero{
 public:
-	Hero(SDL_Renderer* r);
+	Hero();
 	~Hero();
 
 	void update();
@@ -13,7 +13,6 @@ public:
 	void clean();
 
 private:
-	SDL_Renderer* renderer;
 	SDL_Texture* playerTexture;
 	SDL_Rect srcRect, destRect;
 

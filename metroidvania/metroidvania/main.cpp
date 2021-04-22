@@ -2,8 +2,8 @@
 #include "include/Game.h"
 
 //Sceen dimension constants
-const int WINDOW_WIDTH = 600; 
-const int WINDOW_HEIGHT = 400; 
+const int WINDOW_WIDTH = 800; 
+const int WINDOW_HEIGHT = 640; 
 
 const int FPS = 60;
 const int frameDelay = 1000 / FPS;
