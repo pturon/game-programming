@@ -1,6 +1,7 @@
 #include "../include/Game.h"
 
 Hero* hero;
+TileMap* map;
 
 SDL_Renderer* Game::renderer = nullptr;
 
@@ -33,7 +34,8 @@ void Game::init(const char* title, int width, int height, bool fullscreen) {
 		isRunning = false; 
 	}
 
-	hero = new Hero(renderer);
+	hero = new Hero();
+	map = new TileMap();
 }
 
 void Game::handleEvents() {
@@ -54,6 +56,7 @@ void Game::update() {
 
 void Game::render() {
 	SDL_RenderClear(renderer);
+	map->render();
 	hero->render();
 	SDL_RenderPresent(renderer);
 }

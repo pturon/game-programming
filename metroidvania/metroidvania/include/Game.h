@@ -6,6 +6,7 @@
 #include "TextureManager.h"
 #include <stdio.h>
 #include <iostream>
+#include "TileMap.h"
 
 class Game{
 public:
