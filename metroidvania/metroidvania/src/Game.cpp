@@ -4,6 +4,7 @@ Hero* hero;
 TileMap* map;
 
 SDL_Renderer* Game::renderer = nullptr;
+SDL_Event Game::event;
 
 Game::Game() {
 	
@@ -39,8 +40,7 @@ void Game::init(const char* title, int width, int height, bool fullscreen) {
 }
 
 void Game::handleEvents() {
-	SDL_Event event; 
-	SDL_PollEvent(&event);
+	SDL_PollEvent(&Game::event);
 	switch (event.type)	{
 		case SDL_QUIT:
 			isRunning = false;
