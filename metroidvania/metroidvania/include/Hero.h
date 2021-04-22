@@ -1,15 +1,12 @@
 #ifndef Hero_h
 #define Hero_h
-#include "SDL.h"
-#include "SDL_image.h"
 #include <iostream>
+#include "Game.h"
 
 class Hero{
 public:
-	Hero();
+	Hero(SDL_Renderer* r);
 	~Hero();
-
-	void init(SDL_Renderer* r);
 
 	void update();
 	void render();
@@ -18,15 +15,11 @@ public:
 private:
 	SDL_Renderer* renderer;
 	SDL_Texture* playerTexture;
+	SDL_Rect srcRect, destRect;
 
-	int posX; 
-	int posY;
-	int dX; 
-	int dY; 
-	int speed; 
-	int state = 0; 
-
-	SDL_Rect srcR, destR;
+	int xpos; 
+	int ypos; 
+	
 
 };
 

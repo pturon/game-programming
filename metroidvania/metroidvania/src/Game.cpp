@@ -1,7 +1,9 @@
 #include "../include/Game.h"
 
+Hero* hero;
+
 Game::Game() {
-	hero = new Hero();
+	
 }
 
 Game::~Game() {
@@ -21,11 +23,6 @@ void Game::init(const char* title, int width, int height, bool fullscreen) {
 
 		window = SDL_CreateWindow(title, SDL_WINDOWPOS_CENTERED,  SDL_WINDOWPOS_CENTERED, width, height, flags);	
 		renderer = SDL_CreateRenderer(window, -1, 0);		
-		if (renderer) {
-			SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-		}
-
-		hero->init(renderer);
 
 		isRunning = true; 		
 	
@@ -33,6 +30,8 @@ void Game::init(const char* title, int width, int height, bool fullscreen) {
 	else {
 		isRunning = false; 
 	}
+
+	hero = new Hero(renderer);
 }
 
 void Game::handleEvents() {
@@ -48,12 +47,11 @@ void Game::handleEvents() {
 }
 
 void Game::update() {
-
+	hero->update();
 }
 
 void Game::render() {
 	SDL_RenderClear(renderer);
-	//render stuff
 	hero->render();
 	SDL_RenderPresent(renderer);
 }

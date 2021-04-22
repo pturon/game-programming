@@ -1,30 +1,32 @@
 #include "../include/Hero.h"
 
-Hero::Hero() {
 
+
+Hero::Hero(SDL_Renderer* r) {
+	renderer = r;
+	playerTexture = TextureManager::loadTexture("assets/hero.png", renderer);
 }
 
 Hero::~Hero() {
 
 }
 
-void Hero::init(SDL_Renderer* r) {
-	renderer = r;
-
-	destR.h = 100;
-	destR.w = 100;
-
-	SDL_Surface* tmpSurface = IMG_Load("../assets/Hero.png");
-	playerTexture = SDL_CreateTextureFromSurface(renderer, tmpSurface);
-	SDL_FreeSurface(tmpSurface);
-}
-
 void Hero::update() {
+	xpos = 0; 
+	ypos = 0; 
+	srcRect.h = 100; 
+	srcRect.w = 100; 
+	srcRect.x = 0; 
+	srcRect.y = 0; 
 
+	destRect.x = xpos;
+	destRect.y = ypos;
+	destRect.w = srcRect.w;
+	destRect.h = srcRect.h; 
 }
 
 void Hero::render() {
-	SDL_RenderCopy(renderer, playerTexture, NULL, &destR);
+	SDL_RenderCopy(renderer, playerTexture, &srcRect, &destRect);
 }
 
 void Hero::clean() {
