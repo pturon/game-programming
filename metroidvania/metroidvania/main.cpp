@@ -1,16 +1,23 @@
 #include "SDL.h"
+#include "include/Game.h"
+
+//Sceen dimension constants
+const int WINDOW_WIDTH = 600; 
+const int WINDOW_HEIGHT = 400; 
+
+Game* game = nullptr;
 
 int main(int argc, char* argv[]) {
 
-	SDL_Init(SDL_INIT_EVERYTHING);
-	SDL_Window* window = SDL_CreateWindow("Metroidvania", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 600, 400, SDL_WINDOW_SHOWN);
-	SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, 0);
+	game = new Game(); 
+	game->init("Metroidvania", WINDOW_WIDTH, WINDOW_HEIGHT, false);
 
-	SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
-	SDL_RenderClear(renderer);
-	SDL_RenderPresent(renderer);
-
-	SDL_Delay(3000);
+	while (game->running()) {
+		game->handleEvents();
+		game->update();
+		game->render();
+	}
+	game->clean();
 
 	return 0;
 }
