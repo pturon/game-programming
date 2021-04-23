@@ -1,7 +1,5 @@
 #include "../include/Hero.h"
 
-
-
 Hero::Hero() {	
 	playerTexture = TextureManager::loadTexture("assets/hero.png");
 }

@@ -1,14 +1,12 @@
-#ifndef Game_h
-#define Game_h
+#pragma once
 #include "SDL.h"
 #include "SDL_image.h"
-#include "Hero.h"
 #include "TextureManager.h"
 #include <stdio.h>
 #include <iostream>
 #include "TileMap.h"
-#include "EntityComponentSystem.h"
 #include "Components.h"
+
 
 class Game{
 public:
@@ -33,5 +31,5 @@ private:
 	SDL_Window* window;
 };
 
-#endif
+
 

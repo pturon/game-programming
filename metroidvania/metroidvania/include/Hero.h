@@ -1,5 +1,4 @@
-#ifndef Hero_h
-#define Hero_h
+#pragma once
 #include <iostream>
 #include "Game.h"
 
@@ -22,5 +21,4 @@ private:
 
 };
 
-#endif
 

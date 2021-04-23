@@ -58,9 +58,11 @@ public:
 	//Update all Components and call render function 
 	void update() {
 		for (auto& c : components) c->update();
+
+	}
+	void render() {
 		for (auto& c : components) c->render();
 	}
-	void render() {}
 
 	//Returns active variable
 	const bool isActive() { return active; }

@@ -1,13 +1,13 @@
 #include "../include/Game.h"
 
-Hero* hero;
 TileMap* map;
 
 SDL_Renderer* Game::renderer = nullptr;
 SDL_Event Game::event;
 
 Manager manager; 
-auto& newPlayer(manager.addEntity());
+
+auto& player(manager.addEntity());
 
 Game::Game() {
 	isRunning = false;
@@ -38,11 +38,10 @@ void Game::init(const char* title, int width, int height, bool fullscreen) {
 	else {
 		isRunning = false; 
 	}
-
-	hero = new Hero();
 	map = new TileMap();
 
-	newPlayer.addComponent<PositionComponent>();
+	player.addComponent<PositionComponent>();
+	player.addComponent<SpriteComponent>("assets/hero.png");
 }
 
 void Game::handleEvents() {
@@ -57,16 +56,13 @@ void Game::handleEvents() {
 }
 
 void Game::update() {
-	hero->update();
-
-	manager.update();
-	std::cout << newPlayer.getComponent<PositionComponent>().x() << "," << newPlayer.getComponent<PositionComponent>().y() << std::endl;
+	manager.update();	
 }
 
 void Game::render() {
 	SDL_RenderClear(renderer);
 	map->render();
-	hero->render();
+	manager.render();
 	SDL_RenderPresent(renderer);
 }
 

@@ -1,5 +1,4 @@
-#ifndef TextureManager_h
-#define TextureManager_h
+#pragma once
 #include "Game.h"
 
 class TextureManager {
@@ -8,4 +7,3 @@ public:
 	static void draw(SDL_Texture* texture, SDL_Rect srcRect, SDL_Rect destRect);
 };
 
-#endif
