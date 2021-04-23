@@ -42,6 +42,7 @@ void Game::init(const char* title, int width, int height, bool fullscreen) {
 
 	player.addComponent<TransformComponent>();
 	player.addComponent<SpriteComponent>("assets/hero.png");
+	player.addComponent<KeyboardController>();
 }
 
 void Game::handleEvents() {
@@ -56,6 +57,7 @@ void Game::handleEvents() {
 }
 
 void Game::update() {
+	manager.refresh();
 	manager.update();	
 }
 
