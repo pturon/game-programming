@@ -10,16 +10,15 @@ void SpriteComponent::init(){
 	srcRect.w = srcRect.h = 100;
 	destRect.w = destRect.h = 100;
 
-	position = &parent->getComponent<PositionComponent>();
+	transform = &parent->getComponent<TransformComponent>();
 }
 
 void SpriteComponent::update() {
-	destRect.x = position->x();
-	destRect.y = position->y();
+	destRect.x = (int)transform->position.x;
+	destRect.y = (int)transform->position.y;
 }
 
 void SpriteComponent::render() {
-	std::cout << "Moin";
 	TextureManager::draw(texture, srcRect, destRect);
 }
 

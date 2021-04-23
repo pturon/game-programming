@@ -40,7 +40,7 @@ void Game::init(const char* title, int width, int height, bool fullscreen) {
 	}
 	map = new TileMap();
 
-	player.addComponent<PositionComponent>();
+	player.addComponent<TransformComponent>();
 	player.addComponent<SpriteComponent>("assets/hero.png");
 }
 
