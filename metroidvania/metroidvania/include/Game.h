@@ -7,6 +7,8 @@
 #include <stdio.h>
 #include <iostream>
 #include "TileMap.h"
+#include "EntityComponentSystem.h"
+#include "Components.h"
 
 class Game{
 public:

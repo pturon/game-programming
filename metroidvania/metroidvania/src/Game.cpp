@@ -6,6 +6,9 @@ TileMap* map;
 SDL_Renderer* Game::renderer = nullptr;
 SDL_Event Game::event;
 
+Manager manager; 
+auto& newPlayer(manager.addEntity());
+
 Game::Game() {
 	isRunning = false;
 	window = nullptr;
@@ -38,6 +41,8 @@ void Game::init(const char* title, int width, int height, bool fullscreen) {
 
 	hero = new Hero();
 	map = new TileMap();
+
+	newPlayer.addComponent<PositionComponent>();
 }
 
 void Game::handleEvents() {
@@ -53,6 +58,9 @@ void Game::handleEvents() {
 
 void Game::update() {
 	hero->update();
+
+	manager.update();
+	std::cout << newPlayer.getComponent<PositionComponent>().x() << "," << newPlayer.getComponent<PositionComponent>().y() << std::endl;
 }
 
 void Game::render() {
