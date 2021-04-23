@@ -23,7 +23,7 @@ inline ComponentID getComponentTypeID() {
 //Returns ID of on existing Component Type
 template <typename T> inline ComponentID getComponentTypeID() noexcept {
 	static ComponentID typeID = getComponentTypeID();
-	return typeID();
+	return typeID;
 }
 
 //Maximum amount of Components that Entity can hold
@@ -70,21 +70,21 @@ public:
 
 	//Returns true if Entity has Component T
 	template <typename T> bool hasComponent() const {
-		return componentBitSet[getComponentID<T>];
+		return componentBitSet[getComponentTypeID<T>];
 	}
 
 	//Adds all given Components to Entity. Every Component Type is always on the same postion in the array
 	template <typename T, typename... TArgs> T& addComponent(TArgs&&... mArgs) {
 		//Loop through all Arguments
 		T* c(new T(std::forward<TArgs>(mArgs)...));
-		c->entity = this;
+		c->parent = this;
 		std::unique_ptr<Component> uPtr{ c };
 		components.emplace_back(std::move(uPtr));
 
 		//Add Component to Array
 		componentArray[getComponentTypeID<T>()] = c;
 		//Mark that Entity has Component
-		ComponentBitSet[getComponentTypeID<T>()] = true;
+		componentBitSet[getComponentTypeID<T>()] = true;
 
 		c->init();
 		return *c;
