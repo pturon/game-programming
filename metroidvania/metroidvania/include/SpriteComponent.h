@@ -11,6 +11,7 @@ private:
 public:
 	SpriteComponent() = default;
 	SpriteComponent(const char* path);
+	~SpriteComponent();
 
 	void init() override;
 	void update() override;

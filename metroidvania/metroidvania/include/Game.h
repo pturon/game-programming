@@ -6,6 +6,7 @@
 #include <iostream>
 #include "TileMap.h"
 #include "Components.h"
+#include "Collision.h"
 
 
 class Game{

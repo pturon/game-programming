@@ -72,7 +72,7 @@ public:
 
 	//Returns true if Entity has Component T
 	template <typename T> bool hasComponent() const {
-		return componentBitSet[getComponentTypeID<T>];
+		return componentBitSet[getComponentTypeID<T>()];
 	}
 
 	//Adds all given Components to Entity. Every Component Type is always on the same postion in the array

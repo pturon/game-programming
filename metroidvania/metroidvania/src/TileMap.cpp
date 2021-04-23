@@ -35,7 +35,7 @@ TileMap::TileMap() {
 }
 
 TileMap::~TileMap() {
-
+	SDL_DestroyTexture(tileSet);
 }
 
 void TileMap::loadMap(int arr[20][25]){

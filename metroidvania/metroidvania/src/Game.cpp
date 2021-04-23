@@ -8,6 +8,7 @@ SDL_Event Game::event;
 Manager manager; 
 
 auto& player(manager.addEntity());
+auto& wall(manager.addEntity());
 
 Game::Game() {
 	isRunning = false;
@@ -40,9 +41,14 @@ void Game::init(const char* title, int width, int height, bool fullscreen) {
 	}
 	map = new TileMap();
 
-	player.addComponent<TransformComponent>();
+	player.addComponent<TransformComponent>(0.0f, 0.0f, 100, 100, 1);
 	player.addComponent<SpriteComponent>("assets/hero.png");
-	player.addComponent<KeyboardController>();
+	player.addComponent<KeyboardController>();	
+	player.addComponent<ColliderComponent>("Player");
+
+	wall.addComponent<TransformComponent>(300.0f, 0.0f, 50, 300, 1);
+	wall.addComponent<SpriteComponent>("assets/dummy.png");
+	wall.addComponent<ColliderComponent>("Wall");
 }
 
 void Game::handleEvents() {
@@ -59,6 +65,9 @@ void Game::handleEvents() {
 void Game::update() {
 	manager.refresh();
 	manager.update();	
+	if (Collision::AABB(player.getComponent<ColliderComponent>().collider, wall.getComponent<ColliderComponent>().collider)) {
+		player.getComponent<TransformComponent>().velocity * -1;
+	}
 }
 
 void Game::render() {
