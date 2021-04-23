@@ -7,7 +7,8 @@ SDL_Renderer* Game::renderer = nullptr;
 SDL_Event Game::event;
 
 Game::Game() {
-	
+	isRunning = false;
+	window = nullptr;
 }
 
 Game::~Game() {
