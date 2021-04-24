@@ -25,7 +25,7 @@ public:
 	}
 
 	void init() override {
-		parent->addComponent<TransformComponent>(tileRect.x, tileRect.y, tileRect.w, tileRect.h, 1);
+		parent->addComponent<TransformComponent>((float)tileRect.x, (float)tileRect.y, tileRect.w, tileRect.h, 1);
 		transform = &parent->getComponent<TransformComponent>();
 		parent->addComponent<SpriteComponent>("assets/dummy.png");
 		sprite = &parent->getComponent<SpriteComponent>();

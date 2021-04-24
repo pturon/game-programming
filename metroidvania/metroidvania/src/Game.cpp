@@ -1,7 +1,5 @@
 #include "../include/Game.h"
 
-TileMap* map;
-
 SDL_Renderer* Game::renderer = nullptr;
 SDL_Event Game::event;
 
@@ -41,7 +39,6 @@ void Game::init(const char* title, int width, int height, bool fullscreen) {
 	else {
 		isRunning = false; 
 	}
-	map = new TileMap();
 
 	player.addComponent<TransformComponent>(0.0f, 0.0f, 100, 100, 1);
 	player.addComponent<SpriteComponent>("assets/hero.png");
@@ -49,6 +46,7 @@ void Game::init(const char* title, int width, int height, bool fullscreen) {
 	player.addComponent<ColliderComponent>("Player");
 
 	tile.addComponent<TileComponent>(0,0,32,32,1);
+	tile.addComponent<ColliderComponent>("Wall");
 }
 
 void Game::handleEvents() {
@@ -65,11 +63,14 @@ void Game::handleEvents() {
 void Game::update() {
 	manager.refresh();
 	manager.update();	
+
+	for (auto cc : colliders) {
+		Collision::AABB(player.getComponent<ColliderComponent>(), *cc);	
+	}
 }
 
 void Game::render() {
 	SDL_RenderClear(renderer);
-	map->render();
 	manager.render();
 	SDL_RenderPresent(renderer);
 }
