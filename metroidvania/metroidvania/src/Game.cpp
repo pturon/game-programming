@@ -10,6 +10,7 @@ std::vector<ColliderComponent*>Game::colliders;
 Manager manager; 
 
 auto& player(manager.addEntity());
+auto& tile(manager.addEntity());
 
 Game::Game() {
 	isRunning = false;
@@ -46,6 +47,8 @@ void Game::init(const char* title, int width, int height, bool fullscreen) {
 	player.addComponent<SpriteComponent>("assets/hero.png");
 	player.addComponent<KeyboardController>();	
 	player.addComponent<ColliderComponent>("Player");
+
+	tile.addComponent<TileComponent>(0,0,32,32,1);
 }
 
 void Game::handleEvents() {
