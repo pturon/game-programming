@@ -8,7 +8,7 @@ public:
 	TileMap();
 	~TileMap();
 
-	static void loadMap(std::string path, int w, int h);
+	static void loadMap(std::string path);
 private:
 };
 

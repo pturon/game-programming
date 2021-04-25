@@ -7,6 +7,8 @@ std::vector<ColliderComponent*>Game::colliders;
 
 Manager manager; 
 
+const char* tileSet = "assets/tileset.png";
+
 auto& player(manager.addEntity());
 
 Game::Game() {
@@ -39,7 +41,7 @@ void Game::init(const char* title, int width, int height, bool fullscreen) {
 		isRunning = false; 
 	}
 
-	TileMap::loadMap("assets/levels/level1.map", 16, 16);
+	TileMap::loadMap("assets/levels/level_1.map");
 
 	player.addComponent<TransformComponent>(0.0f, 0.0f, 100, 100, 1);
 	player.addComponent<SpriteComponent>("assets/hero_spritesheet.png", true);
@@ -80,8 +82,9 @@ void Game::clean() {
 	SDL_Quit();
 }
 
-void Game::addTile(int id, int x, int y) {
+void Game::addTile(int srcX, int srcY, int x, int y) {
 	auto& tile(manager.addEntity());
-	tile.addComponent<TileComponent>(x, y, 32, 32, id);
+	tile.addComponent<TileComponent>(srcX, srcY, x, y, tileSet);
+	tile.addComponent<ColliderComponent>("Wall");
 	tile.addGroup(groupMap);
 }
