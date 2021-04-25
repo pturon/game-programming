@@ -45,6 +45,7 @@ void Game::init(const char* title, int width, int height, bool fullscreen) {
 	player.addComponent<SpriteComponent>("assets/hero.png");
 	player.addComponent<KeyboardController>();	
 	player.addComponent<ColliderComponent>("Player");
+	player.addGroup(groupPlayers);
 }
 
 void Game::handleEvents() {
@@ -82,4 +83,5 @@ void Game::clean() {
 void Game::addTile(int id, int x, int y) {
 	auto& tile(manager.addEntity());
 	tile.addComponent<TileComponent>(x, y, 32, 32, id);
+	tile.addGroup(groupMap);
 }

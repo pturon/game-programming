@@ -7,6 +7,7 @@
 #include "TileMap.h"
 #include "Components.h"
 #include "Collision.h"
+#include "Enums.h"
 
 class ColliderComponent; 
 

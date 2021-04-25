@@ -6,30 +6,39 @@
 #include <algorithm>
 #include <bitset>
 #include <array>
+#include "Enums.h"
 
 //Forward declaration of classes
 class Component;
 class Entity;
+class Manager; 
 
 //Define ComponentID type as size_t
 using ComponentID = std::size_t;
 
+//Define Group type as size_t
+using Group = std::size_t;
+
 //Returns smallest unused ID for new Component Types
-inline ComponentID getComponentTypeID() {
-	static ComponentID lastID = 0;
+inline ComponentID getNewComponentTypeID() {
+	static ComponentID lastID = 0u;
 	return lastID++;
 }
 
 //Returns ID of on existing Component Type
 template <typename T> inline ComponentID getComponentTypeID() noexcept {
-	static ComponentID typeID = getComponentTypeID();
+	static ComponentID typeID = getNewComponentTypeID();
 	return typeID;
 }
 
 //Maximum amount of Components that Entity can hold
 constexpr std::size_t maxComponents = 32;
+//Maximum amount of Groups 
+constexpr std::size_t maxGroups = 32; 
 //Defines variable that indicates if Entity stores specific Component
 using ComponentBitSet = std::bitset <maxComponents>;
+//
+using GroupBitset = std::bitset<maxGroups>;
 //Defines Array to store Components with length of maxComponents
 using ComponentArray = std::array<Component*, maxComponents>;
 
@@ -49,12 +58,17 @@ private:
 class Entity {
 private:
 	//If false Entity can be removed
-	bool active = true; 
+	bool active = true;
 
 	std::vector<std::unique_ptr<Component>> components;
 	ComponentArray componentArray;
-	ComponentBitSet componentBitSet; 
-public: 
+	ComponentBitSet componentBitSet;
+	GroupBitset groupBitset;
+
+	Manager& manager;
+public:
+	Entity(Manager& m) : manager(m) {}
+
 	//Update all Components and call render function 
 	void update() {
 		for (auto& c : components) c->update();
@@ -98,29 +112,63 @@ public:
 		return *static_cast<T*>(ptr);
 	}
 
+	bool hasGroup(Group g) {
+		return groupBitset[g];
+	}
+
+	void addGroup(Group g);
+	void removeGroup(Group g) {
+		groupBitset[g] = false; 
+	}
+
 };
 
 class Manager {
 private:
 	std::vector<std::unique_ptr<Entity>> entities;
+	std::array<std::vector<Entity*>, maxGroups> groupedEntities;
 public:
 	//Updates all stored Entities 
 	void update() {
 		for (auto& e : entities) e->update();
 	}
-	//Renders all stotred Entites 
+	//Renders all stored Entites 
 	void render() {
-		for (auto& e : entities) e->render();
+		for (int l = groupBackground; l != groupForeground; l++) {
+			auto& g = getGroup(l);
+			for (auto& e : g) {
+				e->render();
+			}
+		}
 	}
-	//Remove all inactive Entities
+
+	//Remove all inactive Entities or Entities without Group
 	void refresh() {
+		for (auto i(0u); i < maxGroups; i++) {
+			auto& v(groupedEntities[i]);
+			v.erase(std::remove_if(std::begin(v), std::end(v), [i](Entity* e) {
+				return !e->isActive() || !e->hasGroup(i);
+				}), std::end(v));
+		}
+
 		entities.erase(std::remove_if(std::begin(entities), std::end(entities), [](const std::unique_ptr<Entity>& mEntity) {
 			return !mEntity->isActive();
 			}), std::end(entities));
 	}
+
+	//Adds Entity to Group
+	void addToGroup(Entity* e, Group g) {
+		groupedEntities[g].emplace_back(e);
+	}
+
+	//Returns List of Entities of Group
+	std::vector<Entity*>& getGroup(Group g) {
+		return groupedEntities[g];
+	}
+
 	//Adds Entity to Manager
 	Entity& addEntity() {
-		Entity* e = new Entity();
+		Entity* e = new Entity(*this);
 		std::unique_ptr<Entity> uPtr{ e };
 		entities.emplace_back(std::move(uPtr));
 		return *e;
