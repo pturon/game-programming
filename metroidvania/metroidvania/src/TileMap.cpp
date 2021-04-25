@@ -1,69 +1,28 @@
 #include "../include/TileMap.h"
+#include "../include/Game.h"
+#include <fstream>
 
-int level1[20][25] = {
-	{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-	{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-	{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-	{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-	{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-	{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-	{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-	{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-	{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-	{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-	{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-	{1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,3},
-	{4,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,6},
-	{4,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,6},
-	{4,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,6},
-	{4,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,6},
-	{4,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,6},
-	{4,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,6},
-	{4,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,6},
-	{7,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,9}
-};
-
-TileMap::TileMap() {
-	tileSet = TextureManager::loadTexture("assets/tileset.png");	
-
-	loadMap(level1);
-
-	srcRect.x = srcRect.y = 0;	
-	srcRect.h = destRect.w = 32; 
-	srcRect.w = destRect.h = 32; 
-	destRect.x = destRect.y = 0; 
+TileMap::TileMap() {	
 }
 
 TileMap::~TileMap() {
-	SDL_DestroyTexture(tileSet);
 }
 
-void TileMap::loadMap(int arr[20][25]){
-	for (int x = 0; x < 20; x++) {
-		for (int y = 0; y < 25; y++) {
-			map[x][y] = arr[x][y];
-		}
+void TileMap::loadMap(std::string path, int w, int h){
+	char tile;
+	std::fstream mapFile; 
+	mapFile.open(path);
+
+	for (int y = 0; y <= h; y++) {
+		for (int x = 0; x <= w; x++) {
+			mapFile.get(tile);
+			Game::addTile(atoi(&tile),x * 32, y *32);
+			mapFile.ignore();
+		} 
 	}
+
+	mapFile.close();
 }
 
-void TileMap::render() {
-	int type = 0;
-	for (int x = 0; x < 25; x++) {
-		for (int y = 0; y < 20; y++) {
-			
-			type = map[y][x];
-			if (type != 0) {
-				destRect.x = x * srcRect.w;
-				destRect.y = y * srcRect.h;
-
-				srcRect.x = ((type-1) % 3) * srcRect.w;
-				srcRect.y = ((type-1) / 3) * srcRect.h;
-
-				SDL_RenderCopy(Game::renderer, tileSet, &srcRect, &destRect);
-			}
-			
-		}
-	}
-}
 
 
