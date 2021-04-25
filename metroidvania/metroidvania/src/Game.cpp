@@ -42,7 +42,7 @@ void Game::init(const char* title, int width, int height, bool fullscreen) {
 	TileMap::loadMap("assets/levels/level1.map", 16, 16);
 
 	player.addComponent<TransformComponent>(0.0f, 0.0f, 100, 100, 1);
-	player.addComponent<SpriteComponent>("assets/hero.png");
+	player.addComponent<SpriteComponent>("assets/hero_idle.png", 2, 100);
 	player.addComponent<KeyboardController>();	
 	player.addComponent<ColliderComponent>("Player");
 	player.addGroup(groupPlayers);
