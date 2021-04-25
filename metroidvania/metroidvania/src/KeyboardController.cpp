@@ -2,6 +2,7 @@
 
 void KeyboardController::init() {
 	transform = &parent->getComponent<TransformComponent>();
+	sprite = &parent->getComponent<SpriteComponent>();
 }
 
 void KeyboardController::update() {
@@ -43,13 +44,18 @@ void KeyboardController::update() {
 	}
 
 	if (leftDown && !rightDown) {
+		sprite->switchAnimation("Walking");
+		sprite->flipAnimation(true);
 		transform->velocity.x = -1;
 	}
 	else if (!leftDown && rightDown) {
+		sprite->switchAnimation("Walking");
+		sprite->flipAnimation(false);
 		transform->velocity.x = 1;
 	}
 	else {
 		transform->velocity.x = 0;
+		sprite->switchAnimation("Idle");
 	}
 	
 }

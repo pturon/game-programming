@@ -5,11 +5,18 @@ SpriteComponent::SpriteComponent(const char *path) {
 	texture = TextureManager::loadTexture(path);
 }
 
-SpriteComponent::SpriteComponent(const char* path, int f, int s) {
+SpriteComponent::SpriteComponent(const char* path, bool isAnimated) {
+	animated = isAnimated; 
+
+	Animation idle = Animation(0, 2, 100);
+	Animation walking = Animation(1, 4, 100);
+
+	animations.emplace("Idle", idle);
+	animations.emplace("Walking", walking);
+
+	switchAnimation("Idle");
+
 	texture = TextureManager::loadTexture(path);
-	animated = true; 
-	frames = f; 
-	speed = s; 
 }
 
 SpriteComponent::~SpriteComponent() {
@@ -28,7 +35,10 @@ void SpriteComponent::update() {
 
 	if (animated) {
 		srcRect.x = srcRect.w * static_cast<int>((SDL_GetTicks() / speed) % frames);
+		srcRect.y = srcRect.h * animationIndex;
 	}
+
+	srcRect.y = animationIndex * transform->height;
 
 	destRect.x = static_cast<int>(transform->position.x);
 	destRect.y = static_cast<int>(transform->position.y);
@@ -37,7 +47,22 @@ void SpriteComponent::update() {
 }
 
 void SpriteComponent::render() {
-	TextureManager::draw(texture, srcRect, destRect);
+	TextureManager::draw(texture, srcRect, destRect, spriteFlip);
+}
+
+void SpriteComponent::switchAnimation(const char* animationName) {
+	frames = animations[animationName].frames; 
+	animationIndex = animations[animationName].index;
+	speed = animations[animationName].speed;
+}
+
+void SpriteComponent::flipAnimation(bool f) {
+	if (f) {
+		spriteFlip = SDL_FLIP_HORIZONTAL;
+	}
+	else {
+		spriteFlip = SDL_FLIP_NONE;
+	}
 }
 
 
