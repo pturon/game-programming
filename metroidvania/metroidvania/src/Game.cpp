@@ -3,19 +3,15 @@
 SDL_Renderer* Game::renderer = nullptr;
 SDL_Event Game::event;
 
-std::vector<ColliderComponent*>Game::colliders;
-
 Manager manager; 
-TileMap map;
+TileMap* map;
 SDL_Rect Game::camera = { 0,0,WINDOW_WIDTH,WINDOW_HEIGHT};
 
 bool Game::isRunning = false; 
 
-const char* tileSet = "assets/tileset.png";
-
 auto& player(manager.addEntity());
-
 auto& tiles(manager.getGroup(groupMap));
+auto& colliders(manager.getGroup(groupColliders));
 
 Game::Game() {
 	isRunning = false;
@@ -47,11 +43,11 @@ void Game::init(const char* title, int width, int height, bool fullscreen) {
 		isRunning = false; 
 	}
 
-	map.loadMap("assets/levels/level_1.map");
-	std::cout << map.width << std::endl; 
-	std::cout << map.height << std::endl; 
+	map = new TileMap("assets/tileSet.png");
+	map->loadMap("assets/levels/level_1.map");
+	map->loadColliders("assets/levels/level_1_colliders.map");
 
-	player.addComponent<TransformComponent>((WINDOW_WIDTH-PLAYER_WIDTH)/2, (WINDOW_HEIGHT-PLAYER_HEIGHT) / 2, PLAYER_WIDTH, PLAYER_HEIGHT, 1);
+	player.addComponent<TransformComponent>((WINDOW_WIDTH-PLAYER_WIDTH)/2, (WINDOW_HEIGHT-PLAYER_HEIGHT) / 2, PLAYER_WIDTH, PLAYER_HEIGHT, 1, 5);
 	player.addComponent<SpriteComponent>("assets/hero_spritesheet.png", true);
 	player.addComponent<KeyboardController>();	
 	player.addComponent<ColliderComponent>("Player");
@@ -70,8 +66,19 @@ void Game::handleEvents() {
 }
 
 void Game::update() {
+
+	SDL_Rect playerCol = player.getComponent<ColliderComponent>().collider;
+	Vector2D playerPos = player.getComponent<TransformComponent>().position;
+
 	manager.refresh();
 	manager.update();		
+
+	for (auto& c : colliders) {
+		SDL_Rect cCol = c->getComponent<ColliderComponent>().collider;
+		if (Collision::AABB(cCol, playerCol)) {
+			player.getComponent<TransformComponent>().position = playerPos;
+		}
+	}
 
 	camera.x = player.getComponent<TransformComponent>().position.x - ((WINDOW_WIDTH-PLAYER_WIDTH) / 2);
 	camera.y = player.getComponent<TransformComponent>().position.y - ((WINDOW_HEIGHT-PLAYER_HEIGHT) / 2);
@@ -82,11 +89,11 @@ void Game::update() {
 	if (camera.y < 0) {
 		camera.y = 0;
 	}
-	if (camera.x > (map.width*TILE_WIDTH) - camera.w) {
-		camera.x = (map.width * TILE_WIDTH) - camera.w;
+	if (camera.x > (map->width*TILE_WIDTH) - camera.w) {
+		camera.x = (map->width * TILE_WIDTH) - camera.w;
 	}
-	if (camera.y > (map.height*TILE_HEIGHT) - camera.h) {
-		camera.y = (map.height * TILE_HEIGHT) - camera.h;
+	if (camera.y > (map->height*TILE_HEIGHT) - camera.h) {
+		camera.y = (map->height * TILE_HEIGHT) - camera.h;
 	}
 
 }
@@ -101,11 +108,4 @@ void Game::clean() {
 	SDL_DestroyWindow(window);
 	SDL_DestroyRenderer(renderer);
 	SDL_Quit();
-}
-
-void Game::addTile(int srcX, int srcY, int x, int y) {
-	auto& tile(manager.addEntity());
-	tile.addComponent<TileComponent>(srcX, srcY, x, y, tileSet);
-	tile.addComponent<ColliderComponent>("Wall");
-	tile.addGroup(groupMap);
 }

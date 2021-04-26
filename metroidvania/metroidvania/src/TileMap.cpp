@@ -6,9 +6,12 @@
 #include <iostream>
 #include <sstream>
 
-TileMap::TileMap() {	
+extern Manager manager;
+
+TileMap::TileMap(const char* tileSet) {
 	width = 0; 
 	height = 0; 
+	tileSetPath = tileSet;
 }
 
 TileMap::~TileMap() {
@@ -30,7 +33,7 @@ void TileMap::loadMap(std::string path){
 			if (cell != "-1") {
 				srcX = (stoi(cell) % TILESET_WIDTH) * TILE_WIDTH;
 				srcY = (stoi(cell) / TILESET_WIDTH) * TILE_HEIGHT;
-				Game::addTile(srcX, srcY, x * TILE_WIDTH, y * TILE_HEIGHT);
+				addTile(srcX, srcY, x * TILE_WIDTH, y * TILE_HEIGHT);
 			}
 			x++;
 		}
@@ -44,8 +47,41 @@ void TileMap::loadMap(std::string path){
 		y++;		
 	}
 	
+	mapFile.close();	
+}
+
+void TileMap::loadColliders(std::string path) {
+	int srcX, srcY;
+
+	std::fstream mapFile(path);
+	std::string line;
+
+	char c; 
+
+	for (int y = 0; y < height; y++) {
+		for (int x = 0; x < width; x++) {
+			mapFile.get(c);
+			if (c == '1') {
+				std::cout << c << std::endl;
+				addCollider(x, y);
+			}
+			mapFile.ignore();
+		}
+	}
 	mapFile.close();
-	
+}
+
+void TileMap::addTile(int srcX, int srcY, int x, int y) {
+	auto& tile(manager.addEntity());
+	tile.addComponent<TileComponent>(srcX, srcY, x, y, tileSetPath);
+	tile.addGroup(groupMap);
+}
+
+void TileMap::addCollider(int x, int y) {
+	std::cout << "test" << std::endl;
+	auto& collider(manager.addEntity());	
+	collider.addComponent<ColliderComponent>("terrain", x * TILE_WIDTH, y * TILE_HEIGHT, TILESET_WIDTH, TILE_HEIGHT);
+	collider.addGroup(groupColliders);
 }
 
 
