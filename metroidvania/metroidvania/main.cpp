@@ -1,9 +1,6 @@
 #include "SDL.h"
 #include "include/Game.h"
-
-//Sceen dimension constants
-const int WINDOW_WIDTH = 800; 
-const int WINDOW_HEIGHT = 640; 
+#include "include/Constants.h"
 
 const int FPS = 60;
 const int frameDelay = 1000 / FPS;

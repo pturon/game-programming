@@ -38,6 +38,8 @@ void KeyboardController::update() {
 		case SDLK_d:
 			rightDown = false; 
 			break;
+		case SDLK_ESCAPE:
+			Game::isRunning = false; 
 		default:
 			break;
 		}

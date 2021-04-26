@@ -7,6 +7,8 @@
 #include <sstream>
 
 TileMap::TileMap() {	
+	width = 0; 
+	height = 0; 
 }
 
 TileMap::~TileMap() {
@@ -26,14 +28,20 @@ void TileMap::loadMap(std::string path){
 		std::string cell; 
 		while (std::getline(s, cell, ',')) {
 			if (cell != "-1") {
-				srcX = (stoi(cell) % 10) * 32;
-				srcY = (stoi(cell) / 10) * 32;
-				Game::addTile(srcX, srcY, x * 32, y * 32);
+				srcX = (stoi(cell) % TILESET_WIDTH) * TILE_WIDTH;
+				srcY = (stoi(cell) / TILESET_WIDTH) * TILE_HEIGHT;
+				Game::addTile(srcX, srcY, x * TILE_WIDTH, y * TILE_HEIGHT);
 			}
 			x++;
 		}
+		if (x > width) {
+			width = x; 
+		}
 		x = 0; 
-		y++;
+		if (y > height) {
+			height = y;
+		}
+		y++;		
 	}
 	
 	mapFile.close();

@@ -1,6 +1,8 @@
 #pragma once
 #include "EntityComponentSystem.h"
 #include "SDL.h"
+#include "Constants.h"
+#include "Vector2D.h"
 
 class TileComponent; 
 class SpriteComponent; 
@@ -10,6 +12,7 @@ public:
 
 	SDL_Texture* texture; 
 	SDL_Rect srcRect, destRect; 
+	Vector2D position;
 
 	TileComponent() = default; 
 	~TileComponent() {
@@ -17,4 +20,5 @@ public:
 	}
 	TileComponent(int srcX, int srcY, int x, int y, const char* path);
 	void render() override;
+	void update() override; 
 };

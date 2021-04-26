@@ -8,7 +8,16 @@ public:
 	TileMap();
 	~TileMap();
 
-	static void loadMap(std::string path);
+	int width; 
+	int height;
+
+	void loadMap(std::string path);
 private:
+	void setWidth(int w) {
+		width = w;
+	}
+	void setHeight(int h) {
+		height = h;
+	}
 };
 
