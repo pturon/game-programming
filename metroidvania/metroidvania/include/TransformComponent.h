@@ -7,6 +7,8 @@ public:
 
 	Vector2D position;
 	Vector2D velocity;
+	Vector2D gravity; 
+	bool gravityAffected = false;
 	int speed = 5; 
 
 	int width = 32;
@@ -26,13 +28,15 @@ public:
 		scale = s; 
 	}
 
-	TransformComponent(float x, float y, int w, int h, int s, int sp) {
+	TransformComponent(float x, float y, int w, int h, int s, int sp, bool g) {
 		position.x = x;
 		position.y = y;
 		width = w; 
 		height = h; 
 		scale = s; 
 		speed = sp;
+		gravityAffected = g; 
+		gravity = { 0,9 };
 	}
 
 	TransformComponent(float x, float y, int w, int h) {
@@ -49,5 +53,9 @@ public:
 	void update() override {
 		position.x += velocity.x * speed;
 		position.y += velocity.y * speed;
+		if (gravityAffected) {
+			position.x += gravity.x;
+			position.y += gravity.y;
+		}
 	}
 };
