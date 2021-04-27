@@ -12,6 +12,8 @@ TileMap::TileMap(const char* tileSet) {
 	width = 0; 
 	height = 0; 
 	tileSetPath = tileSet;
+	mapFilePath = "";
+	colliderFilePath = "";
 }
 
 TileMap::~TileMap() {
@@ -51,7 +53,6 @@ void TileMap::loadMap(std::string path){
 }
 
 void TileMap::loadColliders(std::string path) {
-	int srcX, srcY;
 
 	std::fstream mapFile(path);
 	std::string line;
@@ -61,8 +62,7 @@ void TileMap::loadColliders(std::string path) {
 	for (int y = 0; y < height; y++) {
 		for (int x = 0; x < width; x++) {
 			mapFile.get(c);
-			if (c == '1') {
-				std::cout << c << std::endl;
+			if (c == '1') {				
 				addCollider(x, y);
 			}
 			mapFile.ignore();
@@ -78,7 +78,6 @@ void TileMap::addTile(int srcX, int srcY, int x, int y) {
 }
 
 void TileMap::addCollider(int x, int y) {
-	std::cout << "test" << std::endl;
 	auto& collider(manager.addEntity());	
 	collider.addComponent<ColliderComponent>("terrain", x * TILE_WIDTH, y * TILE_HEIGHT, TILESET_WIDTH, TILE_HEIGHT);
 	collider.addGroup(groupColliders);

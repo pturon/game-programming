@@ -5,7 +5,11 @@ struct Animation {
 	int frames;
 	int speed; 
 
-	Animation() {}
+	Animation() {
+		index = NULL;
+		frames = NULL; 
+		speed = NULL;
+	}
 	Animation(int i, int f, int s) {
 		index = i; 
 		frames = f; 

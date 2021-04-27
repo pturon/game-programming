@@ -5,8 +5,8 @@ TileComponent::TileComponent(int srcX, int srcY, int x, int y, const char* path)
 
 	texture = TextureManager::loadTexture(path);
 
-	position.x = x;
-	position.y = y; 
+	position.x = static_cast<float>(x);
+	position.y = static_cast<float>(y);
 
 	srcRect.x = srcX;
 	srcRect.y = srcY;
@@ -24,6 +24,6 @@ void TileComponent::render() {
 }
 
 void TileComponent::update() {
-	destRect.x = position.x - Game::camera.x;
-	destRect.y = position.y - Game::camera.y;
+	destRect.x = static_cast<int>(position.x - Game::camera.x);
+	destRect.y = static_cast<int>(position.y - Game::camera.y);
 }

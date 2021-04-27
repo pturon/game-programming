@@ -47,7 +47,7 @@ void Game::init(const char* title, int width, int height, bool fullscreen) {
 	map->loadMap("assets/levels/level_1.map");
 	map->loadColliders("assets/levels/level_1_colliders.map");
 
-	player.addComponent<TransformComponent>((WINDOW_WIDTH-PLAYER_WIDTH)/2, (WINDOW_HEIGHT-PLAYER_HEIGHT) / 2, PLAYER_WIDTH, PLAYER_HEIGHT, 1, 5);
+	player.addComponent<TransformComponent>((WINDOW_WIDTH-PLAYER_WIDTH)/2, (WINDOW_HEIGHT-PLAYER_HEIGHT) / 2, PLAYER_WIDTH, PLAYER_HEIGHT, 1, 5, true);
 	player.addComponent<SpriteComponent>("assets/hero_spritesheet.png", true);
 	player.addComponent<KeyboardController>();	
 	player.addComponent<ColliderComponent>("Player");
@@ -80,8 +80,8 @@ void Game::update() {
 		}
 	}
 
-	camera.x = player.getComponent<TransformComponent>().position.x - ((WINDOW_WIDTH-PLAYER_WIDTH) / 2);
-	camera.y = player.getComponent<TransformComponent>().position.y - ((WINDOW_HEIGHT-PLAYER_HEIGHT) / 2);
+	camera.x = static_cast<int>(player.getComponent<TransformComponent>().position.x - ((WINDOW_WIDTH - PLAYER_WIDTH) / 2));
+	camera.y = static_cast<int>(player.getComponent<TransformComponent>().position.y - ((WINDOW_HEIGHT - PLAYER_HEIGHT) / 2));
 
 	if (camera.x < 0) {
 		camera.x = 0; 
