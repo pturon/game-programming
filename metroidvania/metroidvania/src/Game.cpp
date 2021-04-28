@@ -67,16 +67,19 @@ void Game::handleEvents() {
 
 void Game::update() {
 
-	SDL_Rect playerCol = player.getComponent<ColliderComponent>().collider;
-	Vector2D playerPos = player.getComponent<TransformComponent>().position;
+	
+	Vector2D playerPos = player.getComponent<TransformComponent>().position;	
 
 	manager.refresh();
 	manager.update();		
 
+	SDL_Rect playerCol = player.getComponent<ColliderComponent>().collider;
+
 	for (auto& c : colliders) {
 		SDL_Rect cCol = c->getComponent<ColliderComponent>().collider;
 		if (Collision::AABB(cCol, playerCol)) {
-			player.getComponent<TransformComponent>().position = playerPos;
+			player.getComponent<TransformComponent>().position.y = playerPos.y;
+			player.getComponent<TransformComponent>().position.x = playerPos.x;		
 		}
 	}
 
@@ -99,9 +102,11 @@ void Game::update() {
 }
 
 void Game::render() {
+	std::cout << "Render before " << player.getComponent<TransformComponent>().position.y << std::endl;
 	SDL_RenderClear(renderer);
 	manager.render();
 	SDL_RenderPresent(renderer);
+	std::cout << "Render after " << player.getComponent<TransformComponent>().position.y << std::endl;
 }
 
 void Game::clean() {
