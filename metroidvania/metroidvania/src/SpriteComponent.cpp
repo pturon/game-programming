@@ -25,7 +25,6 @@ SpriteComponent::~SpriteComponent() {
 
 void SpriteComponent::init(){
 	transform = &parent->getComponent<TransformComponent>();
-
 	srcRect.x = srcRect.y = 0;
 	srcRect.w = transform->width;
 	srcRect.h = transform->height;	
@@ -44,8 +43,6 @@ void SpriteComponent::update() {
 	destRect.y = static_cast<int>(transform->position.y) - Game::camera.y;
 	destRect.w = transform->width * transform->scale;
 	destRect.h = transform->height * transform->scale;
-
-	std::cout << "Sprite update after" << destRect.y << std::endl;
 }
 
 void SpriteComponent::render() {

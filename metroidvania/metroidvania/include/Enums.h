@@ -8,3 +8,14 @@ enum groupLabels {
 	groupColliders,
 	groupForeground
 };
+
+enum direction {
+	up, 
+	rightUp, 
+	right, 
+	rightDown, 
+	down,
+	leftDown, 
+	left, 
+	leftUp
+};

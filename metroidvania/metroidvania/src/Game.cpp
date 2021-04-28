@@ -67,9 +67,6 @@ void Game::handleEvents() {
 
 void Game::update() {
 
-	
-	Vector2D playerPos = player.getComponent<TransformComponent>().position;	
-
 	manager.refresh();
 	manager.update();		
 
@@ -77,11 +74,30 @@ void Game::update() {
 
 	for (auto& c : colliders) {
 		SDL_Rect cCol = c->getComponent<ColliderComponent>().collider;
-		if (Collision::AABB(cCol, playerCol)) {
-			player.getComponent<TransformComponent>().position.y = playerPos.y;
-			player.getComponent<TransformComponent>().position.x = playerPos.x;		
+		if (Collision::AABB(cCol, playerCol)) {	
+			if (cCol.y < 448) {
+				std::cout << cCol.x  << " , " << cCol.y << std::endl;
+			}
+			//above
+			if (playerCol.y + PLAYER_HEIGHT > cCol.y && playerCol.y + PLAYER_HEIGHT < cCol.y + cCol.h && playerCol.y + PLAYER_HEIGHT - cCol.y <= 9) {
+				playerCol.y = cCol.y - PLAYER_HEIGHT;
+			}
+			//below 
+			if (playerCol.y > cCol.y && playerCol.y < cCol.y + cCol.h && cCol.y + cCol.h - playerCol.y <= 9) {
+				playerCol.y = cCol.y + cCol.h;
+			}
+			//right 
+			if (playerCol.x + PLAYER_WIDTH > cCol.x && playerCol.x + PLAYER_WIDTH < cCol.x + cCol.w) {				
+				playerCol.x = cCol.x - PLAYER_WIDTH;
+			}
+			//left 
+			if (playerCol.x > cCol.x && playerCol.x < cCol.x + cCol.w) {			
+				playerCol.x = cCol.x + cCol.w;
+			}
 		}
 	}
+	player.getComponent<TransformComponent>().position.x = playerCol.x;
+	player.getComponent<TransformComponent>().position.y = playerCol.y;
 
 	camera.x = static_cast<int>(player.getComponent<TransformComponent>().position.x - ((WINDOW_WIDTH - PLAYER_WIDTH) / 2));
 	camera.y = static_cast<int>(player.getComponent<TransformComponent>().position.y - ((WINDOW_HEIGHT - PLAYER_HEIGHT) / 2));
@@ -101,12 +117,10 @@ void Game::update() {
 
 }
 
-void Game::render() {
-	std::cout << "Render before " << player.getComponent<TransformComponent>().position.y << std::endl;
+void Game::render() {	
 	SDL_RenderClear(renderer);
 	manager.render();
 	SDL_RenderPresent(renderer);
-	std::cout << "Render after " << player.getComponent<TransformComponent>().position.y << std::endl;
 }
 
 void Game::clean() {

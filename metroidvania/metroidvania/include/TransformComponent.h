@@ -53,11 +53,10 @@ public:
 	void update() override {
 		position.x += velocity.x * speed;
 		position.y += velocity.y * speed;
-		if (gravityAffected) {
-			std::cout << "Transform update b" << position.y << std::endl;
+		if (gravityAffected) {		
 			position.x += gravity.x;
 			position.y += gravity.y;
-			std::cout << "Transform update a" << position.y << std::endl;
 		}
 	}
+
 };
