@@ -74,10 +74,7 @@ void Game::update() {
 
 	for (auto& c : colliders) {
 		SDL_Rect cCol = c->getComponent<ColliderComponent>().collider;
-		if (Collision::AABB(cCol, playerCol)) {	
-			if (cCol.y < 448) {
-				std::cout << cCol.x  << " , " << cCol.y << std::endl;
-			}
+		if (Collision::AABB(cCol, playerCol)) {				
 			//above
 			if (playerCol.y + PLAYER_HEIGHT > cCol.y && playerCol.y + PLAYER_HEIGHT < cCol.y + cCol.h && playerCol.y + PLAYER_HEIGHT - cCol.y <= 9) {
 				playerCol.y = cCol.y - PLAYER_HEIGHT;
@@ -86,14 +83,16 @@ void Game::update() {
 			if (playerCol.y > cCol.y && playerCol.y < cCol.y + cCol.h && cCol.y + cCol.h - playerCol.y <= 9) {
 				playerCol.y = cCol.y + cCol.h;
 			}
-			//right 
-			if (playerCol.x + PLAYER_WIDTH > cCol.x && playerCol.x + PLAYER_WIDTH < cCol.x + cCol.w) {				
-				playerCol.x = cCol.x - PLAYER_WIDTH;
-			}
-			//left 
-			if (playerCol.x > cCol.x && playerCol.x < cCol.x + cCol.w) {			
-				playerCol.x = cCol.x + cCol.w;
-			}
+			if (cCol.y < playerCol.y + PLAYER_HEIGHT && playerCol.y < cCol.y + cCol.h) {
+				//right 
+				if (playerCol.x + playerCol.w - cCol.x >= 0 && playerCol.x + playerCol.w - cCol.x < 10) {
+					playerCol.x = cCol.x - PLAYER_WIDTH;
+				}
+				//left 
+				if (playerCol.x > cCol.x && playerCol.x < cCol.x + cCol.w) {
+					playerCol.x = cCol.x + cCol.w;
+				}
+			}			
 		}
 	}
 	player.getComponent<TransformComponent>().position.x = playerCol.x;
