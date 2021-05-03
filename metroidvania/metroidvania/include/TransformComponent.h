@@ -1,6 +1,7 @@
 #pragma once
 #include "Components.h"
 #include "Vector2D.h"
+#include "SDL.h"
 
 class TransformComponent : public Component {
 public:
@@ -10,6 +11,11 @@ public:
 	Vector2D gravity; 
 	bool gravityAffected = false;
 	int speed = 5; 
+
+	bool jumping = false; 
+	bool fallingAfterJump = false; 
+	float lastTick = 0; 
+	int jumpHeight = 50;
 
 	int width = 32;
 	int height = 32; 
@@ -50,13 +56,45 @@ public:
 		velocity.zero();
 	}
 
-	void update() override {
-		position.x += velocity.x * speed;
-		position.y += velocity.y * speed;
-		if (gravityAffected) {		
-			position.x += gravity.x;
-			position.y += gravity.y;
+	void update() override {	
+		if (jumping) {		
+			float t = 0.16f;		
+			position.x += velocity.x * speed;
+			position.y += t * velocity.y;
+			velocity.x += t * (gravity.x * speed);
+			velocity.y += t * gravity.y;	
+
+			std::cout << "jump" << std::endl;
 		}
+		else {
+			position.x += velocity.x * speed;
+			position.y += velocity.y * speed;
+			if (gravityAffected) {
+				position.x += gravity.x;
+				position.y += gravity.y;
+			}
+		}		
 	}
 
+	void jump() {
+		if (!jumping && !fallingAfterJump) {
+			jumping = true;
+			velocity.y = static_cast<float>(-jumpHeight);
+			std::cout << "j" << std::endl;
+		}		
+	}
+
+	void stopJump() {
+		if (fallingAfterJump || jumping) {
+			jumping = false;
+			fallingAfterJump = false;
+			velocity.y = 0; 
+		}		
+	}
+
+	void startFall() {
+		jumping = false; 
+		fallingAfterJump = true;
+		velocity.y = 0;
+	}
 };

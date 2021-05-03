@@ -47,11 +47,12 @@ void Game::init(const char* title, int width, int height, bool fullscreen) {
 	map->loadMap("assets/levels/level_1.map");
 	map->loadColliders("assets/levels/level_1_colliders.map");
 
+	player.addComponent<KeyboardController>();
 	player.addComponent<TransformComponent>((WINDOW_WIDTH-PLAYER_WIDTH)/2, (WINDOW_HEIGHT-PLAYER_HEIGHT) / 2, PLAYER_WIDTH, PLAYER_HEIGHT, 1, 5, true);
-	player.addComponent<SpriteComponent>("assets/hero_spritesheet.png", true);
-	player.addComponent<KeyboardController>();	
 	player.addComponent<ColliderComponent>("Player");
+	player.addComponent<SpriteComponent>("assets/hero_spritesheet.png", true);
 	player.addGroup(groupPlayers);
+	player.getComponent<KeyboardController>().getComponents();
 }
 
 void Game::handleEvents() {
@@ -67,30 +68,37 @@ void Game::handleEvents() {
 
 void Game::update() {
 
+	float yDist = player.getComponent<TransformComponent>().velocity.y * player.getComponent<TransformComponent>().speed + player.getComponent<TransformComponent>().gravity.y;
+
+	std::cout << "b" << player.getComponent<TransformComponent>().position.y << std::endl;
 	manager.refresh();
 	manager.update();		
-
+	std::cout << "a" << player.getComponent<TransformComponent>().position.y << std::endl;
 	SDL_Rect playerCol = player.getComponent<ColliderComponent>().collider;
-
+	
 	for (auto& c : colliders) {
 		SDL_Rect cCol = c->getComponent<ColliderComponent>().collider;
-		if (Collision::AABB(cCol, playerCol)) {				
+		if (Collision::AABB(cCol, playerCol)) {					
 			//above
-			if (playerCol.y + PLAYER_HEIGHT > cCol.y && playerCol.y + PLAYER_HEIGHT < cCol.y + cCol.h && playerCol.y + PLAYER_HEIGHT - cCol.y <= 9) {
+			if (playerCol.y + PLAYER_HEIGHT > cCol.y && playerCol.y + PLAYER_HEIGHT < cCol.y + cCol.h && playerCol.y + PLAYER_HEIGHT - cCol.y <= yDist) {			
 				playerCol.y = cCol.y - PLAYER_HEIGHT;
+				player.getComponent<TransformComponent>().stopJump();
 			}
 			//below 
-			if (playerCol.y > cCol.y && playerCol.y < cCol.y + cCol.h && cCol.y + cCol.h - playerCol.y <= 9) {
+			if (playerCol.y > cCol.y && playerCol.y < cCol.y + cCol.h && cCol.y + cCol.h - playerCol.y <= yDist) {
 				playerCol.y = cCol.y + cCol.h;
+				player.getComponent<TransformComponent>().startFall();
 			}
 			if (cCol.y < playerCol.y + PLAYER_HEIGHT && playerCol.y < cCol.y + cCol.h) {
 				//right 
 				if (playerCol.x + playerCol.w - cCol.x >= 0 && playerCol.x + playerCol.w - cCol.x < 10) {
 					playerCol.x = cCol.x - PLAYER_WIDTH;
+					player.getComponent<TransformComponent>().startFall();
 				}
 				//left 
 				if (playerCol.x > cCol.x && playerCol.x < cCol.x + cCol.w) {
 					playerCol.x = cCol.x + cCol.w;
+					player.getComponent<TransformComponent>().startFall();
 				}
 			}			
 		}

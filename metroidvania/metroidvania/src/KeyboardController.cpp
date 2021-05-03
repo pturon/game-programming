@@ -1,6 +1,10 @@
 #include "../include/KeyboardController.h"
 
 void KeyboardController::init() {
+	
+}
+
+void KeyboardController::getComponents() {
 	transform = &parent->getComponent<TransformComponent>();
 	sprite = &parent->getComponent<SpriteComponent>();
 }
@@ -19,6 +23,9 @@ void KeyboardController::update() {
 			break;
 		case SDLK_d:
 			rightDown = true;
+			break;
+		case SDLK_SPACE:
+			transform->jump();
 			break;
 		default:
 			break;
