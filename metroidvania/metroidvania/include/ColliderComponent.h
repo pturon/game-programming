@@ -5,6 +5,8 @@
 #include "TextureManager.h"
 #include "Constants.h"
 
+class TransformComponent; 
+
 class ColliderComponent : public Component{
 private:
 

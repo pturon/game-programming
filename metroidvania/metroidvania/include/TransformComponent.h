@@ -15,7 +15,11 @@ public:
 	bool jumping = false; 
 	bool fallingAfterJump = false; 
 	float lastTick = 0; 
-	int jumpHeight = 50;
+	int jumpHeight = 60;
+
+	float fallMultiplier = 3.5f;
+	float lowJumpMultiplier = 1.5f; 
+	bool spaceDown = false; 
 
 	int width = 32;
 	int height = 32; 
@@ -56,25 +60,7 @@ public:
 		velocity.zero();
 	}
 
-	void update() override {	
-		if (jumping) {		
-			float t = 0.16f;		
-			position.x += velocity.x * speed;
-			position.y += t * velocity.y;
-			velocity.x += t * (gravity.x * speed);
-			velocity.y += t * gravity.y;	
-
-			std::cout << "jump" << std::endl;
-		}
-		else {
-			position.x += velocity.x * speed;
-			position.y += velocity.y * speed;
-			if (gravityAffected) {
-				position.x += gravity.x;
-				position.y += gravity.y;
-			}
-		}		
-	}
+	void update() override; 
 
 	void jump() {
 		if (!jumping && !fallingAfterJump) {

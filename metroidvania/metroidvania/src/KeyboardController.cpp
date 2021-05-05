@@ -26,6 +26,7 @@ void KeyboardController::update() {
 			break;
 		case SDLK_SPACE:
 			transform->jump();
+			transform->spaceDown = true; 
 			break;
 		default:
 			break;
@@ -47,6 +48,10 @@ void KeyboardController::update() {
 			break;
 		case SDLK_ESCAPE:
 			Game::isRunning = false; 
+			break; 
+		case SDLK_SPACE: 
+			transform->spaceDown = false;
+			break; 
 		default:
 			break;
 		}
