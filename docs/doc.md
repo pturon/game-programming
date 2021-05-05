@@ -68,7 +68,7 @@ Die **Component-Klasse** ist eine abstrakte Klasse von der alle näher definiert
 
 Die **Entity-Klasse** besteht hauptsächlich aus einer Liste an Components und einem Verweis auf den Manager, in dem das Entity gespeichert wird. Ein Enity kann nur ein Component von jedem Typ enthalten. In der Update- und der Render-Funktion wird die jeweilige Methode einmal in allen gespeicherten Components aufgerufen. Die Variable active sagt aus, ob das Entity bereit ist vom Manager gelöscht  zu werden.
 
-Die **Manager-Klasse** speichert zum einen alle hinzugefügten Entites und eine Liste aller Gruppen und zu jeder Gruppe die Entities, die dieser Gruppe zugeordnet werden. Die Gruppen machen es einfacher den Typ eines Entitys zu erkennen und bestimmt die Reihenfolge in der die Entities gezeichnet werden. Der Manager kann Entities hinzugügen und überprüft jeden Tick ob ein gespeichertes Entity zur Löschung bereit ist. Falls ein Entity bereit ist, wird dieses gelöscht. Alle Entites werden durch den Manager der Reihe nach geupdatet und die Gruppen werden von hinten nach vorne alle gezeichnet. 
+Die **Manager-Klasse** speichert zum einen alle hinzugefügten Entitys und eine Liste aller Gruppen und zu jeder Gruppe die Entities, die dieser Gruppe zugeordnet werden. Die Gruppen machen es einfacher den Typ eines Entitys zu erkennen und bestimmt die Reihenfolge in der die Entitys gezeichnet werden. Der Manager kann Entities hinzugügen und überprüft jeden Tick ob ein gespeichertes Entity zur Löschung bereit ist. Falls ein Entity bereit ist, wird dieses gelöscht. Alle Entities werden durch den Manager der Reihe nach geupdatet und die Gruppen werden von hinten nach vorne alle gezeichnet. 
 
 ```c++
 #pragma once
@@ -258,7 +258,7 @@ void Entity::addGroup(Group g) {
 }
 ```
 
-## 
+
 
 ## Vector2D.h und .cpp
 
@@ -378,10 +378,13 @@ Das TransformComponent stellt die physische Komponente des Objektes dar. Hier wi
 
 In der Update-Methode wird die nächste Position des Objektes berechnet. Dabei wird die Schwerkraft oder ob das Objekt am Springen ist mit einbezogen.
 
+Das **Springen**: Die Sprungkurve der Spielfigur wird durch eine Parabel dargestellt d.h. die Steigung der Kurve wird immer um den gleichen Wert weniger. Da ein physikalisch korrekter Sprung sich im Hinblick auf das Spielgefühl zu langsam anfühlt, wird die Schwerkraft beim Fallen erhöht, damit die Spielfigur schneller fällt als sie steigt. Um mit der Dauer in der die Leertaste gedrückt wird, die Höhe des Sprunges steuern zu können, wird die Schwerkraft um einen kleinen Wert erhöht, solange die Leertaste nicht gedrückt wird. 
+
 ```c++
 #pragma once
 #include "Components.h"
 #include "Vector2D.h"
+#include "SDL.h"
 
 class TransformComponent : public Component {
 public:
@@ -391,6 +394,15 @@ public:
 	Vector2D gravity; 
 	bool gravityAffected = false;
 	int speed = 5; 
+
+	bool jumping = false; 
+	bool fallingAfterJump = false; 
+	float lastTick = 0; 
+	int jumpHeight = 60;
+
+	float fallMultiplier = 3.5f;
+	float lowJumpMultiplier = 1.5f; 
+	bool spaceDown = false; 
 
 	int width = 32;
 	int height = 32; 
@@ -431,15 +443,59 @@ public:
 		velocity.zero();
 	}
 
-	void update() override {
+	void update() override; 
+
+	void jump() {
+		if (!jumping && !fallingAfterJump) {
+			jumping = true;
+			velocity.y = static_cast<float>(-jumpHeight);			
+		}		
+	}
+
+	void stopJump() {
+		if (fallingAfterJump || jumping) {
+			jumping = false;
+			fallingAfterJump = false;
+			velocity.y = 0; 
+		}		
+	}
+
+	void startFall() {
+		jumping = false; 
+		fallingAfterJump = true;
+		velocity.y = 0;
+	}
+};
+```
+
+```c++
+#include "../include/TransformComponent.h"
+
+void TransformComponent::update() {
+	if (velocity.y > 0) {
+		velocity.y += fallMultiplier;
+	}
+	else if (velocity.y < 0 && !spaceDown) {
+		velocity.y += lowJumpMultiplier;
+	}
+	if (jumping) {
+		float t = 0.16f;
+		position.x += velocity.x * speed;
+		position.y += t * velocity.y;
+		velocity.x += t * (gravity.x * speed);
+		velocity.y += t * gravity.y;
+
+		std::cout << "jump" << std::endl;
+	}
+	else {
 		position.x += velocity.x * speed;
 		position.y += velocity.y * speed;
-		if (gravityAffected) {		
+		if (gravityAffected) {
 			position.x += gravity.x;
 			position.y += gravity.y;
 		}
 	}
-};
+}
 ```
 
 
@@ -561,5 +617,256 @@ void SpriteComponent::flipAnimation(bool f) {
 	}
 }
 
+```
+
+
+
+## KeyboardController.h und .cpp 
+
+Der KeyboardController steuert die Bewegungen des Entities. Hier darauf reagiert, ob eine Taste auf der Tastatur gedrückt oder losgelassen wird. Bei den Taste A und D wird dem TransformComponent des Entitys signalisiert, dass sich die Figur nach Links oder Rechts bewegen soll. Beim drücken der Leertaste wird dem TransformComponent signalisiert, dass das Entity springen soll. Außerdem wird dem SpriteComponent des Entitys 
+
+Bei einem Drück auf die Esc-Taste wird das Spiel beendet. 
+
+```c++
+#pragma once
+#include "Game.h"
+#include "EntityComponentSystem.h"
+#include "TransformComponent.h"
+#include "SpriteComponent.h"
+
+class SpriteComponent; 
+
+class KeyboardController : public Component {
+private:
+	bool leftDown = false;
+	bool rightDown = false;	
+public: 
+	TransformComponent *transform; 
+	SpriteComponent* sprite; 
+	bool spaceDown = false;
+
+	void init() override;
+	void update() override; 
+	void getComponents();
+};
+```
+
+```c++
+#include "../include/KeyboardController.h"
+
+void KeyboardController::init() {
+	
+}
+
+void KeyboardController::getComponents() {
+	transform = &parent->getComponent<TransformComponent>();
+	sprite = &parent->getComponent<SpriteComponent>();
+}
+
+void KeyboardController::update() {
+	if (Game::event.type == SDL_KEYDOWN) {
+		switch (Game::event.key.keysym.sym) {
+		case SDLK_w:
+	
+			break;
+		case SDLK_a:
+			leftDown = true;
+			break;
+		case SDLK_s:
+
+			break;
+		case SDLK_d:
+			rightDown = true;
+			break;
+		case SDLK_SPACE:
+			transform->jump();
+			transform->spaceDown = true; 
+			break;
+		default:
+			break;
+		}
+	}
+	if (Game::event.type == SDL_KEYUP) {
+		switch (Game::event.key.keysym.sym) {
+		case SDLK_w:
+
+			break;
+		case SDLK_a:
+			leftDown = false;
+			break;
+		case SDLK_s:
+
+			break;
+		case SDLK_d:
+			rightDown = false; 
+			break;
+		case SDLK_ESCAPE:
+			Game::isRunning = false; 
+			break; 
+		case SDLK_SPACE: 
+			transform->spaceDown = false;
+			break; 
+		default:
+			break;
+		}
+	}
+
+	if (leftDown && !rightDown) {
+		sprite->switchAnimation("Walking");
+		sprite->flipAnimation(true);
+		transform->velocity.x = -1;
+	}
+	else if (!leftDown && rightDown) {
+		sprite->switchAnimation("Walking");
+		sprite->flipAnimation(false);
+		transform->velocity.x = 1;
+	}
+	else {
+		transform->velocity.x = 0;
+		sprite->switchAnimation("Idle");
+	}
+	
+}
+```
+
+
+
+## ColliderComponent.h und .cpp
+
+Physische Objekte, die mit anderen kollidieren sollen, bekommen ein ColliderComponent. Dies wird durch ein SDL_Rect realisiert, das immer auf die Position des TransformComponents gesetzt wird und die Größe des Entitys hat. 
+
+Alle Kollisionsabfragen werden in der game.cpp gemacht. Das ColliderComponent ist nur eine Komponente, die einfach überprüft werden kann. 
+
+```c++
+#pragma once
+#include "Components.h"
+#include <string>
+#include "SDL.h"
+#include "TextureManager.h"
+#include "Constants.h"
+
+class TransformComponent; 
+
+class ColliderComponent : public Component{
+private:
+
+public: 
+	SDL_Rect collider;
+	std::string tag;
+	SDL_Rect srcRect, destRect;
+
+	TransformComponent* transform;
+
+	ColliderComponent(std::string t) {
+		tag = t;
+	}
+	ColliderComponent(std::string t, int x, int y, int w, int h) {
+		tag = t;
+		collider.x = x; 
+		collider.y = y; 
+		collider.w = w; 
+		collider.h = h; 
+	}
+
+	void init() override;
+	void update() override;
+};
+
+
+```
+
+```c++
+#include "../include/ColliderComponent.h"
+
+void ColliderComponent::init(){
+	if (!parent->hasComponent<TransformComponent>()) {
+		parent->addComponent<TransformComponent>();
+	}
+	transform = &parent->getComponent<TransformComponent>();
+}
+
+void ColliderComponent::update() {
+	if (tag != "terrain") {		
+		collider.x = static_cast<int>(transform->position.x);
+		collider.y = static_cast<int>(transform->position.y);
+		collider.w = transform->width * transform->scale;
+		collider.h = transform->height * transform->scale; 
+	}
+	destRect.x = collider.x - Game::camera.x;
+	destRect.y = collider.y - Game::camera.y;	
+}
+```
+
+
+
+## Collision.h  und .cpp
+
+Hier werden alle möglichen Funktionen aufgelistet, die berechnen, ob sich zwei Objekte überschneiden. Zur Zeit gibt es nur die Möglichkeit abzufragen, ob sich zwei Rechtecke überschneiden.
+
+```c++
+#pragma once
+#include "SDL.h"
+
+class ColliderComponent; 
+
+class Collision{
+public: 
+	static bool AABB(const SDL_Rect& a, const SDL_Rect& b);
+	static bool AABB(const ColliderComponent& colA, const ColliderComponent& colB);
+};
+```
+
+```c++
+#include "../include/Collision.h"
+#include "../include/ColliderComponent.h"
+
+bool Collision::AABB(const SDL_Rect& a, const SDL_Rect& b) {
+	if (a.x + a.w >= b.x && b.x + b.w >= a.x && a.y + a.h >= b.y && b.y + b.h >= a.y) {
+		return true; 
+	}
+	return false; 
+}
+
+bool Collision::AABB(const ColliderComponent& colA, const ColliderComponent& colB) {
+	return AABB(colA.collider, colB.collider);
+}
+```
+
+
+
+## Kollisionsabfrage
+
+Damit die Spielfigur nicht durch die Spielwelt fällt, wird bei jedem Tick abgefragt ob der Collider der Spielfigur mit einem anderen Collider kollidiert. Falls dies der Fall sein sollte, wird die Position der Figur korrigiert. 
+
+Leider reicht es nicht nur zu überprüfen, ob sich die Collider überschneiden, muss zuerst die Position der Spielfigur zum überschnittenen Collider überprüft werden. 
+
+```c++
+for (auto& c : colliders) {
+		SDL_Rect cCol = c->getComponent<ColliderComponent>().collider;
+		if (Collision::AABB(cCol, playerCol)) {					
+			if (cCol.y < playerCol.y + PLAYER_HEIGHT && playerCol.y < cCol.y + cCol.h) {
+				//right 
+				if (playerCol.x + playerCol.w - cCol.x >= 0 && playerCol.x + playerCol.w - cCol.x < 10) {
+					playerCol.x = cCol.x - PLAYER_WIDTH - 1;					
+				}
+				//left 
+				if (playerCol.x > cCol.x && playerCol.x < cCol.x + cCol.w) {
+					playerCol.x = cCol.x + cCol.w + 1;					
+				}
+			}
+			//above
+			if (playerCol.y + PLAYER_HEIGHT > cCol.y && playerCol.y + PLAYER_HEIGHT < cCol.y + cCol.h && 	playerCol.y + PLAYER_HEIGHT - cCol.y <= yDist) {
+				playerCol.y = cCol.y - PLAYER_HEIGHT - 1;
+				player.getComponent<TransformComponent>().stopJump();
+			}
+			//below 
+			if (playerCol.y > cCol.y && playerCol.y < cCol.y + cCol.h && cCol.y + cCol.h - playerCol.y <= yDist) {
+				playerCol.y = cCol.y + cCol.h + 1;
+				player.getComponent<TransformComponent>().startFall();
+			}
+		}
+	}
+	player.getComponent<TransformComponent>().position.x = playerCol.x;
+	player.getComponent<TransformComponent>().position.y = playerCol.y;
 ```
 
