@@ -7,6 +7,7 @@
 #include "Enums.h"
 
 class TransformComponent;
+class AttackComponent; 
 
 class AttackComponent : public Component {
 private: 	
@@ -30,10 +31,5 @@ public:
 	void update() override;
 	void render() override;
 
-	void attack() {
-		if (!attacking) {
-			attacking = true;
-			attackStart = SDL_GetTicks();
-		}		
-	}
+	void attack();
 };

@@ -45,7 +45,32 @@ void AttackComponent::update() {
 void AttackComponent::render() {
 	if (attacking) {
 		SDL_Rect srcRect = { 0,0,32,32 };
-		TextureManager::draw(texture, srcRect, attackCollider, SDL_FLIP_NONE);
+		TextureManager::draw(texture, srcRect, attackCollider, SDL_FLIP_NONE);		
+	}
+}
+
+void AttackComponent::attack() {
+	if (!attacking) {
+		attacking = true;
+		attackStart = SDL_GetTicks();
+		Direction curDirection = transform->direction;
+		std::cout << curDirection << std::endl;
+		switch (curDirection) {
+		case up:
+			parent->getComponent<SpriteComponent>().switchAnimation("Attack_Top");
+			break;
+		case right:
+			parent->getComponent<SpriteComponent>().switchAnimation("Attack_Side");
+			parent->getComponent<SpriteComponent>().flipAnimation(false);
+			break;
+		case down:
+			parent->getComponent<SpriteComponent>().switchAnimation("Attack_Bottom");
+			break;
+		case left:
+			parent->getComponent<SpriteComponent>().switchAnimation("Attack_Side");
+			parent->getComponent<SpriteComponent>().flipAnimation(true);
+			break;
+		}
 	}
 }
 	

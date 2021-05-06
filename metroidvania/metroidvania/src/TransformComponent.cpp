@@ -13,8 +13,6 @@ void TransformComponent::update() {
 		position.y += t * velocity.y;
 		velocity.x += t * (gravity.x * speed);
 		velocity.y += t * gravity.y;
-
-		std::cout << "jump" << std::endl;
 	}
 	else {
 		position.x += velocity.x * speed;

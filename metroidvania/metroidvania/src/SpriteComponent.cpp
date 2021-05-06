@@ -10,9 +10,19 @@ SpriteComponent::SpriteComponent(const char* path, bool isAnimated) {
 
 	Animation idle = Animation(0, 2, 100);
 	Animation walking = Animation(1, 4, 100);
+	Animation attack_side = Animation(2, 2, 100);
+	Animation attack_top = Animation(3, 2, 100);
+	Animation attack_bottom = Animation(4, 2, 100);
+	Animation jumping = Animation(5, 1, 100);
+	Animation falling = Animation(6, 1, 100);
 
 	animations.emplace("Idle", idle);
 	animations.emplace("Walking", walking);
+	animations.emplace("Attack_Side", attack_side);
+	animations.emplace("Attack_Top", attack_top);
+	animations.emplace("Attack_Bottom", attack_bottom);
+	animations.emplace("Jumping", jumping);
+	animations.emplace("Falling", falling);
 
 	switchAnimation("Idle");
 
@@ -46,6 +56,7 @@ void SpriteComponent::update() {
 }
 
 void SpriteComponent::render() {
+	std::cout << animationIndex << std::endl; 
 	destRect.x = static_cast<int>(transform->position.x) - Game::camera.x;
 	destRect.y = static_cast<int>(transform->position.y) - Game::camera.y;
 	destRect.w = transform->width * transform->scale;
