@@ -22,7 +22,7 @@ public:
 	float lowJumpMultiplier = 1.5f; 
 	bool spaceDown = false; 
 
-	Direction direction = right; 
+	Direction direction;
 
 	int width = 32;
 	int height = 32; 
@@ -30,6 +30,7 @@ public:
 
 	TransformComponent() {
 		position.zero();
+		direction = right; 
 	}
 	TransformComponent(float x, float y) {
 		position.x = x;

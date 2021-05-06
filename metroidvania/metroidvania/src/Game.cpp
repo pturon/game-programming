@@ -52,6 +52,7 @@ void Game::init(const char* title, int width, int height, bool fullscreen) {
 	player.addComponent<ColliderComponent>("Player");
 	player.addComponent<SpriteComponent>("assets/hero_spritesheet.png", true);
 	player.addGroup(groupPlayers);
+	player.addComponent<AttackComponent>();
 	player.getComponent<KeyboardController>().getComponents();
 }
 
@@ -70,10 +71,8 @@ void Game::update() {
 
 	float yDist = player.getComponent<TransformComponent>().velocity.y * player.getComponent<TransformComponent>().speed + player.getComponent<TransformComponent>().gravity.y;
 
-	std::cout << "b" << player.getComponent<TransformComponent>().position.y << std::endl;
 	manager.refresh();
 	manager.update();		
-	std::cout << "a" << player.getComponent<TransformComponent>().position.y << std::endl;
 	SDL_Rect playerCol = player.getComponent<ColliderComponent>().collider;
 	
 	for (auto& c : colliders) {
