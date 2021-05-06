@@ -47,3 +47,5 @@ metroidvania/metroidvania/Debug/
 *.sln
 
 *.aseprite
+
+*.pyxel
