@@ -2,6 +2,7 @@
 #include "Components.h"
 #include "Vector2D.h"
 #include "SDL.h"
+#include "Enums.h"
 
 class TransformComponent : public Component {
 public:
@@ -20,6 +21,8 @@ public:
 	float fallMultiplier = 3.5f;
 	float lowJumpMultiplier = 1.5f; 
 	bool spaceDown = false; 
+
+	Direction direction = right; 
 
 	int width = 32;
 	int height = 32; 
@@ -66,7 +69,6 @@ public:
 		if (!jumping && !fallingAfterJump) {
 			jumping = true;
 			velocity.y = static_cast<float>(-jumpHeight);
-			std::cout << "j" << std::endl;
 		}		
 	}
 

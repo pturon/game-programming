@@ -13,13 +13,13 @@ void KeyboardController::update() {
 	if (Game::event.type == SDL_KEYDOWN) {
 		switch (Game::event.key.keysym.sym) {
 		case SDLK_w:
-	
+			transform->direction = up; 
 			break;
 		case SDLK_a:
 			leftDown = true;
 			break;
 		case SDLK_s:
-
+			transform->direction = down;
 			break;
 		case SDLK_d:
 			rightDown = true;
@@ -28,6 +28,8 @@ void KeyboardController::update() {
 			transform->jump();
 			transform->spaceDown = true; 
 			break;
+		case SDLK_j:
+			parent->getComponent<AttackComponent>().attack();
 		default:
 			break;
 		}
@@ -58,11 +60,13 @@ void KeyboardController::update() {
 	}
 
 	if (leftDown && !rightDown) {
+		transform->direction = left;
 		sprite->switchAnimation("Walking");
 		sprite->flipAnimation(true);
 		transform->velocity.x = -1;
 	}
 	else if (!leftDown && rightDown) {
+		transform->direction = right;
 		sprite->switchAnimation("Walking");
 		sprite->flipAnimation(false);
 		transform->velocity.x = 1;
