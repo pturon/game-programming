@@ -1,5 +1,11 @@
 #include "../include/TransformComponent.h"
 
+void TransformComponent::init() {
+	velocity.zero();
+	direction = right;
+	state = &parent->getComponent<StateComponent>();
+}
+
 void TransformComponent::update() {
 	if (velocity.y > 0) {
 		velocity.y += fallMultiplier;
@@ -21,5 +27,30 @@ void TransformComponent::update() {
 			position.x += gravity.x;
 			position.y += gravity.y;
 		}
+	}
+}
+
+void TransformComponent::moveLeft() {
+	direction = left; 
+	velocity.x = -1; 
+	if (state->currentState == idle || state->currentState == walking) {
+		state->setState(walking);
+		parent->getComponent<SpriteComponent>().flipAnimation(true);
+	}
+}
+
+void TransformComponent::moveRight() {
+	direction = right;
+	velocity.x = 1;
+	if (state->currentState == idle || state->currentState == walking) {
+		state->setState(walking);
+		parent->getComponent<SpriteComponent>().flipAnimation(false);
+	}
+}
+
+void TransformComponent::moveStop() {
+	velocity.x = 0; 
+	if (state->currentState == idle || state->currentState == walking) {
+		state->setState(idle);
 	}
 }

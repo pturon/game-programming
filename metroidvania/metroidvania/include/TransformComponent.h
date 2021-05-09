@@ -4,8 +4,12 @@
 #include "SDL.h"
 #include "Enums.h"
 
+class StateComponent; 
+
 class TransformComponent : public Component {
 public:
+
+	StateComponent* state; 
 
 	Vector2D position;
 	Vector2D velocity;
@@ -30,7 +34,6 @@ public:
 
 	TransformComponent() {
 		position.zero();
-		direction = right; 
 	}
 	TransformComponent(float x, float y) {
 		position.x = x;
@@ -60,9 +63,7 @@ public:
 		height = h;	
 	}
 
-	void init() override {
-		velocity.zero();
-	}
+	void init() override;
 
 	void update() override; 
 
@@ -86,4 +87,8 @@ public:
 		fallingAfterJump = true;
 		velocity.y = 0;
 	}
+
+	void moveLeft();
+	void moveRight();
+	void moveStop(); 
 };
