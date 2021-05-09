@@ -4,6 +4,7 @@
 #include "TransformComponent.h"
 #include "SpriteComponent.h"
 #include "AttackComponent.h"
+#include "Enums.h"
 
 class SpriteComponent; 
 

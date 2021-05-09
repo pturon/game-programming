@@ -61,19 +61,19 @@ void KeyboardController::update() {
 
 	if (leftDown && !rightDown) {
 		transform->direction = left;
-		sprite->switchAnimation("Walking");
+		sprite->switchAnimation(walking);
 		sprite->flipAnimation(true);
 		transform->velocity.x = -1;
 	}
 	else if (!leftDown && rightDown) {
 		transform->direction = right;
-		sprite->switchAnimation("Walking");
+		sprite->switchAnimation(walking);
 		sprite->flipAnimation(false);
 		transform->velocity.x = 1;
 	}
 	else {
 		transform->velocity.x = 0;
-		sprite->switchAnimation("Idle");
+		sprite->switchAnimation(idle);
 	}
 	
 }

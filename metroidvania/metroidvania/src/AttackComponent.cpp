@@ -53,24 +53,7 @@ void AttackComponent::attack() {
 	if (!attacking) {
 		attacking = true;
 		attackStart = SDL_GetTicks();
-		Direction curDirection = transform->direction;
-		std::cout << curDirection << std::endl;
-		switch (curDirection) {
-		case up:
-			parent->getComponent<SpriteComponent>().switchAnimation("Attack_Top");
-			break;
-		case right:
-			parent->getComponent<SpriteComponent>().switchAnimation("Attack_Side");
-			parent->getComponent<SpriteComponent>().flipAnimation(false);
-			break;
-		case down:
-			parent->getComponent<SpriteComponent>().switchAnimation("Attack_Bottom");
-			break;
-		case left:
-			parent->getComponent<SpriteComponent>().switchAnimation("Attack_Side");
-			parent->getComponent<SpriteComponent>().flipAnimation(true);
-			break;
-		}
+		Direction curDirection = transform->direction;		
 	}
 }
 	
