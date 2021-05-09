@@ -5,3 +5,5 @@
 #include "KeyboardController.h"
 #include "ColliderComponent.h"
 #include "TileComponent.h"
+#include "AttackComponent.h"
+#include "StateComponent.h"

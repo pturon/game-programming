@@ -15,7 +15,7 @@ private:
 	int frames = 0; 
 	int speed = 100; 
 
-	std::map<const char*, Animation> animations;
+	std::map<const State, Animation> animations;
 
 public:
 	int animationIndex = 0; 
@@ -30,6 +30,8 @@ public:
 	void update() override;
 	void render() override;
 
-	void switchAnimation(const char* animatioName);
+	void switchAnimation(const State s);
 	void flipAnimation(bool f);
+
+	void addAnimation(State s, int index, int length, int frameDuration);
 };

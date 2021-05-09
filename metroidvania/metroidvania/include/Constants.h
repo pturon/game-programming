@@ -9,3 +9,5 @@ const int TILESET_WIDTH = 4;
 
 const int PLAYER_WIDTH = 100; 
 const int PLAYER_HEIGHT = 100; 
+
+const int ATTACK_RANGE = 50; 

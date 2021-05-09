@@ -3,8 +3,12 @@
 #include "EntityComponentSystem.h"
 #include "TransformComponent.h"
 #include "SpriteComponent.h"
+#include "AttackComponent.h"
+#include "StateComponent.h"
+#include "Enums.h"
 
 class SpriteComponent; 
+class StateComponent; 
 
 class KeyboardController : public Component {
 private:
@@ -13,6 +17,7 @@ private:
 public: 
 	TransformComponent *transform; 
 	SpriteComponent* sprite; 
+	StateComponent* state; 
 	bool spaceDown = false;
 
 	void init() override;

@@ -9,7 +9,7 @@ enum groupLabels {
 	groupForeground
 };
 
-enum direction {
+enum Direction {
 	up, 
 	rightUp, 
 	right, 
@@ -18,4 +18,15 @@ enum direction {
 	leftDown, 
 	left, 
 	leftUp
+};
+
+enum State {
+	idle, 
+	walking, 
+	jumping, 
+	falling, 
+	fallingAfterJump,
+	attackingSide,
+	attackingBottom, 
+	attackingTop
 };

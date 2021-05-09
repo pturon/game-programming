@@ -2,9 +2,14 @@
 #include "Components.h"
 #include "Vector2D.h"
 #include "SDL.h"
+#include "Enums.h"
+
+class StateComponent; 
 
 class TransformComponent : public Component {
 public:
+
+	StateComponent* state; 
 
 	Vector2D position;
 	Vector2D velocity;
@@ -12,7 +17,7 @@ public:
 	bool gravityAffected = false;
 	int speed = 5; 
 
-	bool jumping = false; 
+	bool j = false; 
 	bool fallingAfterJump = false; 
 	float lastTick = 0; 
 	int jumpHeight = 60;
@@ -20,6 +25,8 @@ public:
 	float fallMultiplier = 3.5f;
 	float lowJumpMultiplier = 1.5f; 
 	bool spaceDown = false; 
+
+	Direction direction;
 
 	int width = 32;
 	int height = 32; 
@@ -56,31 +63,17 @@ public:
 		height = h;	
 	}
 
-	void init() override {
-		velocity.zero();
-	}
+	void init() override;
 
 	void update() override; 
 
-	void jump() {
-		if (!jumping && !fallingAfterJump) {
-			jumping = true;
-			velocity.y = static_cast<float>(-jumpHeight);
-			std::cout << "j" << std::endl;
-		}		
-	}
+	void jump();
 
-	void stopJump() {
-		if (fallingAfterJump || jumping) {
-			jumping = false;
-			fallingAfterJump = false;
-			velocity.y = 0; 
-		}		
-	}
+	void stopJump();
 
-	void startFall() {
-		jumping = false; 
-		fallingAfterJump = true;
-		velocity.y = 0;
-	}
+	void startFall();
+
+	void moveLeft();
+	void moveRight();
+	void moveStop(); 
 };
