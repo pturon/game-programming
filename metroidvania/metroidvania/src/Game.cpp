@@ -97,7 +97,6 @@ void Game::update() {
 				}
 				//below 
 				if (playerCol.y > cCol.y && playerCol.y < cCol.y + cCol.h) {
-					std::cout << "below" << std::endl;
 					playerCol.y = cCol.y + cCol.h + 1;
 					player.getComponent<TransformComponent>().startFall();
 				}

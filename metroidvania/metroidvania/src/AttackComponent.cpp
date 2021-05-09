@@ -5,6 +5,7 @@ void AttackComponent::init() {
 	transform = &parent->getComponent<TransformComponent>();
 	attackCollider = {0,0,0,0};
 	texture = TextureManager::loadTexture("assets/dummy.png");
+	state = &parent->getComponent<StateComponent>();
 }
 
 void AttackComponent::update() {
@@ -38,7 +39,9 @@ void AttackComponent::update() {
 		break;
 	}
 	if (SDL_GetTicks() - attackStart >= attackDuration) {
-		attacking = false;
+		if (state->currentState == attackingSide) {
+			state->switchToLastState();
+		}		
 	}
 }
 
@@ -50,8 +53,8 @@ void AttackComponent::render() {
 }
 
 void AttackComponent::attack() {
-	if (!attacking) {
-		attacking = true;
+	if (state->currentState!=attackingSide) {
+		state->setState(attackingSide);
 		attackStart = SDL_GetTicks();
 		Direction curDirection = transform->direction;		
 	}

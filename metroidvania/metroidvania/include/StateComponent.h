@@ -17,5 +17,8 @@ public:
 		currentState = lastState;
 		lastState = s; 
 	}
+	bool isAttacking() {
+		return currentState == attackingBottom || currentState == attackingSide || currentState == attackingTop;
+	}
 
 };
