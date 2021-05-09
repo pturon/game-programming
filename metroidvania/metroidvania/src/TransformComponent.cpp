@@ -10,6 +10,7 @@ void TransformComponent::update() {
 	if (velocity.y > 0) {
 		velocity.y += fallMultiplier;
 		if (state) {
+			std::cout << "falling" << std::endl;
 			state->setState(falling);
 		}
 	}

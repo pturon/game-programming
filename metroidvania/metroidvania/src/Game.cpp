@@ -89,16 +89,19 @@ void Game::update() {
 					playerCol.x = cCol.x + cCol.w + 1;					
 				}
 			}
-			//above
-			if (playerCol.y + PLAYER_HEIGHT > cCol.y && playerCol.y + PLAYER_HEIGHT < cCol.y + cCol.h && playerCol.y + PLAYER_HEIGHT - cCol.y <= yDist) {
-				playerCol.y = cCol.y - PLAYER_HEIGHT - 1;
-				player.getComponent<TransformComponent>().stopJump();
-			}
-			//below 
-			if (playerCol.y > cCol.y && playerCol.y < cCol.y + cCol.h && cCol.y + cCol.h - playerCol.y <= yDist) {
-				playerCol.y = cCol.y + cCol.h + 1;
-				player.getComponent<TransformComponent>().startFall();
-			}
+			if (cCol.x < playerCol.x + PLAYER_WIDTH && cCol.x + cCol.w > playerCol.x) {
+				//above
+				if (playerCol.y + PLAYER_HEIGHT > cCol.y && playerCol.y + PLAYER_HEIGHT < cCol.y + cCol.h && playerCol.y + PLAYER_HEIGHT - cCol.y <= yDist) {
+					playerCol.y = cCol.y - PLAYER_HEIGHT - 1;
+					player.getComponent<TransformComponent>().stopJump();
+				}
+				//below 
+				if (playerCol.y > cCol.y && playerCol.y < cCol.y + cCol.h) {
+					std::cout << "below" << std::endl;
+					playerCol.y = cCol.y + cCol.h + 1;
+					player.getComponent<TransformComponent>().startFall();
+				}
+			}			
 		}
 	}
 	player.getComponent<TransformComponent>().position.x = playerCol.x;
