@@ -24,6 +24,8 @@ void SpriteComponent::init(){
 
 	addAnimation(idle, 0, 2, 100);
 	addAnimation(walking, 1, 4, 100);
+	addAnimation(jumping, 5, 1, 100);
+	addAnimation(falling, 6, 1, 100);
 	switchAnimation(idle);
 }
 

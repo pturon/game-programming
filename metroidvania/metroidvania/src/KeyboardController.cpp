@@ -38,13 +38,11 @@ void KeyboardController::update() {
 	if (Game::event.type == SDL_KEYUP) {
 		switch (Game::event.key.keysym.sym) {
 		case SDLK_w:
-
 			break;
 		case SDLK_a:
 			leftDown = false;
 			break;
 		case SDLK_s:
-
 			break;
 		case SDLK_d:
 			rightDown = false; 

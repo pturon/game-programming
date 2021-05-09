@@ -17,7 +17,7 @@ public:
 	bool gravityAffected = false;
 	int speed = 5; 
 
-	bool jumping = false; 
+	bool j = false; 
 	bool fallingAfterJump = false; 
 	float lastTick = 0; 
 	int jumpHeight = 60;
@@ -67,26 +67,11 @@ public:
 
 	void update() override; 
 
-	void jump() {
-		if (!jumping && !fallingAfterJump) {
-			jumping = true;
-			velocity.y = static_cast<float>(-jumpHeight);
-		}		
-	}
+	void jump();
 
-	void stopJump() {
-		if (fallingAfterJump || jumping) {
-			jumping = false;
-			fallingAfterJump = false;
-			velocity.y = 0; 
-		}		
-	}
+	void stopJump();
 
-	void startFall() {
-		jumping = false; 
-		fallingAfterJump = true;
-		velocity.y = 0;
-	}
+	void startFall();
 
 	void moveLeft();
 	void moveRight();
