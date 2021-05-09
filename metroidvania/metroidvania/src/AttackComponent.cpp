@@ -39,7 +39,7 @@ void AttackComponent::update() {
 		break;
 	}
 	if (SDL_GetTicks() - attackStart >= attackDuration) {
-		if (state->currentState == attackingSide) {
+		if (state->isAttacking()) {
 			state->switchToLastState();
 		}		
 	}
@@ -53,10 +53,24 @@ void AttackComponent::render() {
 }
 
 void AttackComponent::attack() {
-	if (state->currentState!=attackingSide) {
-		state->setState(attackingSide);
+	if (!state->isAttacking()) {
 		attackStart = SDL_GetTicks();
 		Direction curDirection = transform->direction;		
+		switch (curDirection) {
+		case up:
+			state->setState(attackingTop);
+			break;
+		case left:
+			state->setState(attackingSide);
+			break;
+		case right:
+			state->setState(attackingSide);
+			break;
+		case down:
+			state->setState(attackingBottom);			
+			break;
+
+		}
 	}
 }
 	

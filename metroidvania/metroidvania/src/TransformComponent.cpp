@@ -10,15 +10,19 @@ void TransformComponent::update() {
 	if (velocity.y > 0) {
 		velocity.y += fallMultiplier;
 		if (state) {
-			std::cout << "falling" << std::endl;
-			state->setState(falling);
+			if (state->isAttacking()) {
+				state->lastState = falling; 
+			}
+			else {
+				state->setState(falling);
+			}			
 		}
 	}
 	else if (velocity.y < 0 && !spaceDown) {
 		velocity.y += lowJumpMultiplier;
 	}
 	if (state) {
-		if (state->currentState == jumping || state->currentState==falling) {
+		if (state->currentState == jumping || state->currentState==falling || (state->isAttacking() && (state->lastState == falling || state->lastState == jumping))) {
 			float t = 0.16f;
 			position.x += velocity.x * speed;
 			position.y += t * velocity.y;
@@ -37,51 +41,74 @@ void TransformComponent::update() {
 }
 
 void TransformComponent::moveLeft() {
-	direction = left; 
-	velocity.x = -1; 
-	parent->getComponent<SpriteComponent>().flipAnimation(true);
-	if (state->currentState == idle || state->currentState == walking) {
-		state->setState(walking);		
-	}
+	if (!state->isAttacking()) {
+		direction = left;
+		velocity.x = -1;
+		parent->getComponent<SpriteComponent>().flipAnimation(true);
+		if (state->currentState == idle || state->currentState == walking) {
+			state->setState(walking);
+		}
+	}	
 }
 
 void TransformComponent::moveRight() {
-	direction = right;
-	velocity.x = 1;
-	parent->getComponent<SpriteComponent>().flipAnimation(false);
-	if (state->currentState == idle || state->currentState == walking) {
-		state->setState(walking);		
-	}
+	if (!state->isAttacking()) {
+		direction = right;
+		velocity.x = 1;
+		parent->getComponent<SpriteComponent>().flipAnimation(false);
+		if (state->currentState == idle || state->currentState == walking) {
+			state->setState(walking);
+		}
+	}	
 }
 
 void TransformComponent::moveStop() {
-	velocity.x = 0; 
-	if (state->currentState == idle || state->currentState == walking) {
-		state->setState(idle);
-	}
+	if (!state->isAttacking()) {
+		velocity.x = 0;
+		if (state->currentState == idle || state->currentState == walking) {
+			state->setState(idle);
+		}
+	}	
 }
 
 void TransformComponent::jump() {
-	if (state->currentState != jumping && state->currentState != falling) {
-		j = true; 
-		state->setState(jumping);
-		velocity.y = static_cast<float>(-jumpHeight);
-	}
+	if (!state->isAttacking()) {
+		if (state->currentState != jumping && state->currentState != falling) {
+			j = true;
+			state->setState(jumping);
+			velocity.y = static_cast<float>(-jumpHeight);
+		}
+	}	
 }
 
 void TransformComponent::stopJump() {	
 	if (state->currentState == jumping || state->currentState == falling) {
 		if (velocity.x == 0) {
-			state->setState(idle);
+			if (state->isAttacking()) {
+				state->lastState = idle; 
+			}
+			else {
+				state->setState(idle);
+			}			
 		}
 		else {
-			state->setState(walking);
+			if (state->isAttacking()) {
+				state->lastState = walking;
+			}
+			else {
+				state->setState(walking);
+			}			
 		}
 		velocity.y = 0;
 	}	
 }
 
 void TransformComponent::startFall() {
-	state->setState(falling);
+	if (state->isAttacking()) {
+		state->lastState = falling; 
+	}
+	else {
+		state->setState(falling);
+	}	
 	velocity.y = 0;
 }
