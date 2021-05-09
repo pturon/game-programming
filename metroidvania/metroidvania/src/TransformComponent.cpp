@@ -9,12 +9,15 @@ void TransformComponent::init() {
 void TransformComponent::update() {
 	if (velocity.y > 0) {
 		velocity.y += fallMultiplier;
+		if (state) {
+			state->setState(falling);
+		}
 	}
 	else if (velocity.y < 0 && !spaceDown) {
 		velocity.y += lowJumpMultiplier;
 	}
 	if (state) {
-		if (state->currentState == jumping) {
+		if (state->currentState == jumping || state->currentState==falling) {
 			float t = 0.16f;
 			position.x += velocity.x * speed;
 			position.y += t * velocity.y;

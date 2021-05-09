@@ -25,5 +25,6 @@ enum State {
 	walking, 
 	jumping, 
 	falling, 
+	fallingAfterJump,
 	attacking,
 };
