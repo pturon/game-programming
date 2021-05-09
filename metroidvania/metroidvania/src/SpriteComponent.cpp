@@ -1,5 +1,7 @@
 #include "../include/SpriteComponent.h"
 
+//Animation mit Sate verknüpfen!
+//Animationen per Methode hinzufügen!
 
 SpriteComponent::SpriteComponent(const char *path) {
 	texture = TextureManager::loadTexture(path);

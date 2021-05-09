@@ -47,6 +47,7 @@ void Game::init(const char* title, int width, int height, bool fullscreen) {
 	map->loadMap("assets/levels/level_1.map");
 	map->loadColliders("assets/levels/level_1_colliders.map");
 
+	player.addComponent<StateComponent>(); 
 	player.addComponent<KeyboardController>();
 	player.addComponent<TransformComponent>((WINDOW_WIDTH-PLAYER_WIDTH)/2, (WINDOW_HEIGHT-PLAYER_HEIGHT) / 2, PLAYER_WIDTH, PLAYER_HEIGHT, 1, 5, true);
 	player.addComponent<ColliderComponent>("Player");

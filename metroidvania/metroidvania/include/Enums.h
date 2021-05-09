@@ -19,3 +19,11 @@ enum Direction {
 	left, 
 	leftUp
 };
+
+enum State {
+	idle, 
+	walking, 
+	jumping, 
+	falling, 
+	attacking,
+};
