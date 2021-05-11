@@ -22,7 +22,7 @@ public:
 	int dashDuration = 200; 
 	int dashStart = 0; 
 
-	bool j = false; 
+	bool canDoubleJump = true; 
 	bool fallingAfterJump = false; 
 	float lastTick = 0; 
 	int jumpHeight = 60;

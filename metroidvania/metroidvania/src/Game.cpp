@@ -81,21 +81,21 @@ void Game::update() {
 		if (Collision::AABB(cCol, playerCol)) {					
 			if (cCol.y < playerCol.y + PLAYER_HEIGHT && playerCol.y < cCol.y + cCol.h) {
 				//right 
-				if (playerCol.x + playerCol.w - cCol.x >= 0 && playerCol.x + playerCol.w - cCol.x < 10) {
+				if (playerCol.x + playerCol.w - cCol.x >= 0 && playerCol.x + playerCol.w - cCol.x < 20) {
 					playerCol.x = cCol.x - PLAYER_WIDTH - 1;	
 					if (player.getComponent<StateComponent>().currentState == dashing) {
 						player.getComponent<TransformComponent>().stopDash();
 					}
 				}
 				//left 
-				if (playerCol.x > cCol.x && playerCol.x < cCol.x + cCol.w) {
+				if (playerCol.x > cCol.x && playerCol.x < cCol.x + cCol.w && cCol.x + cCol.w - playerCol.x < 20) {
 					playerCol.x = cCol.x + cCol.w + 1;				
 					if (player.getComponent<StateComponent>().currentState == dashing) {
 						player.getComponent<TransformComponent>().stopDash();
 					}
 				}
 			}
-			if (cCol.x < playerCol.x + PLAYER_WIDTH && cCol.x + cCol.w > playerCol.x) {
+			if (cCol.x < playerCol.x + PLAYER_WIDTH && cCol.x + cCol.w > playerCol.x && player.getComponent<StateComponent>().currentState != dashing) {
 				//above
 				if (playerCol.y + PLAYER_HEIGHT > cCol.y && playerCol.y + PLAYER_HEIGHT < cCol.y + cCol.h && playerCol.y + PLAYER_HEIGHT - cCol.y <= yDist) {
 					playerCol.y = cCol.y - PLAYER_HEIGHT - 1;

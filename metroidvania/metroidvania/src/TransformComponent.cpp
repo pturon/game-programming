@@ -47,7 +47,7 @@ void TransformComponent::update() {
 }
 
 void TransformComponent::moveLeft() {
-	if (!state->isAttacking()) {
+	if (!state->isAttacking() && state->currentState != dashing) {
 		direction = left;
 		velocity.x = -1;
 		parent->getComponent<SpriteComponent>().flipAnimation(true);
@@ -58,7 +58,7 @@ void TransformComponent::moveLeft() {
 }
 
 void TransformComponent::moveRight() {
-	if (!state->isAttacking()) {
+	if (!state->isAttacking() && state->currentState != dashing) {
 		direction = right;
 		velocity.x = 1;
 		parent->getComponent<SpriteComponent>().flipAnimation(false);
@@ -69,7 +69,7 @@ void TransformComponent::moveRight() {
 }
 
 void TransformComponent::moveStop() {
-	if (!state->isAttacking()) {
+	if (!state->isAttacking() && state->currentState != dashing) {
 		velocity.x = 0;
 		if (state->currentState == idle || state->currentState == walking) {
 			state->setState(idle);
@@ -80,7 +80,11 @@ void TransformComponent::moveStop() {
 void TransformComponent::jump() {
 	if (!state->isAttacking()) {
 		if (state->currentState != jumping && state->currentState != falling) {
-			j = true;
+			state->setState(jumping);
+			velocity.y = static_cast<float>(-jumpHeight);
+		}
+		else if (canDoubleJump) {
+			canDoubleJump = false; 
 			state->setState(jumping);
 			velocity.y = static_cast<float>(-jumpHeight);
 		}
@@ -108,6 +112,7 @@ void TransformComponent::stopJump() {
 		velocity.y = 0;
 	}	
 	canDash = true; 
+	canDoubleJump = true; 
 }
 
 void TransformComponent::startFall() {
