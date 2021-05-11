@@ -82,11 +82,17 @@ void Game::update() {
 			if (cCol.y < playerCol.y + PLAYER_HEIGHT && playerCol.y < cCol.y + cCol.h) {
 				//right 
 				if (playerCol.x + playerCol.w - cCol.x >= 0 && playerCol.x + playerCol.w - cCol.x < 10) {
-					playerCol.x = cCol.x - PLAYER_WIDTH - 1;					
+					playerCol.x = cCol.x - PLAYER_WIDTH - 1;	
+					if (player.getComponent<StateComponent>().currentState == dashing) {
+						player.getComponent<TransformComponent>().stopDash();
+					}
 				}
 				//left 
 				if (playerCol.x > cCol.x && playerCol.x < cCol.x + cCol.w) {
-					playerCol.x = cCol.x + cCol.w + 1;					
+					playerCol.x = cCol.x + cCol.w + 1;				
+					if (player.getComponent<StateComponent>().currentState == dashing) {
+						player.getComponent<TransformComponent>().stopDash();
+					}
 				}
 			}
 			if (cCol.x < playerCol.x + PLAYER_WIDTH && cCol.x + cCol.w > playerCol.x) {

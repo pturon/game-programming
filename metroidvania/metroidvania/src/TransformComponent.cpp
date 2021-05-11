@@ -29,6 +29,12 @@ void TransformComponent::update() {
 			velocity.x += t * (gravity.x * speed);
 			velocity.y += t * gravity.y;
 		}
+		else if (state->currentState == dashing) {
+			position.x += velocity.x * dashSpeed;
+			if (SDL_GetTicks() >= dashStart + dashDuration) {
+				stopDash();
+			}
+		}
 		else {
 			position.x += velocity.x * speed;
 			position.y += velocity.y * speed;
@@ -101,6 +107,7 @@ void TransformComponent::stopJump() {
 		}
 		velocity.y = 0;
 	}	
+	canDash = true; 
 }
 
 void TransformComponent::startFall() {
@@ -111,4 +118,27 @@ void TransformComponent::startFall() {
 		state->setState(falling);
 	}	
 	velocity.y = 0;
+}
+
+void TransformComponent::dash() {
+	if (state->currentState != dashing && canDash) {
+		canDash = false; 
+		switch (direction){
+		case left: 
+			velocity.x = -1; 
+			break; 
+		case right:
+			velocity.x = 1; 
+			break; 
+		default:
+			break;
+		}
+		state->setState(dashing);
+		dashStart = SDL_GetTicks();
+	}	
+}
+
+void TransformComponent::stopDash() {
+	state->setState(falling);
+	canDash = true;
 }

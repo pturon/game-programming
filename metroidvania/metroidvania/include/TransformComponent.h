@@ -17,6 +17,11 @@ public:
 	bool gravityAffected = false;
 	int speed = 5; 
 
+	bool canDash = true;
+	int dashSpeed = 20; 
+	int dashDuration = 200; 
+	int dashStart = 0; 
+
 	bool j = false; 
 	bool fallingAfterJump = false; 
 	float lastTick = 0; 
@@ -76,4 +81,7 @@ public:
 	void moveLeft();
 	void moveRight();
 	void moveStop(); 
+
+	void dash();
+	void stopDash();
 };

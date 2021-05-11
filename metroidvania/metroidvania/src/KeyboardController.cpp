@@ -31,6 +31,10 @@ void KeyboardController::update() {
 			break;
 		case SDLK_j:
 			parent->getComponent<AttackComponent>().attack();
+			break; 
+		case SDLK_k:
+			transform->dash();
+			break;
 		default:
 			break;
 		}

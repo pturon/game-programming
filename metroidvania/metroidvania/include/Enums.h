@@ -28,5 +28,6 @@ enum State {
 	fallingAfterJump,
 	attackingSide,
 	attackingBottom, 
-	attackingTop
+	attackingTop,
+	dashing
 };
