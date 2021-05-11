@@ -52,9 +52,9 @@ void Game::init(const char* title, int width, int height, bool fullscreen) {
 	player.addComponent<TransformComponent>((WINDOW_WIDTH-PLAYER_WIDTH)/2, (WINDOW_HEIGHT-PLAYER_HEIGHT) / 2, PLAYER_WIDTH, PLAYER_HEIGHT, 1, 5, true);
 	player.addComponent<ColliderComponent>("Player");
 	player.addComponent<SpriteComponent>("assets/hero_spritesheet.png", true);
-	player.addGroup(groupPlayers);
 	player.addComponent<AttackComponent>();
 	player.getComponent<KeyboardController>().getComponents();
+	player.addGroup(groupPlayers);
 }
 
 void Game::handleEvents() {
