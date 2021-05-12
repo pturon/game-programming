@@ -20,5 +20,4 @@ public:
 	bool isAttacking() {
 		return currentState == attackingBottom || currentState == attackingSide || currentState == attackingTop;
 	}
-
 };

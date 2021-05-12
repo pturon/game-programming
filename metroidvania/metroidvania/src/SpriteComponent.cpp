@@ -29,6 +29,8 @@ void SpriteComponent::init(){
 	addAnimation(attackingSide, 2, 2, 100);
 	addAnimation(attackingTop, 3, 2, 100);
 	addAnimation(attackingBottom, 4, 2, 100);
+	addAnimation(dashing, 0, 2, 100);
+	addAnimation(wallCling, 0, 1, 100);
 	switchAnimation(idle);
 }
 

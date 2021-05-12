@@ -29,6 +29,15 @@ void TransformComponent::update() {
 			velocity.x += t * (gravity.x * speed);
 			velocity.y += t * gravity.y;
 		}
+		else if (state->currentState == dashing) {
+			position.x += velocity.x * dashSpeed;
+			if (SDL_GetTicks() >= dashStart + dashDuration) {
+				stopDash();
+			}
+		}
+		else if (state->currentState == wallCling) {
+			position.y += gravity.y / 3; 
+		}
 		else {
 			position.x += velocity.x * speed;
 			position.y += velocity.y * speed;
@@ -41,29 +50,35 @@ void TransformComponent::update() {
 }
 
 void TransformComponent::moveLeft() {
-	if (!state->isAttacking()) {
-		direction = left;
-		velocity.x = -1;
-		parent->getComponent<SpriteComponent>().flipAnimation(true);
-		if (state->currentState == idle || state->currentState == walking) {
-			state->setState(walking);
+	if (state->currentState != wallCling || (state->currentState == wallCling && clingedWallPos == right)) {
+		if (!state->isAttacking() && state->currentState != dashing) {
+			stopWallCling();
+			direction = left;
+			velocity.x = -1;
+			parent->getComponent<SpriteComponent>().flipAnimation(true);
+			if (state->currentState == idle || state->currentState == walking) {
+				state->setState(walking);
+			}
 		}
 	}	
 }
 
 void TransformComponent::moveRight() {
-	if (!state->isAttacking()) {
-		direction = right;
-		velocity.x = 1;
-		parent->getComponent<SpriteComponent>().flipAnimation(false);
-		if (state->currentState == idle || state->currentState == walking) {
-			state->setState(walking);
+	if (state->currentState != wallCling || (state->currentState == wallCling && clingedWallPos == left)) {
+		if (!state->isAttacking() && state->currentState != dashing) {
+			stopWallCling();
+			direction = right;
+			velocity.x = 1;
+			parent->getComponent<SpriteComponent>().flipAnimation(false);
+			if (state->currentState == idle || state->currentState == walking) {
+				state->setState(walking);
+			}
 		}
 	}	
 }
 
 void TransformComponent::moveStop() {
-	if (!state->isAttacking()) {
+	if (!state->isAttacking() && state->currentState != dashing) {
 		velocity.x = 0;
 		if (state->currentState == idle || state->currentState == walking) {
 			state->setState(idle);
@@ -74,7 +89,12 @@ void TransformComponent::moveStop() {
 void TransformComponent::jump() {
 	if (!state->isAttacking()) {
 		if (state->currentState != jumping && state->currentState != falling) {
-			j = true;
+			stopWallCling();
+			state->setState(jumping);
+			velocity.y = static_cast<float>(-jumpHeight);
+		}
+		else if (canDoubleJump) {
+			canDoubleJump = false; 
 			state->setState(jumping);
 			velocity.y = static_cast<float>(-jumpHeight);
 		}
@@ -101,6 +121,8 @@ void TransformComponent::stopJump() {
 		}
 		velocity.y = 0;
 	}	
+	canDash = true; 
+	canDoubleJump = true; 
 }
 
 void TransformComponent::startFall() {
@@ -111,4 +133,42 @@ void TransformComponent::startFall() {
 		state->setState(falling);
 	}	
 	velocity.y = 0;
+}
+
+void TransformComponent::dash() {
+	if (state->currentState != dashing && canDash) {
+		canDash = false; 
+		switch (direction){
+		case left: 
+			velocity.x = -1; 
+			break; 
+		case right:
+			velocity.x = 1; 
+			break; 
+		default:
+			break;
+		}
+		state->setState(dashing);
+		dashStart = SDL_GetTicks();
+	}	
+}
+
+void TransformComponent::stopDash() {
+	state->setState(falling);
+	canDash = true;
+}
+
+void TransformComponent::startWallCling(Direction d) {
+	if (state->currentState != wallCling) {
+		state->setState(wallCling);
+		velocity.x = 0;
+		velocity.y = 0;
+		clingedWallPos = d;
+	}	
+}
+
+void TransformComponent::stopWallCling() {
+	if (state->currentState == wallCling) {
+		state->setState(falling);
+	}	
 }

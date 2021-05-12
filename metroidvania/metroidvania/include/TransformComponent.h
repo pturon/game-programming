@@ -17,10 +17,17 @@ public:
 	bool gravityAffected = false;
 	int speed = 5; 
 
-	bool j = false; 
+	bool canDash = true;
+	int dashSpeed = 20; 
+	int dashDuration = 200; 
+	int dashStart = 0; 
+
+	bool canDoubleJump = true; 
 	bool fallingAfterJump = false; 
 	float lastTick = 0; 
 	int jumpHeight = 60;
+
+	Direction clingedWallPos; 
 
 	float fallMultiplier = 3.5f;
 	float lowJumpMultiplier = 1.5f; 
@@ -76,4 +83,10 @@ public:
 	void moveLeft();
 	void moveRight();
 	void moveStop(); 
+
+	void dash();
+	void stopDash();
+#
+	void startWallCling(Direction d);
+	void stopWallCling();
 };
