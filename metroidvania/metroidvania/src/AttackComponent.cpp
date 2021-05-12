@@ -53,7 +53,7 @@ void AttackComponent::render() {
 }
 
 void AttackComponent::attack() {
-	if (!state->isAttacking()) {
+	if (!state->isAttacking() && state->currentState!=dashing) {
 		attackStart = SDL_GetTicks();
 		Direction curDirection = transform->direction;		
 		switch (curDirection) {
