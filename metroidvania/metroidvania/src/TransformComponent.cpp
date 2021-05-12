@@ -35,6 +35,9 @@ void TransformComponent::update() {
 				stopDash();
 			}
 		}
+		else if (state->currentState == wallCling) {
+			position.y += gravity.y / 3; 
+		}
 		else {
 			position.x += velocity.x * speed;
 			position.y += velocity.y * speed;
@@ -47,23 +50,29 @@ void TransformComponent::update() {
 }
 
 void TransformComponent::moveLeft() {
-	if (!state->isAttacking() && state->currentState != dashing) {
-		direction = left;
-		velocity.x = -1;
-		parent->getComponent<SpriteComponent>().flipAnimation(true);
-		if (state->currentState == idle || state->currentState == walking) {
-			state->setState(walking);
+	if (state->currentState != wallCling || (state->currentState == wallCling && clingedWallPos == right)) {
+		if (!state->isAttacking() && state->currentState != dashing) {
+			stopWallCling();
+			direction = left;
+			velocity.x = -1;
+			parent->getComponent<SpriteComponent>().flipAnimation(true);
+			if (state->currentState == idle || state->currentState == walking) {
+				state->setState(walking);
+			}
 		}
 	}	
 }
 
 void TransformComponent::moveRight() {
-	if (!state->isAttacking() && state->currentState != dashing) {
-		direction = right;
-		velocity.x = 1;
-		parent->getComponent<SpriteComponent>().flipAnimation(false);
-		if (state->currentState == idle || state->currentState == walking) {
-			state->setState(walking);
+	if (state->currentState != wallCling || (state->currentState == wallCling && clingedWallPos == left)) {
+		if (!state->isAttacking() && state->currentState != dashing) {
+			stopWallCling();
+			direction = right;
+			velocity.x = 1;
+			parent->getComponent<SpriteComponent>().flipAnimation(false);
+			if (state->currentState == idle || state->currentState == walking) {
+				state->setState(walking);
+			}
 		}
 	}	
 }
@@ -80,6 +89,7 @@ void TransformComponent::moveStop() {
 void TransformComponent::jump() {
 	if (!state->isAttacking()) {
 		if (state->currentState != jumping && state->currentState != falling) {
+			stopWallCling();
 			state->setState(jumping);
 			velocity.y = static_cast<float>(-jumpHeight);
 		}
@@ -146,4 +156,19 @@ void TransformComponent::dash() {
 void TransformComponent::stopDash() {
 	state->setState(falling);
 	canDash = true;
+}
+
+void TransformComponent::startWallCling(Direction d) {
+	if (state->currentState != wallCling) {
+		state->setState(wallCling);
+		velocity.x = 0;
+		velocity.y = 0;
+		clingedWallPos = d;
+	}	
+}
+
+void TransformComponent::stopWallCling() {
+	if (state->currentState == wallCling) {
+		state->setState(falling);
+	}	
 }

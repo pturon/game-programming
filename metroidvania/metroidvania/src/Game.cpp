@@ -75,6 +75,9 @@ void Game::update() {
 	manager.refresh();
 	manager.update();		
 	SDL_Rect playerCol = player.getComponent<ColliderComponent>().collider;
+
+	bool collisionSide = false; 
+	bool collisionBottom = false; 
 	
 	for (auto& c : colliders) {
 		SDL_Rect cCol = c->getComponent<ColliderComponent>().collider;
@@ -86,6 +89,10 @@ void Game::update() {
 					if (player.getComponent<StateComponent>().currentState == dashing) {
 						player.getComponent<TransformComponent>().stopDash();
 					}
+					if (player.getComponent<StateComponent>().currentState != walking) {
+						player.getComponent<TransformComponent>().startWallCling(right);
+					}					
+					collisionSide = true;
 				}
 				//left 
 				if (playerCol.x > cCol.x && playerCol.x < cCol.x + cCol.w && cCol.x + cCol.w - playerCol.x < 20) {
@@ -93,13 +100,17 @@ void Game::update() {
 					if (player.getComponent<StateComponent>().currentState == dashing) {
 						player.getComponent<TransformComponent>().stopDash();
 					}
+					if (player.getComponent<StateComponent>().currentState != walking) {
+						player.getComponent<TransformComponent>().startWallCling(left);
+					}					
+					collisionSide = true; 
 				}
 			}
 			if (cCol.x < playerCol.x + PLAYER_WIDTH && cCol.x + cCol.w > playerCol.x && player.getComponent<StateComponent>().currentState != dashing) {
 				//above
 				if (playerCol.y + PLAYER_HEIGHT > cCol.y && playerCol.y + PLAYER_HEIGHT < cCol.y + cCol.h && playerCol.y + PLAYER_HEIGHT - cCol.y <= yDist) {
 					playerCol.y = cCol.y - PLAYER_HEIGHT - 1;
-					player.getComponent<TransformComponent>().stopJump();
+					player.getComponent<TransformComponent>().stopJump();					
 				}
 				//below 
 				if (playerCol.y > cCol.y && playerCol.y < cCol.y + cCol.h) {
@@ -109,6 +120,13 @@ void Game::update() {
 			}			
 		}
 	}
+	/**
+	if (!collisionSide && player.getComponent<StateComponent>().currentState == wallCling) {
+		player.getComponent<TransformComponent>().stopWallCling();
+	}
+	if (collisionSide && collisionBottom && player.getComponent<StateComponent>().currentState == wallCling) {
+		player.getComponent<TransformComponent>().stopWallCling();
+	} **/
 	player.getComponent<TransformComponent>().position.x = playerCol.x;
 	player.getComponent<TransformComponent>().position.y = playerCol.y;
 

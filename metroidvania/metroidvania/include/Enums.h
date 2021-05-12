@@ -29,5 +29,6 @@ enum State {
 	attackingSide,
 	attackingBottom, 
 	attackingTop,
-	dashing
+	dashing,
+	wallCling
 };

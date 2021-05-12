@@ -27,6 +27,8 @@ public:
 	float lastTick = 0; 
 	int jumpHeight = 60;
 
+	Direction clingedWallPos; 
+
 	float fallMultiplier = 3.5f;
 	float lowJumpMultiplier = 1.5f; 
 	bool spaceDown = false; 
@@ -84,4 +86,7 @@ public:
 
 	void dash();
 	void stopDash();
+#
+	void startWallCling(Direction d);
+	void stopWallCling();
 };
