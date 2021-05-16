@@ -93,3 +93,8 @@ if (player.getComponent<StateComponent>().currentState != walking) {
 					}
 ```
 
+
+
+## Zusatz
+
+Den Rest der Woche habe ich versucht die Kollision zu überarbeiten. Bisher kam ich aber zu keinem Erfolg. 
