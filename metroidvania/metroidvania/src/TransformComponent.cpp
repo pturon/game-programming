@@ -138,6 +138,7 @@ void TransformComponent::startFall() {
 void TransformComponent::dash() {
 	if (state->currentState != dashing && canDash) {
 		canDash = false; 
+		velocity.y = 0;
 		switch (direction){
 		case left: 
 			velocity.x = -1; 
