@@ -86,7 +86,9 @@ public:
 
 	void dash();
 	void stopDash();
-#
+
 	void startWallCling(Direction d);
 	void stopWallCling();
+
+	int getYDistance();
 };

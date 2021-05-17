@@ -32,7 +32,7 @@ void TransformComponent::update() {
 		else if (state->currentState == dashing) {
 			position.x += velocity.x * dashSpeed;
 			if (SDL_GetTicks() >= dashStart + dashDuration) {
-				stopDash();
+				state->setState(falling);
 			}
 		}
 		else if (state->currentState == wallCling) {
@@ -172,4 +172,8 @@ void TransformComponent::stopWallCling() {
 	if (state->currentState == wallCling) {
 		state->setState(falling);
 	}	
+}
+
+int TransformComponent::getYDistance() {
+	return 9; 
 }
