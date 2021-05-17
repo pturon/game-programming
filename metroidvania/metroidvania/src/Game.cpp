@@ -69,19 +69,114 @@ void Game::handleEvents() {
 }
 
 void Game::update() {
-
-	float yDist = player.getComponent<TransformComponent>().velocity.y * player.getComponent<TransformComponent>().speed + player.getComponent<TransformComponent>().gravity.y;
-
+	SDL_Rect playerBefore = player.getComponent<ColliderComponent>().collider;
 	manager.refresh();
 	manager.update();		
 	SDL_Rect playerCol = player.getComponent<ColliderComponent>().collider;
 
-	bool collisionSide = false; 
-	bool collisionBottom = false; 
+	int x = playerCol.x - playerBefore.x;
+	int y = playerCol.y - playerBefore.y;
 	
 	for (auto& c : colliders) {
 		SDL_Rect cCol = c->getComponent<ColliderComponent>().collider;
-		if (Collision::AABB(cCol, playerCol)) {					
+		if (Collision::AABB(cCol, playerCol)) {				
+			
+			//down
+			if (x == 0 && y > 0) {
+				if (cCol.y >= playerCol.y + playerCol.h - y) {
+					if (playerCol.y + playerCol.h > cCol.y && playerCol.y < cCol.y) {
+						playerCol.y = cCol.y - playerCol.h;
+						player.getComponent<TransformComponent>().stopJump();
+					}
+				}
+			}
+			//up
+			else if (x == 0 && y < 0) {
+				if (playerCol.y < cCol.y + cCol.h && playerCol.y + playerCol.h > cCol.y + cCol.h) {
+					playerCol.y = cCol.y + cCol.h;					
+					player.getComponent<TransformComponent>().startFall();
+				}
+			}
+			//right
+			else if (x > 0 && y == 0) {
+				if (playerCol.x + playerCol.w > cCol.x && playerCol.x < cCol.x) {
+					playerCol.x = cCol.x - playerCol.w;
+					if (player.getComponent<StateComponent>().currentState == dashing) {
+						player.getComponent<TransformComponent>().stopDash();
+					}
+					if (player.getComponent<StateComponent>().currentState != walking) {
+						player.getComponent<TransformComponent>().startWallCling(right);
+					}				
+				}
+			}
+			//left
+			else if (x < 0 && y == 0) {
+				if (playerCol.x < cCol.x + cCol.w && playerCol.x + playerCol.h > cCol.x + cCol.w) {
+					playerCol.x = cCol.x - cCol.w;
+					if (player.getComponent<StateComponent>().currentState == dashing) {
+						player.getComponent<TransformComponent>().stopDash();
+					}
+					if (player.getComponent<StateComponent>().currentState != walking) {
+						player.getComponent<TransformComponent>().startWallCling(left);
+					}					
+				}
+			}
+			//rightUp
+			else if (x > 0 && y < 0) {
+						
+			}
+			//leftUp
+			else if (x < 0 && y < 0) {
+								
+			}
+			//rightDown
+			else if (x > 0 && y > 0) {								
+										
+			}
+			//leftDown
+			else if (x < 0 && y > 0) {
+				
+			}
+
+
+			/**
+			//Player is above
+			if (playerCol.y + playerCol.h > cCol.y && playerCol.y < cCol.y) {	
+				playerCol.y = cCol.y - playerCol.h;
+				player.getComponent<TransformComponent>().stopJump();
+			}
+			//Player is below
+			else if (playerCol.y < cCol.y + cCol.h && playerCol.y + playerCol.h > cCol.y + cCol.h) {
+				playerCol.y = cCol.y + cCol.h;
+				player.getComponent<TransformComponent>().startFall();
+			}
+			if (cCol.y < playerCol.y + playerCol.h && cCol.y + cCol.h > playerCol.y) {
+				//Player is right
+				if (playerCol.x + playerCol.w > cCol.x && playerCol.x < cCol.x) {
+					playerCol.x = cCol.x - playerCol.w;
+					if (player.getComponent<StateComponent>().currentState == dashing) {
+						player.getComponent<TransformComponent>().stopDash();
+					}
+					if (player.getComponent<StateComponent>().currentState != walking) {
+						player.getComponent<TransformComponent>().startWallCling(right);
+					}
+					collisionSide = true;
+				}
+				//Player is left
+				else if (playerCol.x < cCol.x + cCol.w && playerCol.x + playerCol.h > cCol.x + cCol.w) {
+					playerCol.x = cCol.x - cCol.w;
+					if (player.getComponent<StateComponent>().currentState == dashing) {
+						player.getComponent<TransformComponent>().stopDash();
+					}
+					if (player.getComponent<StateComponent>().currentState != walking) {
+						player.getComponent<TransformComponent>().startWallCling(left);
+					}
+					collisionSide = true;
+				}
+			}
+			*/
+
+			/**
 			if (cCol.y < playerCol.y + PLAYER_HEIGHT && playerCol.y < cCol.y + cCol.h) {
 				//right 
 				if (playerCol.x + playerCol.w - cCol.x >= 0 && playerCol.x + playerCol.w - cCol.x < 20) {
@@ -118,6 +213,8 @@ void Game::update() {
 					player.getComponent<TransformComponent>().startFall();
 				}
 			}			
+
+			*/
 		}
 	}
 	/**
@@ -129,6 +226,8 @@ void Game::update() {
 	} **/
 	player.getComponent<TransformComponent>().position.x = playerCol.x;
 	player.getComponent<TransformComponent>().position.y = playerCol.y;
+	player.getComponent<ColliderComponent>().collider.x = playerCol.x;
+	player.getComponent<ColliderComponent>().collider.y = playerCol.y;
 
 	camera.x = static_cast<int>(player.getComponent<TransformComponent>().position.x - ((WINDOW_WIDTH - PLAYER_WIDTH) / 2));
 	camera.y = static_cast<int>(player.getComponent<TransformComponent>().position.y - ((WINDOW_HEIGHT - PLAYER_HEIGHT) / 2));
