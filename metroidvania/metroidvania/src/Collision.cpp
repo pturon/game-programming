@@ -11,3 +11,7 @@ bool Collision::AABB(const SDL_Rect& a, const SDL_Rect& b) {
 bool Collision::AABB(const ColliderComponent& colA, const ColliderComponent& colB) {
 	return AABB(colA.collider, colB.collider);
 }
+
+bool Collision::PointRect(const Vector2D& p, const SDL_Rect& r) {
+	return (p.x >= r.x && p.y >= r.y && p.x < r.x + r.w && p.y < r.y + r.h);
+}
