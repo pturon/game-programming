@@ -25,8 +25,16 @@ bool Collision::RectRect(const ColliderComponent& r1, const ColliderComponent& r
 }
 
 bool Collision::RayRect(const Vector2D& origin, const Vector2D& dir, const SDL_Rect& target, Vector2D &contactPoint, Vector2D &contactNormal, float &t_hit_near) {	
-	Vector2D t_near = { (target.x - origin.x ) / dir.x, ((target.y - origin.y) / dir.y) };
-	Vector2D t_far = { (target.x + target.w - origin.x) / dir.x, (target.y + target.y - origin.y) / dir.y };
+	contactNormal = { 0,0 };
+	contactPoint = { 0,0 };
+
+	Vector2D invDir = { 1.0f / dir.x, 1.0f / dir.y };
+	
+	Vector2D t_near = { (target.x - origin.x ) * invDir.x, ((target.y - origin.y) * invDir.y) };
+	Vector2D t_far = { (target.x + target.w - origin.x) * invDir.x, (target.y + target.h - origin.y) * invDir.y };
+
+	if (std::isnan(t_far.y) || std::isnan(t_far.x)) return false;
+	if (std::isnan(t_near.y) || std::isnan(t_near.x)) return false;
 	
 	if (t_near.x > t_far.x) std::swap(t_near.x, t_far.x);
 	if (t_near.y > t_far.y) std::swap(t_near.y, t_far.y);
@@ -41,7 +49,7 @@ bool Collision::RayRect(const Vector2D& origin, const Vector2D& dir, const SDL_R
 	contactPoint = {(origin.x + dir.x * t_hit_near), (origin.y + dir.y * t_hit_near)};
 
 	if (t_near.x > t_near.y) {
-		if (dir.x < 0) {
+		if (invDir.x < 0) {
 			contactNormal = { 1, 0 };
 		}
 		else {
@@ -49,7 +57,7 @@ bool Collision::RayRect(const Vector2D& origin, const Vector2D& dir, const SDL_R
 		}
 	}
 	else if (t_near.x < t_near.y) {
-		if (dir.y < 0) {
+		if (invDir.y < 0) {
 			contactNormal = { 0,1 };
 		}
 		else {
@@ -60,7 +68,7 @@ bool Collision::RayRect(const Vector2D& origin, const Vector2D& dir, const SDL_R
 	return true; 
 }
 
-bool Collision::DynamicRectRect(const SDL_Rect& in, const Vector2D inVelocity, const SDL_Rect& target, Vector2D& contactPoint, Vector2D& contactNormal, float& contactTime, float elapsedTime) {
+bool Collision::DynamicRectRect(const SDL_Rect& in, const Vector2D inVelocity, const SDL_Rect& target, Vector2D& contactPoint, Vector2D& contactNormal, float& contactTime) {
 	if (inVelocity.x == 0 && inVelocity.y == 0) {
 		return false; 
 	}
@@ -70,10 +78,14 @@ bool Collision::DynamicRectRect(const SDL_Rect& in, const Vector2D inVelocity, c
 	expandedTarget.w = target.w + in.w;
 	expandedTarget.h = target.h + in.h;
 
-	Vector2D centerPoint = { (in.x + in.w / 2), (in.y + in.h / 2) };
+	
+
+	Vector2D centerPoint = { static_cast<float>(in.x + in.w / 2),  static_cast<float>(in.y + in.h / 2) };
 
 	if (RayRect(centerPoint, inVelocity, expandedTarget, contactPoint, contactNormal, contactTime)) {
-		if (contactTime <= 1.0f) return true;
+		if (contactTime <= 1.0f && contactTime >= 0.0f) {			
+			return true;
+		}
 	}
 
 	return false; 

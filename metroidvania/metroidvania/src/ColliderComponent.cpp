@@ -6,7 +6,7 @@ void ColliderComponent::init(){
 	}
 	transform = &parent->getComponent<TransformComponent>();
 
-	texture = TextureManager::loadTexture("assets/collider.png");
+	texture = TextureManager::loadTexture("assets/c.png");
 
 	srcRect.x = srcRect.y = 0; 
 	srcRect.w = TILE_WIDTH;
@@ -22,7 +22,11 @@ void ColliderComponent::update() {
 		collider.h = transform->height * transform->scale; 
 	}
 	destRect.x = collider.x - Game::camera.x;
-	destRect.y = collider.y - Game::camera.y;
+	destRect.y = collider.y - Game::camera.y;	
+}
 
-	
+void ColliderComponent::render() {
+	if (collided) {
+		TextureManager::draw(texture, srcRect, destRect, SDL_FLIP_NONE);
+	}
 }

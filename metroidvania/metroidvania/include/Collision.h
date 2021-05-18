@@ -12,6 +12,6 @@ public:
 	static bool RectRect(const SDL_Rect& r1, const SDL_Rect& r2);
 	static bool RectRect(const ColliderComponent& r1, const ColliderComponent& r2);
 	static bool RayRect(const Vector2D& origin, const Vector2D& dir, const SDL_Rect& target, Vector2D& contactPoint, Vector2D& contactNormal, float& t_hit_near);
-	static bool DynamicRectRect(const SDL_Rect& in, const Vector2D inVelocity, const SDL_Rect& target, Vector2D& contactPoint, Vector2D& contactNormal, float& fTime, float elapsedTime);
+	static bool DynamicRectRect(const SDL_Rect& in, const Vector2D inVelocity, const SDL_Rect& target, Vector2D& contactPoint, Vector2D& contactNormal, float& fTime);
 };
 
