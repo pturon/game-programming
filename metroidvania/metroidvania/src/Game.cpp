@@ -8,6 +8,7 @@ TileMap* map;
 SDL_Rect Game::camera = { 0,0,WINDOW_WIDTH,WINDOW_HEIGHT};
 
 bool Game::isRunning = false; 
+bool pause = false; 
 
 auto& player(manager.addEntity());
 auto& tiles(manager.getGroup(groupMap));
@@ -49,7 +50,7 @@ void Game::init(const char* title, int width, int height, bool fullscreen) {
 
 	player.addComponent<StateComponent>(); 
 	player.addComponent<KeyboardController>();
-	player.addComponent<TransformComponent>((WINDOW_WIDTH-PLAYER_WIDTH)/2, (WINDOW_HEIGHT-PLAYER_HEIGHT) / 2, PLAYER_WIDTH, PLAYER_HEIGHT, 1, 5, true);
+	player.addComponent<TransformComponent>(864, 256, PLAYER_WIDTH, PLAYER_HEIGHT, 1, 5, true);
 	player.addComponent<ColliderComponent>("Player");
 	player.addComponent<SpriteComponent>("assets/hero_spritesheet.png", true);
 	player.addComponent<AttackComponent>();
@@ -66,86 +67,97 @@ void Game::handleEvents() {
 		default:
 			break;
 	}
+	if (event.type == SDL_KEYDOWN) {
+		if (event.key.keysym.sym == SDLK_p) {
+			pause = !pause; 
+		}
+	}
 }
 
 void Game::update() {
+	if (!pause) {
+		player.getComponent<ColliderComponent>().update();
+		SDL_Rect playerColliderPosBefore = player.getComponent<ColliderComponent>().collider;
+		
+		manager.refresh();
+		manager.update();
 
-	float yDist = player.getComponent<TransformComponent>().velocity.y * player.getComponent<TransformComponent>().speed + player.getComponent<TransformComponent>().gravity.y;
+		SDL_Rect playerColliderPos = player.getComponent<ColliderComponent>().collider;
+		
 
-	manager.refresh();
-	manager.update();		
-	SDL_Rect playerCol = player.getComponent<ColliderComponent>().collider;
+		Vector2D playerVelocity = { static_cast<float>(playerColliderPos.x - playerColliderPosBefore.x),  static_cast<float>(playerColliderPos.y - playerColliderPosBefore.y) };
+		Vector2D cp, cn;
+		float ct;
+		std::cout << playerVelocity.x << ", " << playerVelocity.y << std::endl;
+		std::cout << playerColliderPosBefore.x << ", " << playerColliderPosBefore.y << std::endl;
+		std::vector<std::pair<Entity*, float>> z; 
 
-	bool collisionSide = false; 
-	bool collisionBottom = false; 
-	
-	for (auto& c : colliders) {
-		SDL_Rect cCol = c->getComponent<ColliderComponent>().collider;
-		if (Collision::AABB(cCol, playerCol)) {					
-			if (cCol.y < playerCol.y + PLAYER_HEIGHT && playerCol.y < cCol.y + cCol.h) {
-				//right 
-				if (playerCol.x + playerCol.w - cCol.x >= 0 && playerCol.x + playerCol.w - cCol.x < 20) {
-					playerCol.x = cCol.x - PLAYER_WIDTH - 1;	
+		for (auto& c : colliders) {
+			SDL_Rect cCol = c->getComponent<ColliderComponent>().collider;
+			if (Collision::DynamicRectRect(playerColliderPosBefore, playerVelocity, cCol, cp, cn, ct)) {					
+				z.push_back({ c,ct });
+				c->getComponent<ColliderComponent>().collided = true;				
+			}
+			else {
+				c->getComponent<ColliderComponent>().collided = false;
+			}
+		}
+
+		std::sort(z.begin(), z.end(), [](const std::pair<Entity*, float>& a, const std::pair<Entity*, float>& b) {
+			return a.second < b.second;
+		});
+		for (auto c : z) {
+			SDL_Rect cCol = c.first->getComponent<ColliderComponent>().collider;
+			if (Collision::DynamicRectRect(playerColliderPosBefore, playerVelocity, cCol, cp, cn, ct)) {				
+				playerVelocity.x += cn.x * std::abs(playerVelocity.x) * (1 - ct);
+				playerVelocity.y += cn.y * std::abs(playerVelocity.y) * (1 - ct);	
+				if (cn.x == 0 && cn.y == -1) {
+					player.getComponent<TransformComponent>().stopJump();
+					if (player.getComponent<StateComponent>().currentState == wallCling) {
+						player.getComponent<TransformComponent>().stopWallCling();
+					}
+				}
+				else if (cn.x == 0 && cn.y == 1) {
+					player.getComponent<TransformComponent>().startFall();
+				}
+				else if (cn.x == -1 && cn.y == 0) {
 					if (player.getComponent<StateComponent>().currentState == dashing) {
 						player.getComponent<TransformComponent>().stopDash();
 					}
 					if (player.getComponent<StateComponent>().currentState != walking) {
 						player.getComponent<TransformComponent>().startWallCling(right);
-					}					
-					collisionSide = true;
+					}
 				}
-				//left 
-				if (playerCol.x > cCol.x && playerCol.x < cCol.x + cCol.w && cCol.x + cCol.w - playerCol.x < 20) {
-					playerCol.x = cCol.x + cCol.w + 1;				
+				else if (cn.x == 1 && cn.y == 0) {
 					if (player.getComponent<StateComponent>().currentState == dashing) {
 						player.getComponent<TransformComponent>().stopDash();
 					}
 					if (player.getComponent<StateComponent>().currentState != walking) {
 						player.getComponent<TransformComponent>().startWallCling(left);
-					}					
-					collisionSide = true; 
+					}
 				}
 			}
-			if (cCol.x < playerCol.x + PLAYER_WIDTH && cCol.x + cCol.w > playerCol.x && player.getComponent<StateComponent>().currentState != dashing) {
-				//above
-				if (playerCol.y + PLAYER_HEIGHT > cCol.y && playerCol.y + PLAYER_HEIGHT < cCol.y + cCol.h && playerCol.y + PLAYER_HEIGHT - cCol.y <= yDist) {
-					playerCol.y = cCol.y - PLAYER_HEIGHT - 1;
-					player.getComponent<TransformComponent>().stopJump();					
-				}
-				//below 
-				if (playerCol.y > cCol.y && playerCol.y < cCol.y + cCol.h) {
-					playerCol.y = cCol.y + cCol.h + 1;
-					player.getComponent<TransformComponent>().startFall();
-				}
-			}			
+		}		
+
+		player.getComponent<TransformComponent>().position.x = playerColliderPosBefore.x + playerVelocity.x;
+		player.getComponent<TransformComponent>().position.y = playerColliderPosBefore.y + playerVelocity.y;		
+
+		camera.x = static_cast<int>(player.getComponent<TransformComponent>().position.x - ((WINDOW_WIDTH - PLAYER_WIDTH) / 2));
+		camera.y = static_cast<int>(player.getComponent<TransformComponent>().position.y - ((WINDOW_HEIGHT - PLAYER_HEIGHT) / 2));
+
+		if (camera.x < 0) {
+			camera.x = 0;
+		}
+		if (camera.y < 0) {
+			camera.y = 0;
+		}
+		if (camera.x > (map->width * TILE_WIDTH) - camera.w) {
+			camera.x = (map->width * TILE_WIDTH) - camera.w;
+		}
+		if (camera.y > (map->height * TILE_HEIGHT) - camera.h) {
+			camera.y = (map->height * TILE_HEIGHT) - camera.h;
 		}
 	}
-	/**
-	if (!collisionSide && player.getComponent<StateComponent>().currentState == wallCling) {
-		player.getComponent<TransformComponent>().stopWallCling();
-	}
-	if (collisionSide && collisionBottom && player.getComponent<StateComponent>().currentState == wallCling) {
-		player.getComponent<TransformComponent>().stopWallCling();
-	} **/
-	player.getComponent<TransformComponent>().position.x = playerCol.x;
-	player.getComponent<TransformComponent>().position.y = playerCol.y;
-
-	camera.x = static_cast<int>(player.getComponent<TransformComponent>().position.x - ((WINDOW_WIDTH - PLAYER_WIDTH) / 2));
-	camera.y = static_cast<int>(player.getComponent<TransformComponent>().position.y - ((WINDOW_HEIGHT - PLAYER_HEIGHT) / 2));
-
-	if (camera.x < 0) {
-		camera.x = 0; 
-	}
-	if (camera.y < 0) {
-		camera.y = 0;
-	}
-	if (camera.x > (map->width*TILE_WIDTH) - camera.w) {
-		camera.x = (map->width * TILE_WIDTH) - camera.w;
-	}
-	if (camera.y > (map->height*TILE_HEIGHT) - camera.h) {
-		camera.y = (map->height * TILE_HEIGHT) - camera.h;
-	}
-
 }
 
 void Game::render() {	

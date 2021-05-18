@@ -60,7 +60,7 @@ public:
 		scale = s; 
 		speed = sp;
 		gravityAffected = g; 
-		gravity = { 0,9 };
+		gravity = { 0, 9};
 	}
 
 	TransformComponent(float x, float y, int w, int h) {
@@ -86,7 +86,9 @@ public:
 
 	void dash();
 	void stopDash();
-#
+
 	void startWallCling(Direction d);
 	void stopWallCling();
+
+	int getYDistance();
 };

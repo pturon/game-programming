@@ -37,6 +37,8 @@ public:
 private:
 	
 	SDL_Window* window;
+
+	
 };
 
 

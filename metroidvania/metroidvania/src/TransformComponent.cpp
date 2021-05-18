@@ -31,9 +31,11 @@ void TransformComponent::update() {
 		}
 		else if (state->currentState == dashing) {
 			position.x += velocity.x * dashSpeed;
+			velocity.y = 0;
 			if (SDL_GetTicks() >= dashStart + dashDuration) {
-				stopDash();
+				state->setState(falling);
 			}
+			
 		}
 		else if (state->currentState == wallCling) {
 			position.y += gravity.y / 3; 
@@ -89,6 +91,11 @@ void TransformComponent::moveStop() {
 void TransformComponent::jump() {
 	if (!state->isAttacking()) {
 		if (state->currentState != jumping && state->currentState != falling) {
+			stopWallCling();
+			state->setState(jumping);
+			velocity.y = static_cast<float>(-jumpHeight);
+		}
+		else if (state->currentState == wallCling) {
 			stopWallCling();
 			state->setState(jumping);
 			velocity.y = static_cast<float>(-jumpHeight);
@@ -172,4 +179,8 @@ void TransformComponent::stopWallCling() {
 	if (state->currentState == wallCling) {
 		state->setState(falling);
 	}	
+}
+
+int TransformComponent::getYDistance() {
+	return 9; 
 }

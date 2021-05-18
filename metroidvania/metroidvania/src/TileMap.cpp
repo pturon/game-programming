@@ -79,7 +79,7 @@ void TileMap::addTile(int srcX, int srcY, int x, int y) {
 
 void TileMap::addCollider(int x, int y) {
 	auto& collider(manager.addEntity());	
-	collider.addComponent<ColliderComponent>("terrain", x * TILE_WIDTH, y * TILE_HEIGHT, TILESET_WIDTH, TILE_HEIGHT);
+	collider.addComponent<ColliderComponent>("terrain", x * TILE_WIDTH, y * TILE_HEIGHT, TILE_WIDTH, TILE_HEIGHT);
 	collider.addGroup(groupColliders);
 }
 

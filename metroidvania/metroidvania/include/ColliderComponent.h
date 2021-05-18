@@ -11,6 +11,7 @@ class ColliderComponent : public Component{
 private:
 
 public: 
+	bool collided = false;
 	SDL_Rect collider;
 	std::string tag;
 	SDL_Texture* texture;
@@ -31,5 +32,6 @@ public:
 
 	void init() override;
 	void update() override;
+	void render() override;
 };
 

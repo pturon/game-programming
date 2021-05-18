@@ -7,7 +7,7 @@ const int TILE_WIDTH = 32;
 const int TILE_HEIGHT = 32; 
 const int TILESET_WIDTH = 4;
 
-const int PLAYER_WIDTH = 100; 
-const int PLAYER_HEIGHT = 100; 
+const int PLAYER_WIDTH = 64; 
+const int PLAYER_HEIGHT = 64; 
 
 const int ATTACK_RANGE = 50; 
