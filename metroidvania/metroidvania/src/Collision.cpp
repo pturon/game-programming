@@ -59,3 +59,22 @@ bool Collision::RayRect(const Vector2D& origin, const Vector2D& dir, const SDL_R
 
 	return true; 
 }
+
+bool Collision::DynamicRectRect(const SDL_Rect& in, const Vector2D inVelocity, const SDL_Rect& target, Vector2D& contactPoint, Vector2D& contactNormal, float& contactTime, float elapsedTime) {
+	if (inVelocity.x == 0 && inVelocity.y == 0) {
+		return false; 
+	}
+	SDL_Rect expandedTarget;
+	expandedTarget.x = target.x - in.w / 2;
+	expandedTarget.y = target.y - in.h / 2; 
+	expandedTarget.w = target.w + in.w;
+	expandedTarget.h = target.h + in.h;
+
+	Vector2D centerPoint = { (in.x + in.w / 2), (in.y + in.h / 2) };
+
+	if (RayRect(centerPoint, inVelocity, expandedTarget, contactPoint, contactNormal, contactTime)) {
+		if (contactTime <= 1.0f) return true;
+	}
+
+	return false; 
+}
