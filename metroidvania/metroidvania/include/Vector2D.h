@@ -26,5 +26,7 @@ public:
 	Vector2D& operator/=(const Vector2D& v);
 
 	Vector2D& operator*(const int& i);
+	Vector2D& operator*(const float& f);
+
 	Vector2D& zero();
 };

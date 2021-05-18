@@ -23,3 +23,39 @@ bool Collision::RectRect(const SDL_Rect& r1, const SDL_Rect& r2) {
 bool Collision::RectRect(const ColliderComponent& r1, const ColliderComponent& r2) {
 	return RectRect(r1.collider, r1.collider);
 }
+
+bool Collision::RayRect(const Vector2D& origin, const Vector2D& dir, const SDL_Rect& target, Vector2D &contactPoint, Vector2D &contactNormal, float &t_hit_near) {	
+	Vector2D t_near = { (target.x - origin.x ) / dir.x, ((target.y - origin.y) / dir.y) };
+	Vector2D t_far = { (target.x + target.w - origin.x) / dir.x, (target.y + target.y - origin.y) / dir.y };
+	
+	if (t_near.x > t_far.x) std::swap(t_near.x, t_far.x);
+	if (t_near.y > t_far.y) std::swap(t_near.y, t_far.y);
+
+	if (t_near.x > t_far.y || t_near.y > t_far.x) return false; 
+
+	t_hit_near = std::max(t_near.x, t_near.y);
+	float t_hit_far = std::min(t_far.x, t_far.y);
+
+	if (t_hit_far < 0) return false; 
+
+	contactPoint = {(origin.x + dir.x * t_hit_near), (origin.y + dir.y * t_hit_near)};
+
+	if (t_near.x > t_near.y) {
+		if (dir.x < 0) {
+			contactNormal = { 1, 0 };
+		}
+		else {
+			contactNormal = { -1, 0 };
+		}
+	}
+	else if (t_near.x < t_near.y) {
+		if (dir.y < 0) {
+			contactNormal = { 0,1 };
+		}
+		else {
+			contactNormal = { 0,-1 };
+		}
+	}
+
+	return true; 
+}

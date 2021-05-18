@@ -62,6 +62,12 @@ Vector2D& Vector2D::operator*(const int& i) {
 	return *this; 
 }
 
+Vector2D& Vector2D::operator*(const float& f) {
+	this->x *= f;
+	this->y *= f;
+	return *this;
+}
+
 Vector2D& Vector2D::zero() {
 	this->x = 0;
 	this->y = 0;
