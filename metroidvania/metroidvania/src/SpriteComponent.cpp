@@ -22,15 +22,15 @@ void SpriteComponent::init(){
 	srcRect.w = transform->width;
 	srcRect.h = transform->height;	
 
-	addAnimation(idle, 0, 2, 100);
-	addAnimation(walking, 1, 4, 100);
-	addAnimation(jumping, 5, 1, 100);
-	addAnimation(falling, 6, 1, 100);
-	addAnimation(attackingSide, 2, 2, 100);
-	addAnimation(attackingTop, 3, 2, 100);
-	addAnimation(attackingBottom, 4, 2, 100);
-	addAnimation(dashing, 0, 2, 100);
-	addAnimation(wallCling, 0, 1, 100);
+	addAnimation(idle, 0, 1, 100);
+	addAnimation(walking, 1, 6, 100);
+	addAnimation(jumping, 2, 2, 100);
+	addAnimation(falling, 3, 2, 100);
+	addAnimation(attackingSide, 6, 5, 100);
+	addAnimation(attackingTop, 7, 5, 100);
+	addAnimation(attackingBottom, 8, 5, 100);
+	addAnimation(dashing, 4, 2, 100);
+	addAnimation(wallCling, 5, 1, 100);
 	switchAnimation(idle);
 }
 
