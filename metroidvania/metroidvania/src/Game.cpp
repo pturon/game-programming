@@ -6,6 +6,7 @@ SDL_Event Game::event;
 Manager manager; 
 TileMap* map;
 SDL_Rect Game::camera = { 0,0,WINDOW_WIDTH,WINDOW_HEIGHT};
+HudManager hudManager;
 
 bool Game::isRunning = false; 
 bool pause = false; 
@@ -44,6 +45,8 @@ void Game::init(const char* title, int width, int height, bool fullscreen) {
 		isRunning = false; 
 	}
 
+	hudManager.init();
+
 	map = new TileMap("assets/tileSet.png");
 	map->loadMap("assets/levels/level_1.map");
 	map->loadColliders("assets/levels/level_1_colliders.map");
@@ -57,6 +60,8 @@ void Game::init(const char* title, int width, int height, bool fullscreen) {
 	player.addComponent<AttackComponent>();
 	player.getComponent<KeyboardController>().getComponents();
 	player.addGroup(groupPlayers);
+
+	hudManager.playerStats = &player.getComponent<StatsComponent>();
 }
 
 void Game::handleEvents() {
@@ -71,6 +76,10 @@ void Game::handleEvents() {
 	if (event.type == SDL_KEYDOWN) {
 		if (event.key.keysym.sym == SDLK_p) {
 			pause = !pause; 
+		}
+		else if (event.key.keysym.sym == SDLK_m) {
+			std::cout << "m" << std::endl; 
+			player.getComponent<StatsComponent>().curMana -= 1; 
 		}
 	}
 }
@@ -161,6 +170,7 @@ void Game::update() {
 void Game::render() {	
 	SDL_RenderClear(renderer);
 	manager.render();
+	hudManager.render();
 	SDL_RenderPresent(renderer);
 }
 
