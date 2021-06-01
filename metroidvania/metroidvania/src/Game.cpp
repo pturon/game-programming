@@ -48,6 +48,7 @@ void Game::init(const char* title, int width, int height, bool fullscreen) {
 	map->loadMap("assets/levels/level_1.map");
 	map->loadColliders("assets/levels/level_1_colliders.map");
 
+	player.addComponent<StatsComponent>(5,100,0,3,1);
 	player.addComponent<StateComponent>(); 
 	player.addComponent<KeyboardController>();
 	player.addComponent<TransformComponent>(864, 256, PLAYER_WIDTH, PLAYER_HEIGHT, 1, 5, true);
@@ -82,14 +83,11 @@ void Game::update() {
 		manager.refresh();
 		manager.update();
 
-		SDL_Rect playerColliderPos = player.getComponent<ColliderComponent>().collider;
-		
+		SDL_Rect playerColliderPos = player.getComponent<ColliderComponent>().collider;		
 
 		Vector2D playerVelocity = { static_cast<float>(playerColliderPos.x - playerColliderPosBefore.x),  static_cast<float>(playerColliderPos.y - playerColliderPosBefore.y) };
 		Vector2D cp, cn;
-		float ct;
-		std::cout << playerVelocity.x << ", " << playerVelocity.y << std::endl;
-		std::cout << playerColliderPosBefore.x << ", " << playerColliderPosBefore.y << std::endl;
+		float ct;		
 		std::vector<std::pair<Entity*, float>> z; 
 
 		for (auto& c : colliders) {
