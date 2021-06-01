@@ -46,5 +46,12 @@ void HudManager::render() {
 	destRect.x = 58;
 	destRect.y += 18; 
 	TextureManager::draw(moneyIcon, srcRect, destRect, SDL_FLIP_NONE);
+	destRect.x += 18;
+	destRect.y -= 3;
+	std::stringstream strs;
+	strs << playerStats->money;
+	std::string temp_str = strs.str();
+	char* char_type = (char*)temp_str.c_str();
+	TextureManager::drawText(char_type, destRect);
 }
 

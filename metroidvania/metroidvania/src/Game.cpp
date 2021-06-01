@@ -26,7 +26,7 @@ Game::~Game() {
 
 void Game::init(const char* title, int width, int height, bool fullscreen) {
 	if (SDL_Init(SDL_INIT_EVERYTHING) == 0) {
-
+		TTF_Init();
 		int flags = 0; 
 		if (fullscreen) {
 			flags = SDL_WINDOW_FULLSCREEN;
@@ -44,7 +44,7 @@ void Game::init(const char* title, int width, int height, bool fullscreen) {
 	else {
 		isRunning = false; 
 	}
-
+	
 	hudManager.init();
 
 	map = new TileMap("assets/tileSet.png");
