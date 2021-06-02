@@ -37,8 +37,16 @@ void SpriteComponent::init(){
 void SpriteComponent::update() {
 
 	if (animated) {
-		srcRect.x = srcRect.w * static_cast<int>((SDL_GetTicks() / speed) % frames);
+		float t = SDL_GetTicks();
+		srcRect.x = srcRect.w * currentFrame;
 		srcRect.y = srcRect.h * animationIndex;
+		if (t-lastTick>=speed) {
+			currentFrame++;
+			if (currentFrame == frames) {
+				currentFrame = 0;
+			}
+			lastTick = t;
+		}
 	}
 
 	srcRect.y = animationIndex * transform->height;
@@ -58,9 +66,10 @@ void SpriteComponent::render() {
 }
 
 void SpriteComponent::switchAnimation(const State s) {
-	frames = animations[s].frames; 
+	currentFrame = 0;
+	frames = animations[s].frames;
 	animationIndex = animations[s].index;
-	speed = animations[s].speed;
+	speed = animations[s].speed;	
 }
 
 void SpriteComponent::flipAnimation(bool f) {

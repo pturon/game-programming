@@ -13,12 +13,14 @@ private:
 
 	bool animated = false; 
 	int frames = 0; 
-	int speed = 100; 
+	int speed = 100;
+	float lastTick = 0; 
 
 	std::map<const State, Animation> animations;
 
 public:
 	int animationIndex = 0; 
+	int currentFrame = 0;
 	SDL_RendererFlip spriteFlip = SDL_FLIP_NONE;
 
 	SpriteComponent() = default;
