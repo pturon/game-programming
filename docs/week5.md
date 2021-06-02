@@ -8,7 +8,8 @@ Diese Woche wurde an dem Design des Helden gearbeitet und die Platzhalteranimati
 
 Das Design ist eine Mischung aus dem Hollow Knight und dem Shovel Knight. Um die Arme nicht animieren zu müssen, trägt er einen Umhang, der über die Arme geht und diese versteckt. 
 
-![](F:\Studium\Game Programming\game-programming\docs\hero_spritesheet.png)
+![](
+hero_spritesheet.png)
 
 ## Zusatz 
 
