@@ -10,6 +10,7 @@ void HudManager::init() {
 	fullHeart = TextureManager::loadTexture("assets/heartFull.png");
 	emptyHeart = TextureManager::loadTexture("assets/heartEmpty.png");
 	moneyIcon = TextureManager::loadTexture("assets/moneyIcon.png");
+	soulIcon = TextureManager::loadTexture("assets/soulIcon.png");
 	manaTank = TextureManager::loadTexture("assets/manaTank.png");
 	mana = TextureManager::loadTexture("assets/mana.png");
 }
@@ -52,6 +53,16 @@ void HudManager::render() {
 	strs << playerStats->money;
 	std::string temp_str = strs.str();
 	char* char_type = (char*)temp_str.c_str();
+	TextureManager::drawText(char_type, destRect);
+	destRect.x = 110;
+	destRect.y += 3;
+	TextureManager::draw(soulIcon, srcRect, destRect, SDL_FLIP_NONE);
+	destRect.x += 18;
+	destRect.y -= 3;
+	strs.str("");
+	strs << playerStats->souls;
+	temp_str = strs.str();
+	char_type = (char*)temp_str.c_str();
 	TextureManager::drawText(char_type, destRect);
 }
 

@@ -16,6 +16,7 @@ public:
 	SDL_Texture* fullHeart;
 	SDL_Texture* emptyHeart;
 	SDL_Texture* moneyIcon; 
+	SDL_Texture* soulIcon;
 	SDL_Texture* manaTank; 
 	SDL_Texture* mana; 
 

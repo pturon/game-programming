@@ -77,9 +77,14 @@ void Game::handleEvents() {
 		if (event.key.keysym.sym == SDLK_p) {
 			pause = !pause; 
 		}
-		else if (event.key.keysym.sym == SDLK_m) {
-			std::cout << "m" << std::endl; 
+		else if (event.key.keysym.sym == SDLK_m) {			
 			player.getComponent<StatsComponent>().curMana -= 1; 
+		}
+		else if (event.key.keysym.sym == SDLK_n) {	
+			player.getComponent<StatsComponent>().money += 1;
+		}
+		else if (event.key.keysym.sym == SDLK_b) {			
+			player.getComponent<StatsComponent>().souls += 1;
 		}
 	}
 }

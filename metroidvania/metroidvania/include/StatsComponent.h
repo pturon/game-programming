@@ -8,6 +8,7 @@ public:
 	int maxMana = 0; 
 	int curMana = 0; 
 	int money = 0; 
+	int souls = 0;
 
 	int attackDamage = 0; 
 	int attackSpeed = 0; 
