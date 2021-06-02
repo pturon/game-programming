@@ -108,11 +108,7 @@ void Game::update() {
 			SDL_Rect cCol = c->getComponent<ColliderComponent>().collider;
 			if (Collision::DynamicRectRect(playerColliderPosBefore, playerVelocity, cCol, cp, cn, ct)) {					
 				z.push_back({ c,ct });
-				c->getComponent<ColliderComponent>().collided = true;				
-			}
-			else {
-				c->getComponent<ColliderComponent>().collided = false;
-			}
+			}			
 		}
 
 		std::sort(z.begin(), z.end(), [](const std::pair<Entity*, float>& a, const std::pair<Entity*, float>& b) {
