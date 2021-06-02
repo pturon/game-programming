@@ -12,11 +12,7 @@ public:
 	State lastState = idle;
 	StateComponent() = default; 
 	void setState(State s);
-	void switchToLastState() {
-		State s = currentState;
-		currentState = lastState;
-		lastState = s; 
-	}
+	void switchToLastState();
 	bool isAttacking() {
 		return currentState == attackingBottom || currentState == attackingSide || currentState == attackingTop;
 	}
