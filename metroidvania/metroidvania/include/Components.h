@@ -7,3 +7,4 @@
 #include "TileComponent.h"
 #include "AttackComponent.h"
 #include "StateComponent.h"
+#include "StatsComponent.h"

@@ -6,6 +6,7 @@ SDL_Event Game::event;
 Manager manager; 
 TileMap* map;
 SDL_Rect Game::camera = { 0,0,WINDOW_WIDTH,WINDOW_HEIGHT};
+HudManager hudManager;
 
 bool Game::isRunning = false; 
 bool pause = false; 
@@ -25,7 +26,7 @@ Game::~Game() {
 
 void Game::init(const char* title, int width, int height, bool fullscreen) {
 	if (SDL_Init(SDL_INIT_EVERYTHING) == 0) {
-
+		TTF_Init();
 		int flags = 0; 
 		if (fullscreen) {
 			flags = SDL_WINDOW_FULLSCREEN;
@@ -43,11 +44,14 @@ void Game::init(const char* title, int width, int height, bool fullscreen) {
 	else {
 		isRunning = false; 
 	}
+	
+	hudManager.init();
 
 	map = new TileMap("assets/tileSet.png");
 	map->loadMap("assets/levels/level_1.map");
 	map->loadColliders("assets/levels/level_1_colliders.map");
 
+	player.addComponent<StatsComponent>(5,100,0,3,1);
 	player.addComponent<StateComponent>(); 
 	player.addComponent<KeyboardController>();
 	player.addComponent<TransformComponent>(864, 256, PLAYER_WIDTH, PLAYER_HEIGHT, 1, 5, true);
@@ -56,6 +60,8 @@ void Game::init(const char* title, int width, int height, bool fullscreen) {
 	player.addComponent<AttackComponent>();
 	player.getComponent<KeyboardController>().getComponents();
 	player.addGroup(groupPlayers);
+
+	hudManager.playerStats = &player.getComponent<StatsComponent>();
 }
 
 void Game::handleEvents() {
@@ -71,6 +77,15 @@ void Game::handleEvents() {
 		if (event.key.keysym.sym == SDLK_p) {
 			pause = !pause; 
 		}
+		else if (event.key.keysym.sym == SDLK_m) {			
+			player.getComponent<StatsComponent>().curMana -= 1; 
+		}
+		else if (event.key.keysym.sym == SDLK_n) {	
+			player.getComponent<StatsComponent>().money += 1;
+		}
+		else if (event.key.keysym.sym == SDLK_b) {			
+			player.getComponent<StatsComponent>().souls += 1;
+		}
 	}
 }
 
@@ -82,14 +97,11 @@ void Game::update() {
 		manager.refresh();
 		manager.update();
 
-		SDL_Rect playerColliderPos = player.getComponent<ColliderComponent>().collider;
-		
+		SDL_Rect playerColliderPos = player.getComponent<ColliderComponent>().collider;		
 
 		Vector2D playerVelocity = { static_cast<float>(playerColliderPos.x - playerColliderPosBefore.x),  static_cast<float>(playerColliderPos.y - playerColliderPosBefore.y) };
 		Vector2D cp, cn;
-		float ct;
-		std::cout << playerVelocity.x << ", " << playerVelocity.y << std::endl;
-		std::cout << playerColliderPosBefore.x << ", " << playerColliderPosBefore.y << std::endl;
+		float ct;		
 		std::vector<std::pair<Entity*, float>> z; 
 
 		for (auto& c : colliders) {
@@ -163,6 +175,7 @@ void Game::update() {
 void Game::render() {	
 	SDL_RenderClear(renderer);
 	manager.render();
+	hudManager.render();
 	SDL_RenderPresent(renderer);
 }
 
