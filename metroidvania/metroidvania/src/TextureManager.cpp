@@ -11,10 +11,8 @@ void TextureManager::draw(SDL_Texture* texture, SDL_Rect srcRect, SDL_Rect destR
 	SDL_RenderCopyEx(Game::renderer, texture, &srcRect, &destRect, NULL, NULL, flip);
 }
 
-void TextureManager::drawText(const char* text, SDL_Rect destRect) {	
-	SDL_Color textColor = { 255,255,255 };
-	TTF_Font* font = TTF_OpenFont("assets/Bebas-Regular.ttf", 16);
-	SDL_Surface* surface = TTF_RenderText_Solid(font, text, textColor);
+void TextureManager::drawText(const char* text, SDL_Rect destRect, TTF_Font* font, SDL_Color color) {	
+	SDL_Surface* surface = TTF_RenderText_Solid(font, text, color);
 	destRect.w = surface->w;
 	destRect.h = surface->h;
 	SDL_Texture* message = SDL_CreateTextureFromSurface(Game::renderer, surface);

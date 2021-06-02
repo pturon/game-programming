@@ -13,6 +13,9 @@ void HudManager::init() {
 	soulIcon = TextureManager::loadTexture("assets/soulIcon.png");
 	manaTank = TextureManager::loadTexture("assets/manaTank.png");
 	mana = TextureManager::loadTexture("assets/mana.png");
+
+	font = TTF_OpenFont("assets/Bebas-Regular.ttf", 16);
+	color = { 255,255,255 };
 }
 
 void HudManager::update() {
@@ -53,7 +56,7 @@ void HudManager::render() {
 	strs << playerStats->money;
 	std::string temp_str = strs.str();
 	char* char_type = (char*)temp_str.c_str();
-	TextureManager::drawText(char_type, destRect);
+	TextureManager::drawText(char_type, destRect, font, color);
 	destRect.x = 110;
 	destRect.y += 3;
 	TextureManager::draw(soulIcon, srcRect, destRect, SDL_FLIP_NONE);
@@ -63,6 +66,6 @@ void HudManager::render() {
 	strs << playerStats->souls;
 	temp_str = strs.str();
 	char_type = (char*)temp_str.c_str();
-	TextureManager::drawText(char_type, destRect);
+	TextureManager::drawText(char_type, destRect, font, color);
 }
 

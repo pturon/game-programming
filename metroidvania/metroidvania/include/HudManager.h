@@ -20,6 +20,9 @@ public:
 	SDL_Texture* manaTank; 
 	SDL_Texture* mana; 
 
+	TTF_Font* font; 
+	SDL_Color color; 
+
 	HudManager() = default;
 	~HudManager();
 
