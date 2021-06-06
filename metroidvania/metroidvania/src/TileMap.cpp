@@ -22,7 +22,7 @@ TileMap::~TileMap() {
 void TileMap::loadMap(std::string path){
 	int srcX, srcY;
 	
-	std::fstream mapFile (path); 
+	std::fstream mapFile ("assets/levels/"+path+"_background.map"); 
 	std::string line;	
 
 	int x = 0;
@@ -50,11 +50,35 @@ void TileMap::loadMap(std::string path){
 	}
 	
 	mapFile.close();	
+
+	mapFile.open("assets/levels/" + path + "_midground.map");
+
+	x = 0; 
+	y = 0;
+
+	while (std::getline(mapFile, line)) {
+		std::stringstream s(line);
+		std::string cell;
+		while (std::getline(s, cell, ',')) {
+			if (cell != "-1") {
+				srcX = (stoi(cell) % TILESET_WIDTH) * TILE_WIDTH;
+				srcY = (stoi(cell) / TILESET_WIDTH) * TILE_HEIGHT;
+				addTile(srcX, srcY, x * TILE_WIDTH, y * TILE_HEIGHT);
+			}
+			x++;		
+		}
+		x = 0;
+		y++;
+		
+	}
+
+	mapFile.close();
 }
 
 void TileMap::loadColliders(std::string path) {
+	std::cout << width << " " << height << std::endl; 
 
-	std::fstream mapFile(path);
+	std::fstream mapFile("assets/levels/" + path + "_colliders.map");
 	std::string line;
 
 	char c; 
