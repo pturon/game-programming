@@ -48,13 +48,13 @@ void Game::init(const char* title, int width, int height, bool fullscreen) {
 	hudManager.init();
 
 	map = new TileMap("assets/tileSet.png");
-	map->loadMap("assets/levels/level_1.map");
-	map->loadColliders("assets/levels/level_1_colliders.map");
+	map->loadMap("level_1");
+	map->loadColliders("level_1");
 
 	player.addComponent<StatsComponent>(5,100,0,3,1);
 	player.addComponent<StateComponent>(); 
 	player.addComponent<KeyboardController>();
-	player.addComponent<TransformComponent>(864, 256, PLAYER_WIDTH, PLAYER_HEIGHT, 1, 5, true);
+	player.addComponent<TransformComponent>(64, 64, PLAYER_WIDTH, PLAYER_HEIGHT, 1, 5, true);
 	player.addComponent<ColliderComponent>("Player");
 	player.addComponent<SpriteComponent>("assets/hero_spritesheet.png", true);
 	player.addComponent<AttackComponent>();
@@ -108,11 +108,7 @@ void Game::update() {
 			SDL_Rect cCol = c->getComponent<ColliderComponent>().collider;
 			if (Collision::DynamicRectRect(playerColliderPosBefore, playerVelocity, cCol, cp, cn, ct)) {					
 				z.push_back({ c,ct });
-				c->getComponent<ColliderComponent>().collided = true;				
-			}
-			else {
-				c->getComponent<ColliderComponent>().collided = false;
-			}
+			}			
 		}
 
 		std::sort(z.begin(), z.end(), [](const std::pair<Entity*, float>& a, const std::pair<Entity*, float>& b) {

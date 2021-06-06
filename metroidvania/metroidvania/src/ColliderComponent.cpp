@@ -26,7 +26,7 @@ void ColliderComponent::update() {
 }
 
 void ColliderComponent::render() {
-	if (collided) {
-		TextureManager::draw(texture, srcRect, destRect, SDL_FLIP_NONE);
-	}
+	
+		//TextureManager::draw(texture, srcRect, destRect, SDL_FLIP_NONE);
+	
 }
