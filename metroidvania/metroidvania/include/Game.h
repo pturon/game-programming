@@ -9,6 +9,7 @@
 #include "Collision.h"
 #include "Enums.h"
 #include "HudManager.h"
+#include "Map.h"
 
 class ColliderComponent; 
 
