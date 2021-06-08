@@ -11,9 +11,10 @@ extern Manager manager;
 Map::~Map(){}
 
 void Map::clearMap() {
-	for (auto& t : tiles) {
-		t.parent->destroy(); 
-	}
+	manager.clearGroup(groupBackground);
+	manager.clearGroup(groupMidground);
+	manager.clearGroup(groupForeground);
+	manager.clearGroup(groupColliders);
 }
 
 void Map::loadMap(std::string level) {

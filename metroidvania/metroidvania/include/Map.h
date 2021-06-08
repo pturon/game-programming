@@ -16,7 +16,7 @@ public:
 	int width = 0;
 	int height = 0; 
 
-	std::vector<TileComponent> tiles;
+	std::vector<Entity> tiles;
 
 	Map() = default;
 	~Map();

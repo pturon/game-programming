@@ -88,6 +88,10 @@ void Game::handleEvents() {
 		}
 		else if (event.key.keysym.sym == SDLK_b) {			
 			player.getComponent<StatsComponent>().souls += 1;
+		} 
+		else if (event.key.keysym.sym == SDLK_v) {
+			m->clearMap();
+			m->loadMap("level_2");
 		}
 	}
 }

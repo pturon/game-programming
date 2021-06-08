@@ -173,6 +173,12 @@ public:
 		entities.emplace_back(std::move(uPtr));
 		return *e;
 	}
+
+	void clearGroup(Group g) {
+		for (auto &e : groupedEntities[g]) {
+			e->destroy();
+		}
+	}
 };
 
 
