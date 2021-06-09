@@ -15,6 +15,7 @@ void Map::clearMap() {
 	manager.clearGroup(groupMidground);
 	manager.clearGroup(groupForeground);
 	manager.clearGroup(groupColliders);
+	manager.clearGroup(groupTransitions);
 }
 
 void Map::loadMap(std::string level) {
@@ -51,18 +52,39 @@ void Map::loadMap(std::string level) {
 					}
 				}
 				x++;
-			}
-			std::cout << x << std::endl; 
+			}			
 		}
 		std::getline(mapFile, line);
 		std::getline(mapFile, line);
 	}
 
 	mapFile.close();
+	
+	mapFile.open("assets/levels/" + level + "_transitions.map");
+	while (std::getline(mapFile, line)) {
+		std::cout << line << std::endl; 
+		std::stringstream s(line);
+		std::string cell;
+		std::getline(s, cell, ',');
+		int x = stoi(cell);
+		std::getline(s, cell, ',');
+		int y = stoi(cell);
+		std::getline(s, cell, ',');
+		int w = stoi(cell);
+		std::getline(s, cell, ',');
+		int h = stoi(cell);
+		std::string level;
+		std::getline(s, level, ',');
+		std::getline(s, cell, ',');
+		int newX = stoi(cell);
+		std::getline(s, cell, ',');
+		int newY = stoi(cell);
+		addTransition(x, y, w, h, level, newX, newY);
+	}
+	mapFile.close();
 }
-
+ 
 void Map::addTile(int srcX, int srcY, int x, int y, int layer) {
-	std::cout << "s" << std::endl;
 	auto& tile(manager.addEntity());
 	tile.addComponent<TileComponent>(srcX, srcY, x, y, tileSetPath);
 	switch (layer)	{
@@ -84,4 +106,10 @@ void Map::addCollider(int x, int y) {
 	auto& collider(manager.addEntity());
 	collider.addComponent<ColliderComponent>("terrain", x * TILE_WIDTH, y * TILE_HEIGHT, TILE_WIDTH, TILE_HEIGHT);
 	collider.addGroup(groupColliders);
+}
+
+void Map::addTransition(int x, int y, int w, int h, std::string l, int nX, int nY) {
+	auto& transition(manager.addEntity());
+	transition.addComponent<TransitionComponent>(x, y, w, h, l, nX, nY);
+	transition.addGroup(groupTransitions);
 }

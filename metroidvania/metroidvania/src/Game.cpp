@@ -13,6 +13,7 @@ bool pause = false;
 
 auto& player(manager.addEntity());
 auto& colliders(manager.getGroup(groupColliders));
+auto& transitions(manager.getGroup(groupTransitions));
 
 Game::Game() {
 	isRunning = false;
@@ -155,7 +156,19 @@ void Game::update() {
 		}		
 
 		player.getComponent<TransformComponent>().position.x = playerColliderPosBefore.x + playerVelocity.x;
-		player.getComponent<TransformComponent>().position.y = playerColliderPosBefore.y + playerVelocity.y;		
+		player.getComponent<TransformComponent>().position.y = playerColliderPosBefore.y + playerVelocity.y;
+		player.getComponent<ColliderComponent>().update();
+		SDL_Rect pCol = player.getComponent<ColliderComponent>().collider;
+
+		for (auto &t : transitions) {
+			SDL_Rect tCol = t->getComponent<TransitionComponent>().collider;
+			if (Collision::RectRect(tCol, pCol)) {
+				m->clearMap();
+				m->loadMap(t->getComponent<TransitionComponent>().level);
+				player.getComponent<TransformComponent>().position.x = t->getComponent<TransitionComponent>().newX;
+				player.getComponent<TransformComponent>().position.y = t->getComponent<TransitionComponent>().newY;
+			}
+		}
 
 		camera.x = static_cast<int>(player.getComponent<TransformComponent>().position.x - ((WINDOW_WIDTH - PLAYER_WIDTH) / 2));
 		camera.y = static_cast<int>(player.getComponent<TransformComponent>().position.y - ((WINDOW_HEIGHT - PLAYER_HEIGHT) / 2));

@@ -3,6 +3,7 @@
 enum groupLabels {
 	groupBackground,
 	groupMidground,
+	groupTransitions,
 	groupPlayers,
 	groupEnemies,
 	groupColliders,
