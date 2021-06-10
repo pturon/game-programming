@@ -98,7 +98,7 @@ void TileMap::loadColliders(std::string path) {
 void TileMap::addTile(int srcX, int srcY, int x, int y) {
 	auto& tile(manager.addEntity());
 	tile.addComponent<TileComponent>(srcX, srcY, x, y, tileSetPath);
-	tile.addGroup(groupMap);
+	tile.addGroup(groupMidground);
 }
 
 void TileMap::addCollider(int x, int y) {

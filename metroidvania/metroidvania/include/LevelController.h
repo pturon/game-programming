@@ -1,7 +1,6 @@
 #pragma once
-#include "TileMap.h"
 
-class LevelManager {
+class LevelController {
 public:
 
 };
