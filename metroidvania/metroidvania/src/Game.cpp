@@ -7,6 +7,7 @@ Manager manager;
 Map* m; 
 SDL_Rect Game::camera = { 0,0,WINDOW_WIDTH,WINDOW_HEIGHT};
 HudManager hudManager;
+Transition transition;
 
 bool Game::isRunning = false; 
 bool pause = false; 
@@ -163,10 +164,12 @@ void Game::update() {
 		for (auto &t : transitions) {
 			SDL_Rect tCol = t->getComponent<TransitionComponent>().collider;
 			if (Collision::RectRect(tCol, pCol)) {
+				transition.fadeIn();
 				m->clearMap();
 				m->loadMap(t->getComponent<TransitionComponent>().level);
 				player.getComponent<TransformComponent>().position.x = t->getComponent<TransitionComponent>().newX;
 				player.getComponent<TransformComponent>().position.y = t->getComponent<TransitionComponent>().newY;
+				transition.fadeOut();
 			}
 		}
 

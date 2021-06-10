@@ -10,6 +10,7 @@
 #include "Enums.h"
 #include "HudManager.h"
 #include "Map.h"
+#include "Transition.h"
 
 class ColliderComponent; 
 
