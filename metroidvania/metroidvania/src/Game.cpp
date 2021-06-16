@@ -156,10 +156,33 @@ void Game::update() {
 			}
 		}		
 
+		
+
 		player.getComponent<TransformComponent>().position.x = playerColliderPosBefore.x + playerVelocity.x;
 		player.getComponent<TransformComponent>().position.y = playerColliderPosBefore.y + playerVelocity.y;
 		player.getComponent<ColliderComponent>().update();
 		SDL_Rect pCol = player.getComponent<ColliderComponent>().collider;
+
+		if (player.getComponent<StateComponent>().currentState == wallCling) {
+			bool stopWallCling = true;
+			for (auto& c : colliders) {
+				SDL_Rect cCol = c->getComponent<ColliderComponent>().collider;
+				if (player.getComponent<TransformComponent>().clingedWallPos == right) {
+					if (cCol.x == pCol.x + pCol.w && cCol.y + cCol.h >= pCol.y && cCol.y < pCol.y + pCol.h) {
+						stopWallCling = false;
+					}
+				}
+				else {
+					if (cCol.x + cCol.w == pCol.x && cCol.y + cCol.h >= pCol.y && cCol.y < pCol.y + pCol.h) {
+						stopWallCling = false;
+					}
+				}
+			}
+
+			if (stopWallCling) {
+				player.getComponent<TransformComponent>().stopWallCling();
+			}
+		}		
 
 		for (auto &t : transitions) {
 			SDL_Rect tCol = t->getComponent<TransitionComponent>().collider;
