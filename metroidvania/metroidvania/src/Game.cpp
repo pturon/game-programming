@@ -13,8 +13,10 @@ bool Game::isRunning = false;
 bool pause = false; 
 
 auto& player(manager.addEntity());
+auto& enemy(manager.addEntity());
 auto& colliders(manager.getGroup(groupColliders));
 auto& transitions(manager.getGroup(groupTransitions));
+auto& enemies(manager.getGroup(groupEnemies));
 
 Game::Game() {
 	isRunning = false;
@@ -65,6 +67,12 @@ void Game::init(const char* title, int width, int height, bool fullscreen) {
 	player.addComponent<AttackComponent>();
 	player.getComponent<KeyboardController>().getComponents();
 	player.addGroup(groupPlayers);
+
+	enemy.addComponent<StateComponent>();
+	enemy.addComponent<TransformComponent>(200, 64, 32,32, 1,5, true);
+	enemy.addComponent<ColliderComponent>("Enemy");
+	enemy.addComponent<SpriteComponent>("assets/dummy.png", false);
+	enemy.addGroup(groupEnemies);
 
 	hudManager.playerStats = &player.getComponent<StatsComponent>();
 }
@@ -194,6 +202,36 @@ void Game::update() {
 				player.getComponent<TransformComponent>().position.y = t->getComponent<TransitionComponent>().newY;
 				transition.fadeOut();
 			}
+		}
+
+		for (auto& e : enemies) {
+			SDL_Rect eBefore = { e->getComponent<TransformComponent>().lastPos.x, e->getComponent<TransformComponent>().lastPos.y, e->getComponent<TransformComponent>().width, e->getComponent<TransformComponent>().height };
+			Vector2D eVelocity = { e->getComponent<TransformComponent>().position.x - e->getComponent<TransformComponent>().lastPos.x, e->getComponent<TransformComponent>().position.y - e->getComponent<TransformComponent>().lastPos.y };
+
+			std::cout << eVelocity.x << " " << eVelocity.y << std::endl; 
+
+			std::vector<std::pair<Entity*, float>> eZ;
+
+			for (auto& c : colliders) {
+				SDL_Rect cCol = c->getComponent<ColliderComponent>().collider;
+				if (Collision::DynamicRectRect(eBefore, eVelocity, cCol, cp, cn, ct)) {
+					eZ.push_back({ c,ct });
+				}
+			}
+
+			std::sort(eZ.begin(), eZ.end(), [](const std::pair<Entity*, float>& a, const std::pair<Entity*, float>& b) {
+				return a.second < b.second;
+				});
+			for (auto c : eZ) {
+				SDL_Rect cCol = c.first->getComponent<ColliderComponent>().collider;
+				if (Collision::DynamicRectRect(eBefore, eVelocity, cCol, cp, cn, ct)) {
+					eVelocity.x += cn.x * std::abs(eVelocity.x) * (1 - ct);
+					eVelocity.y += cn.y * std::abs(eVelocity.y) * (1 - ct);
+					
+				}
+			}
+			e->getComponent<TransformComponent>().position.x = eBefore.x + eVelocity.x;
+			e->getComponent<TransformComponent>().position.y = eBefore.y + eVelocity.y;
 		}
 
 		camera.x = static_cast<int>(player.getComponent<TransformComponent>().position.x - ((WINDOW_WIDTH - PLAYER_WIDTH) / 2));
