@@ -11,6 +11,8 @@
 #include "HudManager.h"
 #include "Map.h"
 #include "Transition.h"
+#include "Behaviour.h"
+#include "GoombaBehaviour.h"
 
 class ColliderComponent; 
 

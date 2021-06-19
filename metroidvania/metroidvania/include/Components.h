@@ -9,3 +9,4 @@
 #include "StateComponent.h"
 #include "StatsComponent.h"
 #include "TransitionComponent.h"
+#include "BehaviourComponent.h"

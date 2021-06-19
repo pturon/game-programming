@@ -75,8 +75,7 @@ void TileMap::loadMap(std::string path){
 	mapFile.close();
 }
 
-void TileMap::loadColliders(std::string path) {
-	std::cout << width << " " << height << std::endl; 
+void TileMap::loadColliders(std::string path) {	
 
 	std::fstream mapFile("assets/levels/" + path + "_colliders.map");
 	std::string line;

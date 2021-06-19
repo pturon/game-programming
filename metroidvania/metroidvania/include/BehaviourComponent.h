@@ -2,13 +2,25 @@
 #include "EntityComponentSystem.h"
 #include "Vector2D.h"
 
-class BehaviourComponent : public Component{
+class Behaviour {
+public:
+	Entity* parent;
+	virtual void init() {};
+	virtual void update() {};
+	virtual void onCollision(Vector2D cn) {}
+	virtual void onHit() {};
+};
 
-	BehaviourComponent() = default; 
+class BehaviourComponent : public Component{
+public: 
+	Behaviour* behaviour; 
+
+	BehaviourComponent() = default;
 	~BehaviourComponent();
 
-	void init();
-	void update();
+	void setBehaviour(Behaviour b);
+	void init() override;
+	void update() override;
 	void onCollision(Vector2D cn);
 	void onHit(); 
 

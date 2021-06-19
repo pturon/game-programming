@@ -72,6 +72,7 @@ void Game::init(const char* title, int width, int height, bool fullscreen) {
 	enemy.addComponent<TransformComponent>(200, 64, 32,32, 1,5, true);
 	enemy.addComponent<ColliderComponent>("Enemy");
 	enemy.addComponent<SpriteComponent>("assets/dummy.png", false);
+	enemy.addComponent<BehaviourComponent>();
 	enemy.addGroup(groupEnemies);
 
 	hudManager.playerStats = &player.getComponent<StatsComponent>();
@@ -207,8 +208,6 @@ void Game::update() {
 		for (auto& e : enemies) {
 			SDL_Rect eBefore = { e->getComponent<TransformComponent>().lastPos.x, e->getComponent<TransformComponent>().lastPos.y, e->getComponent<TransformComponent>().width, e->getComponent<TransformComponent>().height };
 			Vector2D eVelocity = { e->getComponent<TransformComponent>().position.x - e->getComponent<TransformComponent>().lastPos.x, e->getComponent<TransformComponent>().position.y - e->getComponent<TransformComponent>().lastPos.y };
-
-			std::cout << eVelocity.x << " " << eVelocity.y << std::endl; 
 
 			std::vector<std::pair<Entity*, float>> eZ;
 
