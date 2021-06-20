@@ -16,6 +16,7 @@ void Map::clearMap() {
 	manager.clearGroup(groupForeground);
 	manager.clearGroup(groupColliders);
 	manager.clearGroup(groupTransitions);
+	manager.clearGroup(groupEnemies);
 }
 
 void Map::loadMap(std::string level) {
@@ -62,7 +63,6 @@ void Map::loadMap(std::string level) {
 	
 	mapFile.open("assets/levels/" + level + "_transitions.map");
 	while (std::getline(mapFile, line)) {
-		std::cout << line << std::endl; 
 		std::stringstream s(line);
 		std::string cell;
 		std::getline(s, cell, ',');

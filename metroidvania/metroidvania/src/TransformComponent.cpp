@@ -4,9 +4,11 @@ void TransformComponent::init() {
 	velocity.zero();
 	direction = right;
 	state = &parent->getComponent<StateComponent>();
+	lastPos = position;
 }
 
 void TransformComponent::update() {
+	lastPos = position;
 	if (velocity.y > 0) {
 		velocity.y += fallMultiplier;
 		if (state) {

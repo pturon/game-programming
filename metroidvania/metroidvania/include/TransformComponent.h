@@ -12,6 +12,7 @@ public:
 	StateComponent* state; 
 
 	Vector2D position;
+	Vector2D lastPos; 
 	Vector2D velocity;
 	Vector2D gravity; 
 	bool gravityAffected = false;
