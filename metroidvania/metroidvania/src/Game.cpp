@@ -73,6 +73,7 @@ void Game::init(const char* title, int width, int height, bool fullscreen) {
 	enemy.addComponent<ColliderComponent>("Enemy");
 	enemy.addComponent<SpriteComponent>("assets/dummy.png", false);
 	enemy.addComponent<BehaviourComponent>();
+	enemy.getComponent<BehaviourComponent>().setBehaviour<GoombaBehaviour>();
 	enemy.addGroup(groupEnemies);
 
 	hudManager.playerStats = &player.getComponent<StatsComponent>();
