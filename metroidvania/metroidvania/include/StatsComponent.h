@@ -9,10 +9,14 @@ public:
 	int curMana = 0; 
 	int money = 0; 
 	int souls = 0;
+	int iFrames = 0; 
+	int maxIFrames = 60; 
 
 	int attackDamage = 0; 
 	int attackSpeed = 0; 
 
-	StatsComponent(int mH, int mM, int money, int aD, int aS);
+	StatsComponent(int mH, int mM, int money, int aD, int aS, int iF);
+
+	void update();
 };
 
