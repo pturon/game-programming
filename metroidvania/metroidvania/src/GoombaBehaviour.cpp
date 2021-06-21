@@ -11,6 +11,7 @@ void GoombaBehaviour::update() {
 void GoombaBehaviour::onCollision(Vector2D cn) {
 	if (cn.x != 0 && cn.y == 0) {
 		parent->getComponent<TransformComponent>().velocity = cn;
+		parent->getComponent<SpriteComponent>().flipAnimation(!parent->getComponent<SpriteComponent>().spriteFlip);
 	}
 }
 

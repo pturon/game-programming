@@ -69,9 +69,9 @@ void Game::init(const char* title, int width, int height, bool fullscreen) {
 	player.addGroup(groupPlayers);
 
 	enemy.addComponent<StateComponent>();
-	enemy.addComponent<TransformComponent>(200, 64, 32,32, 1,2, true);
+	enemy.addComponent<TransformComponent>(200, 64, 48,16, 1,2, true);
 	enemy.addComponent<ColliderComponent>("Enemy");
-	enemy.addComponent<SpriteComponent>("assets/dummy.png", false);
+	enemy.addComponent<SpriteComponent>("assets/rat_spritesheet.png", false);
 	enemy.addComponent<BehaviourComponent>();
 	enemy.getComponent<BehaviourComponent>().setBehaviour<GoombaBehaviour>();
 	enemy.addComponent<StatsComponent>(5,0,0,1,0, 60);
