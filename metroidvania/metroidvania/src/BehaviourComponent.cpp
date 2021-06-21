@@ -15,6 +15,6 @@ void BehaviourComponent::onCollision(Vector2D cn) {
 	for (auto& b : behaviours) b->onCollision(cn);
 }
 
-void BehaviourComponent::onHit() {
-	for (auto& b : behaviours) b->onHit();
+void BehaviourComponent::onHit(Direction d) {
+	for (auto& b : behaviours) b->onHit(d);
 }

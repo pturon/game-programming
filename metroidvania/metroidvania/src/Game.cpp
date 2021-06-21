@@ -236,11 +236,12 @@ void Game::update() {
 			}
 
 			for (auto& e : enemies) {
-				if (player.getComponent<AttackComponent>().attacking) {
+				if (player.getComponent<StateComponent>().isAttacking()) {
 					if (Collision::RectRect(player.getComponent<AttackComponent>().attackCollider, e->getComponent<ColliderComponent>().collider)) {
 						if (e->getComponent<StatsComponent>().iFrames == 0) {
 							e->getComponent<StatsComponent>().curHealth -= player.getComponent<StatsComponent>().attackDamage;
 							e->getComponent<StatsComponent>().iFrames = e->getComponent<StatsComponent>().maxIFrames;
+							e->getComponent<BehaviourComponent>().onHit(player.getComponent<TransformComponent>().direction);
 						}
 					}
 				}

@@ -14,6 +14,23 @@ void GoombaBehaviour::onCollision(Vector2D cn) {
 	}
 }
 
-void GoombaBehaviour::onHit() {
-
+void GoombaBehaviour::onHit(Direction d) {
+	Vector2D recoilV = { 0,0 };
+	switch (d) {
+	case up:
+		recoilV.y = -1;
+		break;
+	case right:
+		recoilV.x = 1; 
+		break; 
+	case down:
+		recoilV.y = 1; 
+		break; 
+	case left: 
+		recoilV.x = -1; 
+		break;
+	default:
+		break; 
+	}
+	parent->getComponent<TransformComponent>().startRecoil(recoilV);
 }
