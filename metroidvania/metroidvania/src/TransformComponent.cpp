@@ -202,3 +202,10 @@ void TransformComponent::startRecoil(Vector2D rV) {
 	recoilDuration = 10; 
 	recoilV = rV; 
 }
+
+void TransformComponent::pogo() {
+	state->setState(jumping);
+	velocity.y = static_cast<float>(-jumpHeight);
+	canDash = true; 
+	canDoubleJump = true; 
+}

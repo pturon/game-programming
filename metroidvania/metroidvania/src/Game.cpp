@@ -255,6 +255,9 @@ void Game::update() {
 							e->getComponent<StatsComponent>().curHealth -= player.getComponent<StatsComponent>().attackDamage;
 							e->getComponent<StatsComponent>().iFrames = e->getComponent<StatsComponent>().maxIFrames;
 							e->getComponent<BehaviourComponent>().onHit(player.getComponent<TransformComponent>().direction);
+							if (player.getComponent<TransformComponent>().direction == down) {
+								player.getComponent<TransformComponent>().pogo();
+							}
 						}
 					}
 				}

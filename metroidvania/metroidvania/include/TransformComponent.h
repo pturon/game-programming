@@ -100,4 +100,6 @@ public:
 
 	void startRecoil(Vector2D rV);
 	void stopRecoil();
+
+	void pogo();
 };
