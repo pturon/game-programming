@@ -11,6 +11,7 @@ Transition transition;
 
 bool Game::isRunning = false; 
 bool pause = false; 
+bool playerDeath = false; 
 
 auto& player(manager.addEntity());
 auto& enemy(manager.addEntity());
@@ -101,36 +102,21 @@ void Game::handleEvents() {
 			break;
 		default:
 			break;
-	}
-	if (event.type == SDL_KEYDOWN) {
-		if (event.key.keysym.sym == SDLK_p) {
-			pause = !pause; 
-		}
-		else if (event.key.keysym.sym == SDLK_m) {			
-			player.getComponent<StatsComponent>().curMana -= 1; 
-		}
-		else if (event.key.keysym.sym == SDLK_n) {	
-			player.getComponent<StatsComponent>().money += 1;
-		}
-		else if (event.key.keysym.sym == SDLK_b) {			
-			player.getComponent<StatsComponent>().souls += 1;
-		} 
-		else if (event.key.keysym.sym == SDLK_v) {
-			m->clearMap();
-			m->loadMap("level_2");
-		}
-	}
+	}	
 }
 
 void Game::update() {
 	if (!pause) {
-		
+		SDL_Rect playerColliderPosBefore;
+		if (!playerDeath) {
 			player.getComponent<ColliderComponent>().update();
-			SDL_Rect playerColliderPosBefore = player.getComponent<ColliderComponent>().collider;
+			playerColliderPosBefore = player.getComponent<ColliderComponent>().collider;
+		}
 
-			manager.refresh();
-			manager.update();
+		manager.refresh();
+		manager.update();
 
+		if (!playerDeath) {
 			SDL_Rect playerColliderPos = player.getComponent<ColliderComponent>().collider;
 
 			Vector2D playerVelocity = { static_cast<float>(playerColliderPos.x - playerColliderPosBefore.x),  static_cast<float>(playerColliderPos.y - playerColliderPosBefore.y) };
@@ -283,7 +269,18 @@ void Game::update() {
 			if (camera.y > (m->height * TILE_HEIGHT) - camera.h) {
 				camera.y = (m->height * TILE_HEIGHT) - camera.h;
 			}
-		
+
+			if (player.getComponent<StatsComponent>().curHealth <= 0) {
+				player.destroy();
+				playerDeath = true; 
+			}
+
+			for (auto& e : enemies) {
+				if (e->getComponent<StatsComponent>().curHealth <= 0) {
+					e->destroy();
+				}
+			}
+		}
 	}
 }
 

@@ -6,9 +6,6 @@ void GoombaBehaviour::init() {
 
 void GoombaBehaviour::update() {	
 	directionSwitched = false; 
-	if (parent->getComponent<StatsComponent>().curHealth <= 0) {
-		parent->destroy();
-	}
 }
 
 void GoombaBehaviour::onCollision(Vector2D cn) {
