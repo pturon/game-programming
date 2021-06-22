@@ -6,12 +6,20 @@ void GoombaBehaviour::init() {
 
 void GoombaBehaviour::update() {	
 	directionSwitched = false; 
+	if (parent->getComponent<StatsComponent>().curHealth <= 0) {
+		parent->destroy();
+	}
 }
 
 void GoombaBehaviour::onCollision(Vector2D cn) {
 	if (cn.x != 0 && cn.y == 0) {
 		parent->getComponent<TransformComponent>().velocity = cn;
-		parent->getComponent<SpriteComponent>().flipAnimation(!parent->getComponent<SpriteComponent>().spriteFlip);
+		if (cn.x == 1) {
+			parent->getComponent<SpriteComponent>().flipAnimation(false);
+		}
+		else {
+			parent->getComponent<SpriteComponent>().flipAnimation(true);
+		}		
 	}
 }
 
