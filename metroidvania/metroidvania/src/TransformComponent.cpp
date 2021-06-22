@@ -92,7 +92,7 @@ void TransformComponent::moveRight() {
 }
 
 void TransformComponent::moveStop() {
-	if (!state->isAttacking() && state->currentState != dashing) {
+	if (state->currentState != dashing) {
 		velocity.x = 0;
 		if (state->currentState == idle || state->currentState == walking) {
 			state->setState(idle);

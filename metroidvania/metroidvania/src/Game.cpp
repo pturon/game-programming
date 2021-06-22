@@ -241,7 +241,6 @@ void Game::update() {
 						eVelocity.x += cn.x * std::abs(eVelocity.x) * (1 - ct);
 						eVelocity.y += cn.y * std::abs(eVelocity.y) * (1 - ct);
 						e->getComponent<BehaviourComponent>().onCollision(cn);
-
 					}
 				}
 				e->getComponent<TransformComponent>().position.x = eBefore.x + eVelocity.x;
