@@ -51,6 +51,16 @@ void TransformComponent::update() {
 			}
 		}
 	}	
+	if (recoil) {
+		if (recoilDuration > 0) {
+			position.x += recoilV.x * recoilSpeed;
+			position.y += recoilV.y * recoilSpeed;
+			recoilDuration--;
+		}
+		else {
+			recoil = false; 
+		}		
+	}
 }
 
 void TransformComponent::moveLeft() {
@@ -185,4 +195,17 @@ void TransformComponent::stopWallCling() {
 
 int TransformComponent::getYDistance() {
 	return 9; 
+}
+
+void TransformComponent::startRecoil(Vector2D rV) {
+	recoil = true; 
+	recoilDuration = 10; 
+	recoilV = rV; 
+}
+
+void TransformComponent::pogo() {
+	state->setState(jumping);
+	velocity.y = static_cast<float>(-jumpHeight);
+	canDash = true; 
+	canDoubleJump = true; 
 }

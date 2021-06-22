@@ -8,6 +8,7 @@
 #include <algorithm>
 #include <bitset>
 #include <array>
+#include "Enums.h"
 
 class Behaviour {
 public:
@@ -15,7 +16,7 @@ public:
 	virtual void init() {};
 	virtual void update() {};
 	virtual void onCollision(Vector2D cn) {}
-	virtual void onHit() {};
+	virtual void onHit(Direction d) {};
 };
 
 class BehaviourComponent : public Component{
@@ -28,7 +29,7 @@ public:
 	void init() override;
 	void update() override;
 	void onCollision(Vector2D cn);
-	void onHit(); 
+	void onHit(Direction d); 
 
 	template <typename T, typename... TArgs> T& setBehaviour(TArgs&&... mArgs) {
 		T* c(new T(std::forward<TArgs>(mArgs)...));

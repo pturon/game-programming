@@ -15,8 +15,13 @@ public:
 	Vector2D lastPos; 
 	Vector2D velocity;
 	Vector2D gravity; 
+	Vector2D recoilV; 
+	int recoilSpeed = 10; 
+	int recoilDuration = 60; 
 	bool gravityAffected = false;
 	int speed = 5; 
+
+	bool recoil = false; 
 
 	bool canDash = true;
 	int dashSpeed = 20; 
@@ -92,4 +97,9 @@ public:
 	void stopWallCling();
 
 	int getYDistance();
+
+	void startRecoil(Vector2D rV);
+	void stopRecoil();
+
+	void pogo();
 };

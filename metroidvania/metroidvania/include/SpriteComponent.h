@@ -14,7 +14,7 @@ private:
 	bool animated = false; 
 	int frames = 0; 
 	int speed = 100;
-	float lastTick = 0; 
+	float lastTick = 0; 	
 
 	std::map<const State, Animation> animations;
 

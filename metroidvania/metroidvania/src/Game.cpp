@@ -67,15 +67,28 @@ void Game::init(const char* title, int width, int height, bool fullscreen) {
 	player.addComponent<AttackComponent>();
 	player.getComponent<KeyboardController>().getComponents();
 	player.addGroup(groupPlayers);
+	player.getComponent<SpriteComponent>().addAnimation(idle, 0, 1, 100);
+	player.getComponent<SpriteComponent>().addAnimation(walking, 1, 6, 100);
+	player.getComponent<SpriteComponent>().addAnimation(jumping, 2, 2, 100);
+	player.getComponent<SpriteComponent>().addAnimation(falling, 3, 2, 100);
+	player.getComponent<SpriteComponent>().addAnimation(attackingSide, 6, 5, 100);
+	player.getComponent<SpriteComponent>().addAnimation(attackingTop, 7, 5, 100);
+	player.getComponent<SpriteComponent>().addAnimation(attackingBottom, 8, 5, 100);
+	player.getComponent<SpriteComponent>().addAnimation(dashing, 4, 2, 100);
+	player.getComponent<SpriteComponent>().addAnimation(wallCling, 5, 1, 100);
+	player.getComponent<SpriteComponent>().switchAnimation(idle);
 
 	enemy.addComponent<StateComponent>();
-	enemy.addComponent<TransformComponent>(200, 64, 32,32, 1,2, true);
+	enemy.addComponent<TransformComponent>(200, 64, 48,16, 1,2, true);
 	enemy.addComponent<ColliderComponent>("Enemy");
-	enemy.addComponent<SpriteComponent>("assets/dummy.png", false);
+	enemy.addComponent<SpriteComponent>("assets/rat_spritesheet.png", true);
 	enemy.addComponent<BehaviourComponent>();
 	enemy.getComponent<BehaviourComponent>().setBehaviour<GoombaBehaviour>();
 	enemy.addComponent<StatsComponent>(5,0,0,1,0, 60);
 	enemy.addGroup(groupEnemies);
+	enemy.getComponent<SpriteComponent>().addAnimation(idle, 0, 1, 100);
+	enemy.getComponent<SpriteComponent>().addAnimation(walking, 0, 4, 100);
+	enemy.getComponent<SpriteComponent>().switchAnimation(walking);
 
 	hudManager.playerStats = &player.getComponent<StatsComponent>();
 }
@@ -236,11 +249,15 @@ void Game::update() {
 			}
 
 			for (auto& e : enemies) {
-				if (player.getComponent<AttackComponent>().attacking) {
+				if (player.getComponent<StateComponent>().isAttacking()) {
 					if (Collision::RectRect(player.getComponent<AttackComponent>().attackCollider, e->getComponent<ColliderComponent>().collider)) {
 						if (e->getComponent<StatsComponent>().iFrames == 0) {
 							e->getComponent<StatsComponent>().curHealth -= player.getComponent<StatsComponent>().attackDamage;
 							e->getComponent<StatsComponent>().iFrames = e->getComponent<StatsComponent>().maxIFrames;
+							e->getComponent<BehaviourComponent>().onHit(player.getComponent<TransformComponent>().direction);
+							if (player.getComponent<TransformComponent>().direction == down) {
+								player.getComponent<TransformComponent>().pogo();
+							}
 						}
 					}
 				}

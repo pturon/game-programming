@@ -1,8 +1,5 @@
 #include "../include/SpriteComponent.h"
 
-//Animation mit Sate verknüpfen!
-//Animationen per Methode hinzufügen!
-
 SpriteComponent::SpriteComponent(const char *path) {
 	texture = TextureManager::loadTexture(path);
 }
@@ -21,17 +18,6 @@ void SpriteComponent::init(){
 	srcRect.x = srcRect.y = 0;
 	srcRect.w = transform->width;
 	srcRect.h = transform->height;	
-
-	addAnimation(idle, 0, 1, 100);
-	addAnimation(walking, 1, 6, 100);
-	addAnimation(jumping, 2, 2, 100);
-	addAnimation(falling, 3, 2, 100);
-	addAnimation(attackingSide, 6, 5, 100);
-	addAnimation(attackingTop, 7, 5, 100);
-	addAnimation(attackingBottom, 8, 5, 100);
-	addAnimation(dashing, 4, 2, 100);
-	addAnimation(wallCling, 5, 1, 100);
-	switchAnimation(idle);
 }
 
 void SpriteComponent::update() {
@@ -62,6 +48,12 @@ void SpriteComponent::render() {
 	destRect.y = static_cast<int>(transform->position.y) - Game::camera.y;
 	destRect.w = transform->width * transform->scale;
 	destRect.h = transform->height * transform->scale;
+	if (parent->getComponent<TransformComponent>().recoil == true) {
+		SDL_SetTextureColorMod(texture, 255, 0, 0);
+	}
+	else {
+		SDL_SetTextureColorMod(texture, 255, 255, 255);
+	}
 	TextureManager::draw(texture, srcRect, destRect, spriteFlip);
 }
 
