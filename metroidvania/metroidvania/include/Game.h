@@ -13,6 +13,7 @@
 #include "Transition.h"
 #include "Behaviour.h"
 #include "GoombaBehaviour.h"
+#include "SkeletonBehaviour.h"
 
 class ColliderComponent; 
 
@@ -34,10 +35,13 @@ public:
 
 	bool running() { return isRunning; };
 
+	static Entity& player; 
 	static SDL_Renderer* renderer;
 	static SDL_Event event; 
 
 	static SDL_Rect camera; 
+
+	static bool rayHitsCollider(Vector2D origin, Vector2D ray);
 
 private:
 	

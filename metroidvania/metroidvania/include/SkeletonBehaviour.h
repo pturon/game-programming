@@ -1,11 +1,12 @@
 #pragma once
 #include "BehaviourComponent.h"
+#include "Constants.h"
 #include "TransformComponent.h"
 #include "Enums.h"
 
-class GoombaBehaviour : public Behaviour{
-public:
-
+class SkeletonBehaviour : public Behaviour{
+public: 
+	int detectionRange = 300; 
 	void init() override;
 	void update() override;
 	void onCollision(Vector2D cn) override;

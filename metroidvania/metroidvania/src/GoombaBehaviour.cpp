@@ -5,7 +5,7 @@ void GoombaBehaviour::init() {
 }
 
 void GoombaBehaviour::update() {	
-	directionSwitched = false; 
+
 }
 
 void GoombaBehaviour::onCollision(Vector2D cn) {

@@ -13,8 +13,9 @@ bool Game::isRunning = false;
 bool pause = false; 
 bool playerDeath = false; 
 
-auto& player(manager.addEntity());
+Entity& Game::player(manager.addEntity());
 auto& enemy(manager.addEntity());
+auto& enemy2(manager.addEntity());
 auto& colliders(manager.getGroup(groupColliders));
 auto& transitions(manager.getGroup(groupTransitions));
 auto& enemies(manager.getGroup(groupEnemies));
@@ -90,6 +91,18 @@ void Game::init(const char* title, int width, int height, bool fullscreen) {
 	enemy.getComponent<SpriteComponent>().addAnimation(idle, 0, 1, 100);
 	enemy.getComponent<SpriteComponent>().addAnimation(walking, 0, 4, 100);
 	enemy.getComponent<SpriteComponent>().switchAnimation(walking);
+
+	enemy2.addComponent<StateComponent>();
+	enemy2.addComponent<TransformComponent>(608, 449, 48, 16, 1, 2, true);
+	enemy2.addComponent<ColliderComponent>("Enemy");
+	enemy2.addComponent<SpriteComponent>("assets/rat_spritesheet.png", true);
+	enemy2.addComponent<BehaviourComponent>();
+	enemy2.getComponent<BehaviourComponent>().setBehaviour<SkeletonBehaviour>();
+	enemy2.addComponent<StatsComponent>(5, 0, 0, 1, 0, 60);
+	enemy2.addGroup(groupEnemies);
+	enemy2.getComponent<SpriteComponent>().addAnimation(idle, 0, 1, 100);
+	enemy2.getComponent<SpriteComponent>().addAnimation(walking, 0, 4, 100);
+	enemy2.getComponent<StateComponent>().setState(walking);
 
 	hudManager.playerStats = &player.getComponent<StatsComponent>();
 }
@@ -231,11 +244,12 @@ void Game::update() {
 				}
 				e->getComponent<TransformComponent>().position.x = eBefore.x + eVelocity.x;
 				e->getComponent<TransformComponent>().position.y = eBefore.y + eVelocity.y;
+				e->getComponent<ColliderComponent>().update();
 			}
 
-			for (auto& e : enemies) {
-				if (player.getComponent<StateComponent>().isAttacking()) {
-					if (Collision::RectRect(player.getComponent<AttackComponent>().attackCollider, e->getComponent<ColliderComponent>().collider)) {
+			for (auto& e : enemies) {				
+				if (player.getComponent<StateComponent>().isAttacking()) {		
+					if (Collision::RectRect(player.getComponent<AttackComponent>().attackCollider, e->getComponent<ColliderComponent>().collider)) {						
 						if (e->getComponent<StatsComponent>().iFrames == 0) {
 							e->getComponent<StatsComponent>().curHealth -= player.getComponent<StatsComponent>().attackDamage;
 							e->getComponent<StatsComponent>().iFrames = e->getComponent<StatsComponent>().maxIFrames;
@@ -252,7 +266,7 @@ void Game::update() {
 						player.getComponent<StatsComponent>().iFrames = player.getComponent<StatsComponent>().maxIFrames;
 					}
 				}
-			}
+			}			
 
 			camera.x = static_cast<int>(player.getComponent<TransformComponent>().position.x - ((WINDOW_WIDTH - PLAYER_WIDTH) / 2));
 			camera.y = static_cast<int>(player.getComponent<TransformComponent>().position.y - ((WINDOW_HEIGHT - PLAYER_HEIGHT) / 2));
@@ -268,11 +282,6 @@ void Game::update() {
 			}
 			if (camera.y > (m->height * TILE_HEIGHT) - camera.h) {
 				camera.y = (m->height * TILE_HEIGHT) - camera.h;
-			}
-
-			if (player.getComponent<StatsComponent>().curHealth <= 0) {
-				player.destroy();
-				playerDeath = true; 
 			}
 
 			for (auto& e : enemies) {
@@ -295,4 +304,19 @@ void Game::clean() {
 	SDL_DestroyWindow(window);
 	SDL_DestroyRenderer(renderer);
 	SDL_Quit();
+}
+
+bool Game::rayHitsCollider(Vector2D origin, Vector2D ray) {
+	bool hit = false;
+	Vector2D cp, cn;
+	float t;
+	for (auto& c : colliders) {
+		SDL_Rect cCol = c->getComponent<ColliderComponent>().collider;
+		if (Collision::RayRect(origin, ray, cCol, cp, cn, t)) {
+			if (t <= 1) {
+				hit = true;
+			}		
+		}
+	}
+	return hit; 
 }
