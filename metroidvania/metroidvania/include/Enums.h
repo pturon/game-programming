@@ -34,4 +34,6 @@ enum State {
 	dashing,
 	wallCling,
 	detecting,
+	charge,
+	attackCooldown
 };

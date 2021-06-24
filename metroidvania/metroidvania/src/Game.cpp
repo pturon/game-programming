@@ -102,6 +102,9 @@ void Game::init(const char* title, int width, int height, bool fullscreen) {
 	enemy2.addGroup(groupEnemies);
 	enemy2.getComponent<SpriteComponent>().addAnimation(idle, 0, 1, 100);
 	enemy2.getComponent<SpriteComponent>().addAnimation(walking, 0, 4, 100);
+	enemy2.getComponent<SpriteComponent>().addAnimation(attackingSide, 0, 1, 100);
+	enemy2.getComponent<SpriteComponent>().addAnimation(attackCooldown, 0, 1, 100);
+	enemy2.getComponent<SpriteComponent>().addAnimation(charge, 0, 1, 100);
 	enemy2.getComponent<StateComponent>().setState(walking);
 
 	hudManager.playerStats = &player.getComponent<StatsComponent>();

@@ -5,30 +5,65 @@ void SkeletonBehaviour::init() {
 }
 
 void SkeletonBehaviour::update() {
-	if (parent->getComponent<TransformComponent>().recoil == false) {
-		Vector2D pos = parent->getComponent<TransformComponent>().position;
-		Vector2D playerPos = Game::player.getComponent<TransformComponent>().position;
-		Vector2D dist = { playerPos.x - pos.x, playerPos.y - pos.y};		
-		int d = sqrt(dist.x * dist.x + dist.y * dist.y);
-		if (!Game::rayHitsCollider(pos, dist)) {
-			if (d <= detectionRange) {
-				if (dist.x > 0) {
-					parent->getComponent<TransformComponent>().velocity = { 1,0 };
-					parent->getComponent<SpriteComponent>().flipAnimation(false);
-					parent->getComponent<StateComponent>().currentState == detecting;
+	if (parent->getComponent<StateComponent>().currentState == charge) {
+		tickCounter--;
+		if (tickCounter <= 0) {
+			tickCounter = attackDuration;
+			parent->getComponent<StateComponent>().setState(attackingSide);		
+		}
+	}
+	else if (parent->getComponent<StateComponent>().currentState == attackCooldown) {
+		tickCounter--;
+		if (tickCounter <= 0) {
+			parent->getComponent<StateComponent>().setState(walking);			
+		}
+	}
+	else if (parent->getComponent<StateComponent>().currentState == attackingSide) {
+		tickCounter--;
+		if (tickCounter <= 0) {
+			tickCounter = cooldown;
+			parent->getComponent<StateComponent>().setState(attackCooldown);			
+		}
+	}
+	else {
+		if (parent->getComponent<TransformComponent>().recoil == false) {
+			Vector2D pos = { (parent->getComponent<TransformComponent>().position.x + parent->getComponent<TransformComponent>().width) / 2,  (parent->getComponent<TransformComponent>().position.y + parent->getComponent<TransformComponent>().height) / 2 };
+			Vector2D playerPos = { (Game::player.getComponent<TransformComponent>().position.x + Game::player.getComponent<TransformComponent>().width) / 2,  (Game::player.getComponent<TransformComponent>().position.y + Game::player.getComponent<TransformComponent>().height) / 2 };;
+			Vector2D dist = { playerPos.x - pos.x, playerPos.y - pos.y };
+			int d = sqrt(dist.x * dist.x + dist.y * dist.y);
+			if (!Game::rayHitsCollider(pos, dist)) {
+				if (d <= attackRange) {
+					parent->getComponent<TransformComponent>().velocity = { 0,0 };
+					tickCounter = attackCharge;
+					parent->getComponent<StateComponent>().setState(charge);			
 				}
-				else if (dist.x < 0) {
-					parent->getComponent<TransformComponent>().velocity = { -1,0 };
-					parent->getComponent<SpriteComponent>().flipAnimation(true);
-					parent->getComponent<StateComponent>().currentState == detecting;
+				else if (d <= detectionRange) {
+					if (dist.x > 0) {
+						parent->getComponent<TransformComponent>().velocity = { 1,0 };
+						parent->getComponent<SpriteComponent>().flipAnimation(false);
+						parent->getComponent<StateComponent>().currentState == detecting;
+					}
+					else if (dist.x < 0) {
+						parent->getComponent<TransformComponent>().velocity = { -1,0 };
+						parent->getComponent<SpriteComponent>().flipAnimation(true);
+						parent->getComponent<StateComponent>().currentState == detecting;
+					}
+				}
+				else {
+					parent->getComponent<StateComponent>().currentState == walking;
 				}
 			}
 			else {
 				parent->getComponent<StateComponent>().currentState == walking;
+				if (parent->getComponent<TransformComponent>().velocity.x == 0) {
+					if (parent->getComponent<SpriteComponent>().spriteFlip) {
+						parent->getComponent<TransformComponent>().velocity = { -1,0 };
+					}
+					else {
+						parent->getComponent<TransformComponent>().velocity = { 1,0 };
+					}
+				}
 			}
-		}
-		else {
-			parent->getComponent<StateComponent>().currentState == walking;
 		}
 	}	
 }
