@@ -5,24 +5,33 @@ void SkeletonBehaviour::init() {
 }
 
 void SkeletonBehaviour::update() {
-	if (parent->getComponent<StateComponent>().currentState == charge) {
-		tickCounter--;
-		if (tickCounter <= 0) {
-			tickCounter = attackDuration;
+	tickCounter = SDL_GetTicks();
+	if (parent->getComponent<StateComponent>().currentState == charge) {		
+		if (tickCounter - tickStart >= charge) {
+			tickStart = SDL_GetTicks();
 			parent->getComponent<StateComponent>().setState(attackingSide);		
 		}
 	}
-	else if (parent->getComponent<StateComponent>().currentState == attackCooldown) {
-		tickCounter--;
-		if (tickCounter <= 0) {
+	else if (parent->getComponent<StateComponent>().currentState == attackCooldown) {	
+		if (tickCounter - tickStart >= cooldown) {
 			parent->getComponent<StateComponent>().setState(walking);			
 		}
 	}
-	else if (parent->getComponent<StateComponent>().currentState == attackingSide) {
-		tickCounter--;
-		if (tickCounter <= 0) {
-			tickCounter = cooldown;
+	else if (parent->getComponent<StateComponent>().currentState == attackingSide) {		
+		if (tickCounter - tickStart >= attackDuration) {
+			tickStart = SDL_GetTicks();
 			parent->getComponent<StateComponent>().setState(attackCooldown);			
+		}
+	}
+	else if (parent->getComponent<StateComponent>().currentState == dying) {	
+		if (tickCounter - tickStart >= dyingDuration) {
+			tickStart = SDL_GetTicks();
+			parent->getComponent<StateComponent>().setState(dead);
+		}
+	}
+	else if (parent->getComponent<StateComponent>().currentState == dead) {	
+		if (tickCounter - tickStart >= despawnTime) {
+			parent->destroy();
 		}
 	}
 	else {
@@ -34,7 +43,7 @@ void SkeletonBehaviour::update() {
 			if (!Game::rayHitsCollider(pos, dist)) {
 				if (d <= attackRange) {
 					parent->getComponent<TransformComponent>().velocity = { 0,0 };
-					tickCounter = attackCharge;
+					tickStart = SDL_GetTicks();;
 					parent->getComponent<StateComponent>().setState(charge);			
 				}
 				else if (d <= detectionRange) {
@@ -100,6 +109,13 @@ void SkeletonBehaviour::onHit(Direction d) {
 	default:
 		break;
 	}
-	std::cout << "schmutz digga meddl" << std::endl; 
 	parent->getComponent<TransformComponent>().startRecoil(recoilV);
+}
+
+void SkeletonBehaviour::die() {
+	if (parent->getComponent<StateComponent>().currentState != dying && parent->getComponent<StateComponent>().currentState != dead) {
+		parent->getComponent<StateComponent>().setState(dying);
+		tickCounter = SDL_GetTicks();
+		parent->getComponent<TransformComponent>().velocity.x = 0;
+	}
 }

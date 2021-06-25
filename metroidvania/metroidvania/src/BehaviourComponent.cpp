@@ -19,3 +19,7 @@ void BehaviourComponent::onHit(Direction d) {
 	std::cout << "hsa" << std::endl;
 	for (auto& b : behaviours) b->onHit(d);
 }
+
+void BehaviourComponent::die() {
+	for (auto& b : behaviours) b->die();
+}

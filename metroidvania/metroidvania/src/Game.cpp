@@ -91,6 +91,8 @@ void Game::init(const char* title, int width, int height, bool fullscreen) {
 	enemy.getComponent<SpriteComponent>().addAnimation(idle, 0, 1, 100);
 	enemy.getComponent<SpriteComponent>().addAnimation(walking, 0, 4, 100);
 	enemy.getComponent<SpriteComponent>().switchAnimation(walking);
+	enemy.getComponent<SpriteComponent>().addAnimation(dying, 0, 1, 100);
+	enemy.getComponent<SpriteComponent>().addAnimation(dead, 0, 1, 100);
 
 	enemy2.addComponent<StateComponent>();
 	enemy2.addComponent<TransformComponent>(608, 449, 48, 16, 1, 2, true);
@@ -105,6 +107,8 @@ void Game::init(const char* title, int width, int height, bool fullscreen) {
 	enemy2.getComponent<SpriteComponent>().addAnimation(attackingSide, 0, 1, 100);
 	enemy2.getComponent<SpriteComponent>().addAnimation(attackCooldown, 0, 1, 100);
 	enemy2.getComponent<SpriteComponent>().addAnimation(charge, 0, 1, 100);
+	enemy2.getComponent<SpriteComponent>().addAnimation(dying, 0, 1, 100);
+	enemy2.getComponent<SpriteComponent>().addAnimation(dead, 0, 1, 100);
 	enemy2.getComponent<StateComponent>().setState(walking);
 
 	hudManager.playerStats = &player.getComponent<StatsComponent>();
@@ -250,25 +254,27 @@ void Game::update() {
 				e->getComponent<ColliderComponent>().update();
 			}
 
-			for (auto& e : enemies) {				
-				if (player.getComponent<StateComponent>().isAttacking()) {		
-					if (Collision::RectRect(player.getComponent<AttackComponent>().attackCollider, e->getComponent<ColliderComponent>().collider)) {						
-						if (e->getComponent<StatsComponent>().iFrames == 0) {
-							e->getComponent<StatsComponent>().curHealth -= player.getComponent<StatsComponent>().attackDamage;
-							e->getComponent<StatsComponent>().iFrames = e->getComponent<StatsComponent>().maxIFrames;
-							e->getComponent<BehaviourComponent>().onHit(player.getComponent<TransformComponent>().direction);
-							if (player.getComponent<TransformComponent>().direction == down) {
-								player.getComponent<TransformComponent>().pogo();
+			for (auto& e : enemies) {		
+				if (e->getComponent<StateComponent>().currentState != dying && e->getComponent<StateComponent>().currentState != dead) {
+					if (player.getComponent<StateComponent>().isAttacking()) {						
+						if (Collision::RectRect(player.getComponent<AttackComponent>().attackCollider, e->getComponent<ColliderComponent>().destRect)) {
+							if (e->getComponent<StatsComponent>().iFrames == 0) {
+								e->getComponent<StatsComponent>().curHealth -= player.getComponent<StatsComponent>().attackDamage;
+								e->getComponent<StatsComponent>().iFrames = e->getComponent<StatsComponent>().maxIFrames;
+								e->getComponent<BehaviourComponent>().onHit(player.getComponent<TransformComponent>().direction);
+								if (player.getComponent<TransformComponent>().direction == down) {
+									player.getComponent<TransformComponent>().pogo();
+								}
 							}
 						}
 					}
-				}
-				if (Collision::RectRect(player.getComponent<ColliderComponent>().collider, e->getComponent<ColliderComponent>().collider)) {
-					if (player.getComponent<StatsComponent>().iFrames == 0) {
-						player.getComponent<StatsComponent>().curHealth -= e->getComponent<StatsComponent>().attackDamage;
-						player.getComponent<StatsComponent>().iFrames = player.getComponent<StatsComponent>().maxIFrames;
+					if (Collision::RectRect(player.getComponent<ColliderComponent>().collider, e->getComponent<ColliderComponent>().collider)) {
+						if (player.getComponent<StatsComponent>().iFrames == 0) {
+							player.getComponent<StatsComponent>().curHealth -= e->getComponent<StatsComponent>().attackDamage;
+							player.getComponent<StatsComponent>().iFrames = player.getComponent<StatsComponent>().maxIFrames;
+						}
 					}
-				}
+				}				
 			}			
 
 			camera.x = static_cast<int>(player.getComponent<TransformComponent>().position.x - ((WINDOW_WIDTH - PLAYER_WIDTH) / 2));
@@ -289,7 +295,7 @@ void Game::update() {
 
 			for (auto& e : enemies) {
 				if (e->getComponent<StatsComponent>().curHealth <= 0) {
-					e->destroy();
+					e->getComponent<BehaviourComponent>().die();
 				}
 			}
 		}

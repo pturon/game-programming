@@ -35,5 +35,7 @@ enum State {
 	wallCling,
 	detecting,
 	charge,
-	attackCooldown
+	attackCooldown,
+	dying, 
+	dead,
 };

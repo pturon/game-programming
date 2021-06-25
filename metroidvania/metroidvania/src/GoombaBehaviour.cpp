@@ -5,7 +5,19 @@ void GoombaBehaviour::init() {
 }
 
 void GoombaBehaviour::update() {	
-
+	tickCounter = SDL_GetTicks();	
+	if (parent->getComponent<StateComponent>().currentState == dying) {				
+		if (tickCounter - tickStart >= dyingDuration) {			
+			tickStart = SDL_GetTicks();
+			parent->getComponent<StateComponent>().setState(dead);
+			
+		}
+	}
+	if (parent->getComponent<StateComponent>().currentState == dead) {
+		if (tickCounter - tickStart >= despawnTime) {
+			parent->destroy();
+		}
+	}
 }
 
 void GoombaBehaviour::onCollision(Vector2D cn) {
@@ -39,4 +51,12 @@ void GoombaBehaviour::onHit(Direction d) {
 		break; 
 	}
 	parent->getComponent<TransformComponent>().startRecoil(recoilV);
+}
+
+void GoombaBehaviour::die() {
+	if (parent->getComponent<StateComponent>().currentState != dying && parent->getComponent<StateComponent>().currentState != dead) {
+		parent->getComponent<StateComponent>().setState(dying);
+		tickCounter = SDL_GetTicks();
+		parent->getComponent<TransformComponent>().velocity.x = 0;
+	}	
 }
