@@ -17,10 +17,16 @@ public:
 	SDL_Texture* texture;
 	SDL_Rect srcRect, destRect;
 
+	int xOffset = 0; 
+	int yOffset = 0; 
+
 	TransformComponent* transform;
 
-	ColliderComponent(std::string t) {
+	ColliderComponent(std::string t, int xO, int yO) {
 		tag = t;
+		xOffset = xO; 
+		yOffset = yO; 
+		std::cout << "asdafq" << std::endl; 
 	}
 	ColliderComponent(std::string t, int x, int y, int w, int h) {
 		tag = t;

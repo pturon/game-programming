@@ -64,8 +64,8 @@ void Game::init(const char* title, int width, int height, bool fullscreen) {
 	player.addComponent<StateComponent>(); 
 	player.addComponent<KeyboardController>();
 	player.addComponent<TransformComponent>(64, 64, PLAYER_WIDTH, PLAYER_HEIGHT, 1, 5, true);
-	player.addComponent<ColliderComponent>("Player");
-	player.addComponent<SpriteComponent>("assets/hero_spritesheet.png", true);
+	player.addComponent<ColliderComponent>("Player", 30, 0);
+	player.addComponent<SpriteComponent>("assets/hero_v2_spritesheet.png", true);
 	player.addComponent<AttackComponent>();
 	player.getComponent<KeyboardController>().getComponents();
 	player.addGroup(groupPlayers);
@@ -82,7 +82,7 @@ void Game::init(const char* title, int width, int height, bool fullscreen) {
 
 	enemy.addComponent<StateComponent>();
 	enemy.addComponent<TransformComponent>(200, 64, 48,16, 1,2, true);
-	enemy.addComponent<ColliderComponent>("Enemy");
+	enemy.addComponent<ColliderComponent>("Enemy", 30, 0);
 	enemy.addComponent<SpriteComponent>("assets/rat_spritesheet.png", true);
 	enemy.addComponent<BehaviourComponent>();
 	enemy.getComponent<BehaviourComponent>().setBehaviour<GoombaBehaviour>();
@@ -96,7 +96,7 @@ void Game::init(const char* title, int width, int height, bool fullscreen) {
 
 	enemy2.addComponent<StateComponent>();
 	enemy2.addComponent<TransformComponent>(608, 400, 64, 64, 1, 2, true);
-	enemy2.addComponent<ColliderComponent>("Enemy");
+	enemy2.addComponent<ColliderComponent>("Enemy", 30, 0);
 	enemy2.addComponent<SpriteComponent>("assets/skeleton_spritesheet.png", true);
 	enemy2.addComponent<BehaviourComponent>();
 	enemy2.getComponent<BehaviourComponent>().setBehaviour<SkeletonBehaviour>();
@@ -127,14 +127,30 @@ void Game::handleEvents() {
 }
 
 void Game::update() {
+
+	/**
+	bool step = true; 
+	while (step) {
+		SDL_PollEvent(&Game::event);
+		if (Game::event.type == SDL_KEYDOWN) {
+			if (Game::event.key.keysym.sym == SDLK_u) {
+				step = false;
+			}
+		}
+	}	
+	**/
+
 	if (!pause) {
+		
 		SDL_Rect playerColliderPosBefore;
 		if (!playerDeath) {
+			
 			player.getComponent<ColliderComponent>().update();
 			playerColliderPosBefore = player.getComponent<ColliderComponent>().collider;
 		}
 
 		manager.refresh();
+		
 		manager.update();
 
 		if (!playerDeath) {
@@ -150,7 +166,7 @@ void Game::update() {
 				if (Collision::DynamicRectRect(playerColliderPosBefore, playerVelocity, cCol, cp, cn, ct)) {
 					z.push_back({ c,ct });
 				}
-			}
+			}			
 
 			std::sort(z.begin(), z.end(), [](const std::pair<Entity*, float>& a, const std::pair<Entity*, float>& b) {
 				return a.second < b.second;
@@ -187,9 +203,9 @@ void Game::update() {
 					}
 				}
 			}
-
-			player.getComponent<TransformComponent>().position.x = playerColliderPosBefore.x + playerVelocity.x;
-			player.getComponent<TransformComponent>().position.y = playerColliderPosBefore.y + playerVelocity.y;
+			std::cout << playerColliderPosBefore.x + playerVelocity.x << std::endl;
+			player.getComponent<TransformComponent>().position.x = playerColliderPosBefore.x + playerVelocity.x - player.getComponent<ColliderComponent>().xOffset;
+			player.getComponent<TransformComponent>().position.y = playerColliderPosBefore.y + playerVelocity.y - player.getComponent<ColliderComponent>().yOffset;
 			player.getComponent<ColliderComponent>().update();
 			SDL_Rect pCol = player.getComponent<ColliderComponent>().collider;
 
@@ -259,7 +275,7 @@ void Game::update() {
 				if (e->getComponent<StateComponent>().currentState != dying && e->getComponent<StateComponent>().currentState != dead) {
 					if (player.getComponent<StateComponent>().isAttacking()) {							
 						if (Collision::RectRect(player.getComponent<AttackComponent>().attackCollider, e->getComponent<ColliderComponent>().collider)) {
-							std::cout << "hit" << std::endl; 
+						
 							if (e->getComponent<StatsComponent>().iFrames == 0) {
 								e->getComponent<StatsComponent>().curHealth -= player.getComponent<StatsComponent>().attackDamage;
 								e->getComponent<StatsComponent>().iFrames = e->getComponent<StatsComponent>().maxIFrames;

@@ -8,6 +8,13 @@ void ColliderComponent::init(){
 
 	texture = TextureManager::loadTexture("assets/c.png");
 
+	if (tag != "terrain") {
+		collider.x = static_cast<int>(transform->position.x + xOffset);
+		collider.y = static_cast<int>(transform->position.y + yOffset);
+		collider.w = (transform->width - 2 * xOffset) * transform->scale;
+		collider.h = (transform->height - 2 * yOffset) * transform->scale;
+	}	
+
 	srcRect.x = srcRect.y = 0; 
 	srcRect.w = TILE_WIDTH;
 	srcRect.h = TILE_HEIGHT;
@@ -16,17 +23,17 @@ void ColliderComponent::init(){
 
 void ColliderComponent::update() {
 	if (tag != "terrain") {		
-		collider.x = static_cast<int>(transform->position.x);
-		collider.y = static_cast<int>(transform->position.y);
-		collider.w = transform->width * transform->scale;
-		collider.h = transform->height * transform->scale; 
+	
+		collider.x = static_cast<int>(transform->position.x + xOffset);
+		collider.y = static_cast<int>(transform->position.y + yOffset);
+		collider.w = (transform->width - 2 * xOffset) * transform->scale;
+		collider.h = (transform->height - 2 * yOffset) * transform->scale;
+
 	}
 	destRect.x = collider.x - Game::camera.x;
 	destRect.y = collider.y - Game::camera.y;	
 }
 
-void ColliderComponent::render() {
-	
-		//TextureManager::draw(texture, srcRect, destRect, SDL_FLIP_NONE);
-	
+void ColliderComponent::render() {	
+		//TextureManager::draw(texture, srcRect, destRect, SDL_FLIP_NONE);	
 }
