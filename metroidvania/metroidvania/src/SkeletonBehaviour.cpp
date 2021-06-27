@@ -2,6 +2,7 @@
 
 void SkeletonBehaviour::init() {
 	parent->getComponent<TransformComponent>().velocity = { 1,0 };
+	parent->getComponent<TransformComponent>().direction = right; 
 }
 
 void SkeletonBehaviour::update() {
@@ -10,6 +11,7 @@ void SkeletonBehaviour::update() {
 		if (tickCounter - tickStart >= charge) {
 			tickStart = SDL_GetTicks();
 			parent->getComponent<StateComponent>().setState(attackingSide);		
+			parent->getComponent<AttackComponent>().attack();
 		}
 	}
 	else if (parent->getComponent<StateComponent>().currentState == attackCooldown) {	
@@ -51,11 +53,13 @@ void SkeletonBehaviour::update() {
 						parent->getComponent<TransformComponent>().velocity = { 1,0 };
 						parent->getComponent<SpriteComponent>().flipAnimation(false);
 						parent->getComponent<StateComponent>().currentState == detecting;
+						parent->getComponent<TransformComponent>().direction = right;
 					}
 					else if (dist.x < 0) {
 						parent->getComponent<TransformComponent>().velocity = { -1,0 };
 						parent->getComponent<SpriteComponent>().flipAnimation(true);
 						parent->getComponent<StateComponent>().currentState == detecting;
+						parent->getComponent<TransformComponent>().direction = left;
 					}
 				}
 				else {
@@ -67,9 +71,11 @@ void SkeletonBehaviour::update() {
 				if (parent->getComponent<TransformComponent>().velocity.x == 0) {
 					if (parent->getComponent<SpriteComponent>().spriteFlip) {
 						parent->getComponent<TransformComponent>().velocity = { -1,0 };
+						parent->getComponent<TransformComponent>().direction = left;
 					}
 					else {
 						parent->getComponent<TransformComponent>().velocity = { 1,0 };
+						parent->getComponent<TransformComponent>().direction = right;
 					}
 				}
 			}

@@ -95,15 +95,16 @@ void Game::init(const char* title, int width, int height, bool fullscreen) {
 	enemy.getComponent<SpriteComponent>().addAnimation(dead, 0, 1, 100);
 
 	enemy2.addComponent<StateComponent>();
-	enemy2.addComponent<TransformComponent>(608, 449, 48, 16, 1, 2, true);
+	enemy2.addComponent<TransformComponent>(608, 400, 64, 64, 1, 2, true);
 	enemy2.addComponent<ColliderComponent>("Enemy");
-	enemy2.addComponent<SpriteComponent>("assets/rat_spritesheet.png", true);
+	enemy2.addComponent<SpriteComponent>("assets/skeleton_spritesheet.png", true);
 	enemy2.addComponent<BehaviourComponent>();
 	enemy2.getComponent<BehaviourComponent>().setBehaviour<SkeletonBehaviour>();
 	enemy2.addComponent<StatsComponent>(5, 0, 0, 1, 0, 60);
+	enemy2.addComponent<AttackComponent>();
 	enemy2.addGroup(groupEnemies);
 	enemy2.getComponent<SpriteComponent>().addAnimation(idle, 0, 1, 100);
-	enemy2.getComponent<SpriteComponent>().addAnimation(walking, 0, 4, 100);
+	enemy2.getComponent<SpriteComponent>().addAnimation(walking, 0, 1, 100);
 	enemy2.getComponent<SpriteComponent>().addAnimation(attackingSide, 0, 1, 100);
 	enemy2.getComponent<SpriteComponent>().addAnimation(attackCooldown, 0, 1, 100);
 	enemy2.getComponent<SpriteComponent>().addAnimation(charge, 0, 1, 100);
@@ -268,12 +269,25 @@ void Game::update() {
 							}
 						}
 					}
-					if (Collision::RectRect(player.getComponent<ColliderComponent>().collider, e->getComponent<ColliderComponent>().collider)) {
-						if (player.getComponent<StatsComponent>().iFrames == 0) {
-							player.getComponent<StatsComponent>().curHealth -= e->getComponent<StatsComponent>().attackDamage;
-							player.getComponent<StatsComponent>().iFrames = player.getComponent<StatsComponent>().maxIFrames;
+					if (e->hasComponent<AttackComponent>()) {
+						if (e->getComponent<StateComponent>().isAttacking()) {
+							SDL_Rect eAttack = { e->getComponent<AttackComponent>().attackCollider.x + camera.x, e->getComponent<AttackComponent>().attackCollider.y + camera.y, e->getComponent<AttackComponent>().attackCollider.w, e->getComponent<AttackComponent>().attackCollider.h };
+							if (Collision::RectRect(player.getComponent<ColliderComponent>().collider, eAttack)) {								
+								if (player.getComponent<StatsComponent>().iFrames == 0) {
+									player.getComponent<StatsComponent>().curHealth -= e->getComponent<StatsComponent>().attackDamage;
+									player.getComponent<StatsComponent>().iFrames = player.getComponent<StatsComponent>().maxIFrames;
+								}
+							}
 						}
 					}
+					else {
+						if (Collision::RectRect(player.getComponent<ColliderComponent>().collider, e->getComponent<ColliderComponent>().collider)) {
+							if (player.getComponent<StatsComponent>().iFrames == 0) {
+								player.getComponent<StatsComponent>().curHealth -= e->getComponent<StatsComponent>().attackDamage;
+								player.getComponent<StatsComponent>().iFrames = player.getComponent<StatsComponent>().maxIFrames;
+							}
+						}
+					}					
 				}				
 			}			
 

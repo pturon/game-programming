@@ -38,11 +38,13 @@ void AttackComponent::update() {
 	default:
 		break;
 	}
-	if (SDL_GetTicks() - attackStart >= attackDuration) {
-		if (state->isAttacking()) {
-			state->switchToLastState();
-		}		
-	}
+	if (!parent->hasComponent<BehaviourComponent>()) {
+		if (SDL_GetTicks() - attackStart >= attackDuration) {
+			if (state->isAttacking()) {
+				state->switchToLastState();
+			}
+		}
+	}	
 }
 
 void AttackComponent::render() {
