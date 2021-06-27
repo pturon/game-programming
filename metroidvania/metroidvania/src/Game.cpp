@@ -257,8 +257,9 @@ void Game::update() {
 
 			for (auto& e : enemies) {		
 				if (e->getComponent<StateComponent>().currentState != dying && e->getComponent<StateComponent>().currentState != dead) {
-					if (player.getComponent<StateComponent>().isAttacking()) {						
-						if (Collision::RectRect(player.getComponent<AttackComponent>().attackCollider, e->getComponent<ColliderComponent>().destRect)) {
+					if (player.getComponent<StateComponent>().isAttacking()) {							
+						if (Collision::RectRect(player.getComponent<AttackComponent>().attackCollider, e->getComponent<ColliderComponent>().collider)) {
+							std::cout << "hit" << std::endl; 
 							if (e->getComponent<StatsComponent>().iFrames == 0) {
 								e->getComponent<StatsComponent>().curHealth -= player.getComponent<StatsComponent>().attackDamage;
 								e->getComponent<StatsComponent>().iFrames = e->getComponent<StatsComponent>().maxIFrames;

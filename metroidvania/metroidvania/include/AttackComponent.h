@@ -17,6 +17,7 @@ private:
 	int attackStart = 0; 
 	int lastTick = 0; 
 	SDL_Texture* texture; 
+	SDL_Rect destRect; 
 public: 
 	StateComponent* state; 
 	bool attacking = false;

@@ -12,26 +12,26 @@ void AttackComponent::update() {
 	Direction curDirection = transform->direction;
 	switch (curDirection) {
 	case up:
-		attackCollider.x = transform->position.x - Game::camera.x;
-		attackCollider.y = transform->position.y - ATTACK_RANGE - Game::camera.y;
+		attackCollider.x = transform->position.x;
+		attackCollider.y = transform->position.y - ATTACK_RANGE;
 		attackCollider.w = transform->width;
 		attackCollider.h = ATTACK_RANGE;
 		break;
 	case right:
-		attackCollider.x = transform->position.x + transform->width - Game::camera.x;
-		attackCollider.y = transform->position.y - Game::camera.y;
+		attackCollider.x = transform->position.x + transform->width;
+		attackCollider.y = transform->position.y;
 		attackCollider.w = ATTACK_RANGE;
 		attackCollider.h = transform->height;
 		break;
 	case down:
-		attackCollider.x = transform->position.x - Game::camera.x;
-		attackCollider.y = transform->position.y + transform->height - Game::camera.y;
+		attackCollider.x = transform->position.x;
+		attackCollider.y = transform->position.y + transform->height;
 		attackCollider.w = transform->width;
 		attackCollider.h = ATTACK_RANGE;
 		break;
 	case left:
-		attackCollider.x = transform->position.x - ATTACK_RANGE - Game::camera.x;
-		attackCollider.y = transform->position.y - Game::camera.y;
+		attackCollider.x = transform->position.x - ATTACK_RANGE;
+		attackCollider.y = transform->position.y;
 		attackCollider.w = ATTACK_RANGE;
 		attackCollider.h = transform->height;
 		break;
@@ -45,12 +45,17 @@ void AttackComponent::update() {
 			}
 		}
 	}	
+
+	destRect.x = attackCollider.x - Game::camera.x;
+	destRect.y = attackCollider.y - Game::camera.y;
+	destRect.w = attackCollider.w;
+	destRect.h = attackCollider.h; 
 }
 
 void AttackComponent::render() {
 	if (state->isAttacking()) {
 		SDL_Rect srcRect = { 0,0,32,32 };
-		TextureManager::draw(texture, srcRect, attackCollider, SDL_FLIP_NONE);		
+		TextureManager::draw(texture, srcRect, destRect, SDL_FLIP_NONE);		
 	}
 }
 
