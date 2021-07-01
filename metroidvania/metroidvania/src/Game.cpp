@@ -258,6 +258,11 @@ void Game::update() {
 									player.getComponent<StatsComponent>().curHealth -= e->getComponent<StatsComponent>().attackDamage;
 									player.getComponent<StatsComponent>().iFrames = player.getComponent<StatsComponent>().maxIFrames;
 								}
+							} else if (Collision::RectRect(player.getComponent<ColliderComponent>().collider, e->getComponent<ColliderComponent>().collider)) {
+								if (player.getComponent<StatsComponent>().iFrames == 0) {
+									player.getComponent<StatsComponent>().curHealth -= e->getComponent<StatsComponent>().attackDamage;
+									player.getComponent<StatsComponent>().iFrames = player.getComponent<StatsComponent>().maxIFrames;
+								}
 							}
 						}
 					}

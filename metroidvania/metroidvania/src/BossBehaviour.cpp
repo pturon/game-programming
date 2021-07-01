@@ -4,9 +4,16 @@ void BossBehaviour::init() {
 	state = &parent->getComponent<StateComponent>();
 	stats = &parent->getComponent<StatsComponent>();
 	transform = &parent->getComponent<TransformComponent>();
+	transform->direction = left;
 }
 
-void BossBehaviour::update() {		
+void BossBehaviour::update() {	
+	if (transform->direction == right) {
+		parent->getComponent<SpriteComponent>().flipAnimation(true);
+	}
+	else {
+		parent->getComponent<SpriteComponent>().flipAnimation(false);
+	}
 	if (phase == 1 && stats->curHealth <= stats->maxHealth / 3 * 2) {			
 		phase++;
 		startRageJump();
@@ -19,16 +26,37 @@ void BossBehaviour::update() {
 			startRageJump();
 		}
 		else if (nextState == idle) {
-			int r = std::rand() % 2;
-			if (r == 0) {
+			Vector2D pos = { (parent->getComponent<TransformComponent>().position.x + parent->getComponent<TransformComponent>().width) / 2,  (parent->getComponent<TransformComponent>().position.y + parent->getComponent<TransformComponent>().height) / 2 };
+			Vector2D playerPos = { (Game::player.getComponent<TransformComponent>().position.x + Game::player.getComponent<TransformComponent>().width) / 2,  (Game::player.getComponent<TransformComponent>().position.y + Game::player.getComponent<TransformComponent>().height) / 2 };;
+			Vector2D dist = { playerPos.x - pos.x, playerPos.y - pos.y };
+			int d = sqrt(dist.x * dist.x + dist.y * dist.y);
+			if (d >= bludgeonRange || d > slamRange + leapRange) {
 				startCharge();
 				if (target.x == transform->position.x) {
 					startLeapingBludgeon();
 				}
-			}
+			} 
 			else {
-				startLeap();
+				if (d == slamRange) {
+					startSlam();
+				}
+				else if (d < slamRange) {
+					startLeap();
+				}
+				else {
+					int r = std::rand() % 2;
+					if (r == 0) {
+						startCharge();
+						if (target.x == transform->position.x) {
+							startLeapingBludgeon();
+						}
+					}
+					else {
+						startLeap();
+					}
+				}				
 			}
+			
 		}		
 	}
 	else if (state->currentState == rage) {
@@ -44,6 +72,12 @@ void BossBehaviour::update() {
 			if (rageAttackCount == rageAttackMax) {
 				tickStart = SDL_GetTicks();
 				state->setState(cooldown);				
+				if (Game::player.getComponent<TransformComponent>().position.x + Game::player.getComponent<TransformComponent>().width / 2 >= transform->position.x + transform->width / 2) {
+					transform->direction = right;
+				}
+				else {
+					transform->direction = left;
+				}
 			}
 		}
 	}
@@ -64,12 +98,24 @@ void BossBehaviour::update() {
 	else if (state->currentState == cooldown) {
 		if (SDL_GetTicks() - tickStart >= cooldownDuration) {
 			state->setState(idle);		
+			if (Game::player.getComponent<TransformComponent>().position.x + Game::player.getComponent<TransformComponent>().width / 2 >= transform->position.x + transform->width / 2) {
+				transform->direction = right;
+			}
+			else {
+				transform->direction = left;
+			}
 		}
 	}
 	else if (state->currentState == slam) {		
 		if (SDL_GetTicks() - tickStart >= slamDuration) {
 			tickStart = SDL_GetTicks();
-			state->setState(cooldown);			
+			state->setState(cooldown);	
+			if (Game::player.getComponent<TransformComponent>().position.x + Game::player.getComponent<TransformComponent>().width / 2 >= transform->position.x + transform->width / 2) {
+				transform->direction = right;
+			}
+			else {
+				transform->direction = left; 
+			}
 		}
 	}
 }
@@ -88,6 +134,12 @@ void BossBehaviour::onCollision(Vector2D cn) {
 			transform->velocity.x = 0; 
 			transform->velocity.y = 0; 
 			state->setState(cooldown);	
+			if (Game::player.getComponent<TransformComponent>().position.x + Game::player.getComponent<TransformComponent>().width / 2 >= transform->position.x + transform->width / 2) {
+				transform->direction = right;
+			}
+			else {
+				transform->direction = left;
+			}
 		}
 	}
 	else if (state->currentState == charge) {

@@ -16,11 +16,12 @@ public:
 	int rageAttackCount = 0; 
 	int rageAttackMax = 5; 
 
-	int bludgeonRange = 320;
-	int slamRange = 100; 
+	int bludgeonRange = 180;
+	int slamRange = 64; 
 	int slamCloseRange = 64; 
 
 	int slamDuration = 500; 
+	int leapRange = 100; 
 	int leapCounter = 0; 
 
 	Vector2D target = { 0,0 };
