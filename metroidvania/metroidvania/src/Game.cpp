@@ -14,8 +14,6 @@ bool pause = false;
 bool playerDeath = false; 
 
 Entity& Game::player(manager.addEntity());
-auto& enemy(manager.addEntity());
-auto& enemy2(manager.addEntity());
 auto& colliders(manager.getGroup(groupColliders));
 auto& transitions(manager.getGroup(groupTransitions));
 auto& enemies(manager.getGroup(groupEnemies));
@@ -60,7 +58,7 @@ void Game::init(const char* title, int width, int height, bool fullscreen) {
 	m->tileSetPath = "assets/tileSet.png";
 	m->loadMap("level_1");
 
-	player.addComponent<StatsComponent>(5,100,0,3,1,60);
+	player.addComponent<StatsComponent>(5,100,0,1,1,60);
 	player.addComponent<StateComponent>(); 
 	player.addComponent<KeyboardController>();
 	player.addComponent<TransformComponent>(64, 64, PLAYER_WIDTH, PLAYER_HEIGHT, 1, 5, true);
@@ -78,39 +76,7 @@ void Game::init(const char* title, int width, int height, bool fullscreen) {
 	player.getComponent<SpriteComponent>().addAnimation(attackingBottom, 8, 5, 100);
 	player.getComponent<SpriteComponent>().addAnimation(dashing, 4, 2, 100);
 	player.getComponent<SpriteComponent>().addAnimation(wallCling, 5, 1, 100);
-	player.getComponent<SpriteComponent>().switchAnimation(idle);
-
-	enemy.addComponent<StateComponent>();
-	enemy.addComponent<TransformComponent>(200, 64, 48,16, 1,2, true);
-	enemy.addComponent<ColliderComponent>("Enemy", 30, 0);
-	enemy.addComponent<SpriteComponent>("assets/rat_spritesheet.png", true);
-	enemy.addComponent<BehaviourComponent>();
-	enemy.getComponent<BehaviourComponent>().setBehaviour<GoombaBehaviour>();
-	enemy.addComponent<StatsComponent>(5,0,0,1,0, 60);
-	enemy.addGroup(groupEnemies);
-	enemy.getComponent<SpriteComponent>().addAnimation(idle, 0, 1, 100);
-	enemy.getComponent<SpriteComponent>().addAnimation(walking, 0, 4, 100);
-	enemy.getComponent<SpriteComponent>().switchAnimation(walking);
-	enemy.getComponent<SpriteComponent>().addAnimation(dying, 0, 1, 100);
-	enemy.getComponent<SpriteComponent>().addAnimation(dead, 0, 1, 100);
-
-	enemy2.addComponent<StateComponent>();
-	enemy2.addComponent<TransformComponent>(608, 400, 64, 64, 1, 2, true);
-	enemy2.addComponent<ColliderComponent>("Enemy", 30, 0);
-	enemy2.addComponent<SpriteComponent>("assets/skeleton_spritesheet.png", true);
-	enemy2.addComponent<BehaviourComponent>();
-	enemy2.getComponent<BehaviourComponent>().setBehaviour<SkeletonBehaviour>();
-	enemy2.addComponent<StatsComponent>(5, 0, 0, 1, 0, 60);
-	enemy2.addComponent<AttackComponent>();
-	enemy2.addGroup(groupEnemies);
-	enemy2.getComponent<SpriteComponent>().addAnimation(idle, 0, 1, 100);
-	enemy2.getComponent<SpriteComponent>().addAnimation(walking, 0, 1, 100);
-	enemy2.getComponent<SpriteComponent>().addAnimation(attackingSide, 0, 1, 100);
-	enemy2.getComponent<SpriteComponent>().addAnimation(attackCooldown, 0, 1, 100);
-	enemy2.getComponent<SpriteComponent>().addAnimation(charge, 0, 1, 100);
-	enemy2.getComponent<SpriteComponent>().addAnimation(dying, 0, 1, 100);
-	enemy2.getComponent<SpriteComponent>().addAnimation(dead, 0, 1, 100);
-	enemy2.getComponent<StateComponent>().setState(walking);
+	player.getComponent<SpriteComponent>().switchAnimation(idle);		
 
 	hudManager.playerStats = &player.getComponent<StatsComponent>();
 }
@@ -203,7 +169,6 @@ void Game::update() {
 					}
 				}
 			}
-			std::cout << playerColliderPosBefore.x + playerVelocity.x << std::endl;
 			player.getComponent<TransformComponent>().position.x = playerColliderPosBefore.x + playerVelocity.x - player.getComponent<ColliderComponent>().xOffset;
 			player.getComponent<TransformComponent>().position.y = playerColliderPosBefore.y + playerVelocity.y - player.getComponent<ColliderComponent>().yOffset;
 			player.getComponent<ColliderComponent>().update();
@@ -245,7 +210,7 @@ void Game::update() {
 			for (auto& e : enemies) {
 				SDL_Rect eBefore = { e->getComponent<TransformComponent>().lastPos.x, e->getComponent<TransformComponent>().lastPos.y, e->getComponent<TransformComponent>().width, e->getComponent<TransformComponent>().height };
 				Vector2D eVelocity = { e->getComponent<TransformComponent>().position.x - e->getComponent<TransformComponent>().lastPos.x, e->getComponent<TransformComponent>().position.y - e->getComponent<TransformComponent>().lastPos.y };
-
+				Vector2D v = e->getComponent<TransformComponent>().velocity;			
 				std::vector<std::pair<Entity*, float>> eZ;
 
 				for (auto& c : colliders) {
@@ -274,12 +239,11 @@ void Game::update() {
 			for (auto& e : enemies) {		
 				if (e->getComponent<StateComponent>().currentState != dying && e->getComponent<StateComponent>().currentState != dead) {
 					if (player.getComponent<StateComponent>().isAttacking()) {							
-						if (Collision::RectRect(player.getComponent<AttackComponent>().attackCollider, e->getComponent<ColliderComponent>().collider)) {
-						
+						if (Collision::RectRect(player.getComponent<AttackComponent>().attackCollider, e->getComponent<ColliderComponent>().collider)) {						
 							if (e->getComponent<StatsComponent>().iFrames == 0) {
 								e->getComponent<StatsComponent>().curHealth -= player.getComponent<StatsComponent>().attackDamage;
 								e->getComponent<StatsComponent>().iFrames = e->getComponent<StatsComponent>().maxIFrames;
-								e->getComponent<BehaviourComponent>().onHit(player.getComponent<TransformComponent>().direction);
+								e->getComponent<BehaviourComponent>().onHit(player.getComponent<TransformComponent>().direction);								
 								if (player.getComponent<TransformComponent>().direction == down) {
 									player.getComponent<TransformComponent>().pogo();
 								}

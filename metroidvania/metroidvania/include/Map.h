@@ -7,6 +7,10 @@
 #include "Enums.h"
 #include "Game.h"
 
+#include "GoombaBehaviour.h"
+#include "SkeletonBehaviour.h"
+#include "BossBehaviour.h"
+
 class TileComponent;
 class ColliderComponent;
 
@@ -27,5 +31,9 @@ public:
 	void addTile(int srcX, int srcY, int x, int y, int layer);
 	void addCollider(int x, int y);
 	void addTransition(int x, int y, int w, int h, std::string l, int nX, int nY);
+
+	void addRat(int x, int y);
+	void addSkeleton(int x, int y);
+	void addBoss(int x, int y);
 };
 

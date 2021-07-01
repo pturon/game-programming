@@ -25,8 +25,7 @@ public:
 	ColliderComponent(std::string t, int xO, int yO) {
 		tag = t;
 		xOffset = xO; 
-		yOffset = yO; 
-		std::cout << "asdafq" << std::endl; 
+		yOffset = yO; 	
 	}
 	ColliderComponent(std::string t, int x, int y, int w, int h) {
 		tag = t;

@@ -9,14 +9,14 @@ void TransformComponent::init() {
 
 void TransformComponent::update() {
 	lastPos = position;
-	if (velocity.y > 0) {
+	if (velocity.y > 0 && state->currentState != leaping && state->currentState != slam && state->currentState != rageJump && state->currentState != leapingBludgeon) {
 		velocity.y += fallMultiplier;
 		if (state) {
 			if (state->isAttacking()) {
 				state->lastState = falling; 
 			}
-			else {
-				state->setState(falling);
+			else {					
+				state->setState(falling);						
 			}			
 		}
 	}
@@ -24,20 +24,20 @@ void TransformComponent::update() {
 		velocity.y += lowJumpMultiplier;
 	}
 	if (state) {
-		if (state->currentState == jumping || state->currentState==falling || (state->isAttacking() && (state->lastState == falling || state->lastState == jumping))) {
+		if (state->currentState == jumping || state->currentState==falling || (state->isAttacking() && (state->lastState == falling || state->lastState == jumping))|| state->currentState == leaping || state->currentState == rageJump || state->currentState == leapingBludgeon) {
 			float t = 0.16f;
 			position.x += velocity.x * speed;
 			position.y += t * velocity.y;
 			velocity.x += t * (gravity.x * speed);
-			velocity.y += t * gravity.y;
+			velocity.y += t * gravity.y;		
+			//std::cout << velocity.y << std::endl; 
 		}
 		else if (state->currentState == dashing) {
 			position.x += velocity.x * dashSpeed;
 			velocity.y = 0;
 			if (SDL_GetTicks() >= dashStart + dashDuration) {
 				state->setState(falling);
-			}
-			
+			}			
 		}
 		else if (state->currentState == wallCling) {
 			position.y += gravity.y / 3; 

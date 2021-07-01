@@ -14,6 +14,6 @@ public:
 	void setState(State s);
 	void switchToLastState();
 	bool isAttacking() {
-		return currentState == attackingBottom || currentState == attackingSide || currentState == attackingTop;
+		return currentState == attackingBottom || currentState == attackingSide || currentState == attackingTop || currentState == rage || currentState == slam || currentState == leapingBludgeon;
 	}
 };

@@ -16,7 +16,6 @@ void BehaviourComponent::onCollision(Vector2D cn) {
 }
 
 void BehaviourComponent::onHit(Direction d) {
-	std::cout << "hsa" << std::endl;
 	for (auto& b : behaviours) b->onHit(d);
 }
 

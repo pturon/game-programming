@@ -14,6 +14,6 @@ public:
 	void update() override;
 	void onCollision(Vector2D cn) override;
 	void onHit(Direction d) override;
-	void die() override;
+	void die() override;	
 };
 

@@ -38,4 +38,11 @@ enum State {
 	attackCooldown,
 	dying, 
 	dead,
+	rage,
+	leaping, 
+	slamBuildUp,
+	slam, 
+	leapingBludgeon,
+	rageJump,
+	cooldown
 };

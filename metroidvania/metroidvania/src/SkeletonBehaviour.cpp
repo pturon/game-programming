@@ -8,7 +8,7 @@ void SkeletonBehaviour::init() {
 void SkeletonBehaviour::update() {
 	tickCounter = SDL_GetTicks();
 	if (parent->getComponent<StateComponent>().currentState == charge) {		
-		if (tickCounter - tickStart >= charge) {
+		if (tickCounter - tickStart >= attackCharge) {
 			tickStart = SDL_GetTicks();
 			parent->getComponent<StateComponent>().setState(attackingSide);		
 			parent->getComponent<AttackComponent>().attack();

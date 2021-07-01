@@ -12,8 +12,7 @@
 #include "Map.h"
 #include "Transition.h"
 #include "Behaviour.h"
-#include "GoombaBehaviour.h"
-#include "SkeletonBehaviour.h"
+
 
 class ColliderComponent; 
 

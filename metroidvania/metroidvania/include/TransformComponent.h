@@ -102,4 +102,5 @@ public:
 	void stopRecoil();
 
 	void pogo();
+
 };

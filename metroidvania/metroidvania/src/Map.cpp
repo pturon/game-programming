@@ -34,7 +34,7 @@ void Map::loadMap(std::string level) {
 		std::getline(mapFile, line);
 	}	
 
-	for (int layer = 0; layer < 4; layer++) {
+	for (int layer = 0; layer < 5; layer++) {
 		for (int y = 0; y < height; y++) {
 			std::getline(mapFile, line);
 			std::stringstream s(line);
@@ -48,8 +48,19 @@ void Map::loadMap(std::string level) {
 					if (layer < 3) {
 						addTile(srcX, srcY, x * TILE_WIDTH, y * TILE_HEIGHT, layer);
 					}
-					else {
+					else if(layer == 3){
 						addCollider(x, y);
+					}
+					else {
+						if (cell == "33") {
+							addRat(x* TILE_WIDTH, y*TILE_HEIGHT);
+						}
+						else if (cell == "34") {
+							addSkeleton(x*TILE_WIDTH, y*TILE_HEIGHT);
+						}
+						else if (cell == "35") {
+							addBoss(x* TILE_WIDTH, y*TILE_HEIGHT);
+						}
 					}
 				}
 				x++;
@@ -112,4 +123,68 @@ void Map::addTransition(int x, int y, int w, int h, std::string l, int nX, int n
 	auto& transition(manager.addEntity());
 	transition.addComponent<TransitionComponent>(x, y, w, h, l, nX, nY);
 	transition.addGroup(groupTransitions);
+}
+
+void Map::addRat(int x, int y) {	
+	auto& enemy(manager.addEntity());
+	enemy.addComponent<BehaviourComponent>();
+	enemy.addComponent<StateComponent>();
+	enemy.addComponent<TransformComponent>(x, y, 48, 16, 1, 2, true);
+	enemy.addComponent<ColliderComponent>("Enemy", 30, 0);
+	enemy.addComponent<SpriteComponent>("assets/rat_spritesheet.png", true);	
+	enemy.getComponent<BehaviourComponent>().setBehaviour<GoombaBehaviour>();
+	enemy.addComponent<StatsComponent>(5, 0, 0, 1, 0, 60);
+	enemy.addGroup(groupEnemies);
+	enemy.getComponent<SpriteComponent>().addAnimation(idle, 0, 1, 100);
+	enemy.getComponent<SpriteComponent>().addAnimation(walking, 0, 4, 100);
+	enemy.getComponent<SpriteComponent>().switchAnimation(walking);
+	enemy.getComponent<SpriteComponent>().addAnimation(dying, 0, 1, 100);
+	enemy.getComponent<SpriteComponent>().addAnimation(dead, 0, 1, 100);
+}
+
+void Map::addSkeleton(int x, int y) {
+	y -= TILE_HEIGHT;
+	auto& enemy(manager.addEntity());
+	enemy.addComponent<StateComponent>();
+	enemy.addComponent<TransformComponent>(x, y, 64, 64, 1, 2, true);
+	enemy.addComponent<ColliderComponent>("Enemy", 30, 0);
+	enemy.addComponent<SpriteComponent>("assets/skeleton_spritesheet.png", true);
+	enemy.addComponent<BehaviourComponent>();
+	enemy.getComponent<BehaviourComponent>().setBehaviour<SkeletonBehaviour>();
+	enemy.addComponent<StatsComponent>(5, 0, 0, 1, 0, 60);
+	enemy.addComponent<AttackComponent>();
+	enemy.addGroup(groupEnemies);
+	enemy.getComponent<SpriteComponent>().addAnimation(idle, 0, 1, 100);
+	enemy.getComponent<SpriteComponent>().addAnimation(walking, 0, 1, 100);
+	enemy.getComponent<SpriteComponent>().addAnimation(attackingSide, 0, 1, 100);
+	enemy.getComponent<SpriteComponent>().addAnimation(attackCooldown, 0, 1, 100);
+	enemy.getComponent<SpriteComponent>().addAnimation(charge, 0, 1, 100);
+	enemy.getComponent<SpriteComponent>().addAnimation(dying, 0, 1, 100);
+	enemy.getComponent<SpriteComponent>().addAnimation(dead, 0, 1, 100);
+	enemy.getComponent<StateComponent>().setState(walking);
+}
+
+void Map::addBoss(int x, int y) {
+	y -= TILE_HEIGHT;
+	auto& enemy(manager.addEntity());
+	enemy.addComponent<BehaviourComponent>();
+	enemy.addComponent<StateComponent>();
+	enemy.addComponent<StatsComponent>(9, 0, 0, 2, 0, 60);
+	enemy.addComponent<TransformComponent>(x, 64, 64, 64, 1, 2, true);
+	enemy.addComponent<ColliderComponent>("Enemy", 30, 0);
+	enemy.addComponent<SpriteComponent>("assets/skeleton_spritesheet.png", false);	
+	enemy.addComponent<AttackComponent>();	
+	enemy.getComponent<BehaviourComponent>().setBehaviour<BossBehaviour>();
+	enemy.addGroup(groupEnemies);	
+	enemy.getComponent<SpriteComponent>().addAnimation(idle, 0, 1, 100);	
+	enemy.getComponent<SpriteComponent>().addAnimation(charge, 0, 1, 100);
+	enemy.getComponent<SpriteComponent>().addAnimation(dying, 0, 1, 100);
+	enemy.getComponent<SpriteComponent>().addAnimation(dead, 0, 1, 100);
+	enemy.getComponent<SpriteComponent>().addAnimation(rageJump, 0, 1, 100);
+	enemy.getComponent<SpriteComponent>().addAnimation(rage, 0, 1, 100);
+	enemy.getComponent<SpriteComponent>().addAnimation(leaping, 0, 1, 100);
+	enemy.getComponent<SpriteComponent>().addAnimation(slam, 0, 1, 100);
+	enemy.getComponent<SpriteComponent>().addAnimation(leapingBludgeon, 0, 1, 100);
+	enemy.getComponent<StateComponent>().setState(idle);
+	//std::cout << "boss" << std::endl; 
 }
