@@ -16,6 +16,7 @@ public:
 	std::string tag;
 	SDL_Texture* texture;
 	SDL_Rect srcRect, destRect;
+	SDL_Rect lastPos;
 
 	int xOffset = 0; 
 	int yOffset = 0; 

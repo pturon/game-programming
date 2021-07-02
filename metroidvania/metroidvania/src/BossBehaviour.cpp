@@ -230,6 +230,12 @@ void BossBehaviour::startLeapingBludgeon() {
 	float s = ((Game::player.getComponent<TransformComponent>().position.x + Game::player.getComponent<TransformComponent>().width/2) - transform->position.x) / t / transform->speed;
 	transform->velocity.x = s; 
 	transform->velocity.y = static_cast<float>(-80);
+	if ((Game::player.getComponent<TransformComponent>().position.x + Game::player.getComponent<TransformComponent>().width / 2) >= transform->position.x + transform->width / 2) {
+		transform->direction = right;
+	}
+	else {
+		transform->direction = left;
+	}
 }
 
 void BossBehaviour::startCharge() {	

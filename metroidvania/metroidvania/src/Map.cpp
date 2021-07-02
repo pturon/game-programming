@@ -130,7 +130,7 @@ void Map::addRat(int x, int y) {
 	enemy.addComponent<BehaviourComponent>();
 	enemy.addComponent<StateComponent>();
 	enemy.addComponent<TransformComponent>(x, y, 48, 16, 1, 2, true);
-	enemy.addComponent<ColliderComponent>("Enemy", 30, 0);
+	enemy.addComponent<ColliderComponent>("Enemy", 0, 0);
 	enemy.addComponent<SpriteComponent>("assets/rat_spritesheet.png", true);	
 	enemy.getComponent<BehaviourComponent>().setBehaviour<GoombaBehaviour>();
 	enemy.addComponent<StatsComponent>(5, 0, 0, 1, 0, 60);
@@ -146,8 +146,8 @@ void Map::addSkeleton(int x, int y) {
 	y -= TILE_HEIGHT;
 	auto& enemy(manager.addEntity());
 	enemy.addComponent<StateComponent>();
-	enemy.addComponent<TransformComponent>(x, y, 64, 64, 1, 2, true);
-	enemy.addComponent<ColliderComponent>("Enemy", 30, 0);
+	enemy.addComponent<TransformComponent>(x, y, 84, 64, 1, 2, true);
+	enemy.addComponent<ColliderComponent>("Enemy", 24, 0);
 	enemy.addComponent<SpriteComponent>("assets/skeleton_spritesheet.png", true);
 	enemy.addComponent<BehaviourComponent>();
 	enemy.getComponent<BehaviourComponent>().setBehaviour<SkeletonBehaviour>();
@@ -169,9 +169,9 @@ void Map::addBoss(int x, int y) {
 	auto& enemy(manager.addEntity());
 	enemy.addComponent<BehaviourComponent>();
 	enemy.addComponent<StateComponent>();
-	enemy.addComponent<StatsComponent>(9, 0, 0, 2, 0, 60);
+	enemy.addComponent<StatsComponent>(9, 0, 0, 2, 0, 60); 
 	enemy.addComponent<TransformComponent>(x, 64, 280, 200, 1, 2, true);
-	enemy.addComponent<ColliderComponent>("Enemy", 111, 0);
+	enemy.addComponent<ColliderComponent>("Enemy", 88, 0);
 	enemy.addComponent<SpriteComponent>("assets/boss_spritesheet.png", false);	
 	enemy.addComponent<AttackComponent>();	
 	enemy.getComponent<BehaviourComponent>().setBehaviour<BossBehaviour>();

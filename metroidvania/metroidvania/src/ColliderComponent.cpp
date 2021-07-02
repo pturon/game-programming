@@ -13,6 +13,7 @@ void ColliderComponent::init(){
 		collider.y = static_cast<int>(transform->position.y + yOffset);
 		collider.w = (transform->width - 2 * xOffset) * transform->scale;
 		collider.h = (transform->height - 2 * yOffset) * transform->scale;
+		lastPos = collider;
 	}	
 
 	srcRect.x = srcRect.y = 0; 
@@ -22,8 +23,8 @@ void ColliderComponent::init(){
 }
 
 void ColliderComponent::update() {
-	if (tag != "terrain") {		
-	
+	lastPos = collider;
+	if (tag != "terrain") {			
 		collider.x = static_cast<int>(transform->position.x + xOffset);
 		collider.y = static_cast<int>(transform->position.y + yOffset);
 		collider.w = (transform->width - 2 * xOffset) * transform->scale;
