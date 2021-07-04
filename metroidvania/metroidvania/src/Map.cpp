@@ -155,10 +155,10 @@ void Map::addSkeleton(int x, int y) {
 	enemy.addComponent<AttackComponent>();
 	enemy.addGroup(groupEnemies);
 	enemy.getComponent<SpriteComponent>().addAnimation(idle, 0, 1, 100);
-	enemy.getComponent<SpriteComponent>().addAnimation(walking, 0, 1, 100);
-	enemy.getComponent<SpriteComponent>().addAnimation(attackingSide, 0, 1, 100);
-	enemy.getComponent<SpriteComponent>().addAnimation(attackCooldown, 0, 1, 100);
-	enemy.getComponent<SpriteComponent>().addAnimation(charge, 0, 1, 100);
+	enemy.getComponent<SpriteComponent>().addAnimation(walking, 1, 6, 100);
+	enemy.getComponent<SpriteComponent>().addAnimation(attackingSide, 2, 1, 100);
+	enemy.getComponent<SpriteComponent>().addAnimation(attackCooldown, 4, 1, 100);
+	enemy.getComponent<SpriteComponent>().addAnimation(charge, 3, 1, 100);
 	enemy.getComponent<SpriteComponent>().addAnimation(dying, 0, 1, 100);
 	enemy.getComponent<SpriteComponent>().addAnimation(dead, 0, 1, 100);
 	enemy.getComponent<StateComponent>().setState(walking);

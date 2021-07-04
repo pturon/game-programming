@@ -260,18 +260,19 @@ void Game::update() {
 					}
 				}
 				if (e->hasComponent<AttackComponent>()) {
-					if (e->getComponent<StateComponent>().isAttacking()) {
-						SDL_Rect eAttack = { e->getComponent<AttackComponent>().attackCollider.x + camera.x, e->getComponent<AttackComponent>().attackCollider.y + camera.y, e->getComponent<AttackComponent>().attackCollider.w, e->getComponent<AttackComponent>().attackCollider.h };
+					if (e->getComponent<StateComponent>().isAttacking()) {						
+						SDL_Rect eAttack = { e->getComponent<AttackComponent>().attackCollider.x, e->getComponent<AttackComponent>().attackCollider.y, e->getComponent<AttackComponent>().attackCollider.w, e->getComponent<AttackComponent>().attackCollider.h };						
 						if (Collision::RectRect(player.getComponent<ColliderComponent>().collider, eAttack)) {								
 							if (player.getComponent<StatsComponent>().iFrames == 0) {
 								player.getComponent<StatsComponent>().curHealth -= e->getComponent<StatsComponent>().attackDamage;
 								player.getComponent<StatsComponent>().iFrames = player.getComponent<StatsComponent>().maxIFrames;
 							}
-						} else if (Collision::RectRect(player.getComponent<ColliderComponent>().collider, e->getComponent<ColliderComponent>().collider)) {
-							if (player.getComponent<StatsComponent>().iFrames == 0) {
-								player.getComponent<StatsComponent>().curHealth -= e->getComponent<StatsComponent>().attackDamage;
-								player.getComponent<StatsComponent>().iFrames = player.getComponent<StatsComponent>().maxIFrames;
-							}
+						}
+					}
+					else if (Collision::RectRect(player.getComponent<ColliderComponent>().collider, e->getComponent<ColliderComponent>().collider)) {
+						if (player.getComponent<StatsComponent>().iFrames == 0) {
+							player.getComponent<StatsComponent>().curHealth -= e->getComponent<StatsComponent>().attackDamage;
+							player.getComponent<StatsComponent>().iFrames = player.getComponent<StatsComponent>().maxIFrames;
 						}
 					}
 				}
