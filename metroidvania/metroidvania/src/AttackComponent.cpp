@@ -18,7 +18,7 @@ void AttackComponent::update() {
 		attackCollider.h = ATTACK_RANGE;
 		break;
 	case right:
-		attackCollider.x = transform->position.x + transform->width;
+		attackCollider.x = transform->position.x + transform->width - ATTACK_RANGE;
 		attackCollider.y = transform->position.y;
 		attackCollider.w = ATTACK_RANGE;
 		attackCollider.h = transform->height;
@@ -30,7 +30,7 @@ void AttackComponent::update() {
 		attackCollider.h = ATTACK_RANGE;
 		break;
 	case left:
-		attackCollider.x = transform->position.x - ATTACK_RANGE;
+		attackCollider.x = transform->position.x;
 		attackCollider.y = transform->position.y;
 		attackCollider.w = ATTACK_RANGE;
 		attackCollider.h = transform->height;
