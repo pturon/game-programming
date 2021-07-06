@@ -141,6 +141,22 @@ void Game::update() {
 			SDL_Rect cCol = c->getComponent<ColliderComponent>().collider;
 			if (Collision::DynamicRectRect(playerColliderPosBefore, playerVelocity, cCol, cp, cn, ct)) {
 				z.push_back({ c,ct });
+				if (cn.x == -1 && cn.y == 0) {
+					if (player.getComponent<StateComponent>().currentState == dashing) {
+						player.getComponent<TransformComponent>().stopDash();
+					}
+					if (player.getComponent<StateComponent>().currentState != walking) {
+						player.getComponent<TransformComponent>().startWallCling(right);
+					}
+				}
+				else if (cn.x == 1 && cn.y == 0) {
+					if (player.getComponent<StateComponent>().currentState == dashing) {
+						player.getComponent<TransformComponent>().stopDash();
+					}
+					if (player.getComponent<StateComponent>().currentState != walking) {
+						player.getComponent<TransformComponent>().startWallCling(left);
+					}
+				}
 			}
 		}			
 
@@ -160,23 +176,7 @@ void Game::update() {
 				}
 				else if (cn.x == 0 && cn.y == 1) {
 					player.getComponent<TransformComponent>().startFall();
-				}
-				else if (cn.x == -1 && cn.y == 0) {
-					if (player.getComponent<StateComponent>().currentState == dashing) {
-						player.getComponent<TransformComponent>().stopDash();
-					}
-					if (player.getComponent<StateComponent>().currentState != walking) {
-						player.getComponent<TransformComponent>().startWallCling(right);
-					}
-				}
-				else if (cn.x == 1 && cn.y == 0) {
-					if (player.getComponent<StateComponent>().currentState == dashing) {
-						player.getComponent<TransformComponent>().stopDash();
-					}
-					if (player.getComponent<StateComponent>().currentState != walking) {
-						player.getComponent<TransformComponent>().startWallCling(left);
-					}
-				}
+				}		
 			}
 		}
 		player.getComponent<TransformComponent>().position.x = playerColliderPosBefore.x + playerVelocity.x - player.getComponent<ColliderComponent>().xOffset;
@@ -185,17 +185,17 @@ void Game::update() {
 		SDL_Rect pCol = player.getComponent<ColliderComponent>().collider;
 
 		if (player.getComponent<StateComponent>().currentState == wallCling) {
-			bool stopWallCling = true;
+			bool stopWallCling = false;
 			for (auto& c : colliders) {
 				SDL_Rect cCol = c->getComponent<ColliderComponent>().collider;
 				if (player.getComponent<TransformComponent>().clingedWallPos == right) {
 					if (cCol.x == pCol.x + pCol.w && cCol.y + cCol.h >= pCol.y && cCol.y < pCol.y + pCol.h) {
-						stopWallCling = false;
+						stopWallCling = true;
 					}
 				}
 				else {
 					if (cCol.x + cCol.w == pCol.x && cCol.y + cCol.h >= pCol.y && cCol.y < pCol.y + pCol.h) {
-						stopWallCling = false;
+						stopWallCling = true;
 					}
 				}
 			}
