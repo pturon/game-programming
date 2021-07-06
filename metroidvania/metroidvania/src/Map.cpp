@@ -152,7 +152,7 @@ void Map::addSkeleton(int x, int y) {
 	enemy.addComponent<BehaviourComponent>();
 	enemy.getComponent<BehaviourComponent>().setBehaviour<SkeletonBehaviour>();
 	enemy.addComponent<StatsComponent>(5, 0, 0, 1, 0, 60);
-	enemy.addComponent<AttackComponent>();
+	enemy.addComponent<AttackComponent>(42);
 	enemy.addGroup(groupEnemies);
 	enemy.getComponent<SpriteComponent>().addAnimation(idle, 0, 1, 100);
 	enemy.getComponent<SpriteComponent>().addAnimation(walking, 1, 6, 100);
@@ -173,7 +173,7 @@ void Map::addBoss(int x, int y) {
 	enemy.addComponent<TransformComponent>(x, 64, 280, 200, 1, 2, true);
 	enemy.addComponent<ColliderComponent>("Enemy", 88, 0);
 	enemy.addComponent<SpriteComponent>("assets/boss_spritesheet.png", false);	
-	enemy.addComponent<AttackComponent>();	
+	enemy.addComponent<AttackComponent>(140);	
 	enemy.getComponent<BehaviourComponent>().setBehaviour<BossBehaviour>();
 	enemy.addGroup(groupEnemies);	
 	enemy.getComponent<SpriteComponent>().addAnimation(idle, 0, 1, 100);	

@@ -102,14 +102,17 @@ void TransformComponent::moveStop() {
 
 void TransformComponent::jump() {
 	if (!state->isAttacking()) {
-		if (state->currentState != jumping && state->currentState != falling) {
+		if (state->currentState != jumping && state->currentState != falling && state->currentState != wallCling) {
 			stopWallCling();
 			state->setState(jumping);
 			velocity.y = static_cast<float>(-jumpHeight);
 		}
 		else if (state->currentState == wallCling) {
+			std::cout << "asd" << std::endl; 			
 			stopWallCling();
 			state->setState(jumping);
+			velocity.x = 1; 
+			}
 			velocity.y = static_cast<float>(-jumpHeight);
 		}
 		else if (canDoubleJump) {

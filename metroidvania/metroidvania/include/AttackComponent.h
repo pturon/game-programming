@@ -16,6 +16,7 @@ private:
 	int attackDuration = 400; 
 	int attackStart = 0; 
 	int lastTick = 0; 
+	int attackRange = 0; 
 	SDL_Texture* texture; 
 	SDL_Rect destRect; 
 public: 
@@ -24,7 +25,7 @@ public:
 	SDL_Rect attackCollider; 
 	TransformComponent* transform;
 
-	AttackComponent() = default;
+	AttackComponent(int aR);
 
 	~AttackComponent() {
 		SDL_DestroyTexture(texture);

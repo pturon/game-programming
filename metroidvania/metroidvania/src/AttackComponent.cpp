@@ -1,6 +1,10 @@
 #include "../include/AttackComponent.h"
 #include "../include/TextureManager.h"
 
+AttackComponent::AttackComponent(int aR) {
+	attackRange = aR;
+}
+
 void AttackComponent::init() {
 	transform = &parent->getComponent<TransformComponent>();
 	attackCollider = {0,0,0,0};
@@ -13,26 +17,26 @@ void AttackComponent::update() {
 	switch (curDirection) {
 	case up:
 		attackCollider.x = transform->position.x;
-		attackCollider.y = transform->position.y - ATTACK_RANGE;
+		attackCollider.y = transform->position.y - attackRange;
 		attackCollider.w = transform->width;
-		attackCollider.h = ATTACK_RANGE;
+		attackCollider.h = attackRange;
 		break;
 	case right:
-		attackCollider.x = transform->position.x + transform->width - ATTACK_RANGE;
+		attackCollider.x = transform->position.x + transform->width - attackRange;
 		attackCollider.y = transform->position.y;
-		attackCollider.w = ATTACK_RANGE;
+		attackCollider.w = attackRange;
 		attackCollider.h = transform->height;
 		break;
 	case down:
 		attackCollider.x = transform->position.x;
 		attackCollider.y = transform->position.y + transform->height;
 		attackCollider.w = transform->width;
-		attackCollider.h = ATTACK_RANGE;
+		attackCollider.h = attackRange;
 		break;
 	case left:
 		attackCollider.x = transform->position.x;
 		attackCollider.y = transform->position.y;
-		attackCollider.w = ATTACK_RANGE;
+		attackCollider.w = attackRange;
 		attackCollider.h = transform->height;
 		break;
 	default:
@@ -55,7 +59,7 @@ void AttackComponent::update() {
 void AttackComponent::render() {
 	if (state->isAttacking()) {
 		SDL_Rect srcRect = { 0,0,32,32 };
-		//TextureManager::draw(texture, srcRect, destRect, SDL_FLIP_NONE);		
+		TextureManager::draw(texture, srcRect, destRect, SDL_FLIP_NONE);		
 	}
 }
 
