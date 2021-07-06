@@ -55,7 +55,7 @@ void AttackComponent::update() {
 void AttackComponent::render() {
 	if (state->isAttacking()) {
 		SDL_Rect srcRect = { 0,0,32,32 };
-		TextureManager::draw(texture, srcRect, destRect, SDL_FLIP_NONE);		
+		//TextureManager::draw(texture, srcRect, destRect, SDL_FLIP_NONE);		
 	}
 }
 

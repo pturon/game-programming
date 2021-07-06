@@ -141,7 +141,7 @@ void Game::update() {
 			SDL_Rect cCol = c->getComponent<ColliderComponent>().collider;
 			if (Collision::DynamicRectRect(playerColliderPosBefore, playerVelocity, cCol, cp, cn, ct)) {
 				z.push_back({ c,ct });
-				if (cn.x == -1 && cn.y == 0) {
+				 if (cn.x == -1 && cn.y == 0) {
 					if (player.getComponent<StateComponent>().currentState == dashing) {
 						player.getComponent<TransformComponent>().stopDash();
 					}
@@ -185,19 +185,22 @@ void Game::update() {
 		SDL_Rect pCol = player.getComponent<ColliderComponent>().collider;
 
 		if (player.getComponent<StateComponent>().currentState == wallCling) {
-			bool stopWallCling = false;
+			bool stopWallCling = true;
+			Vector2D v;
+			if (player.getComponent<TransformComponent>().clingedWallPos == right) {
+				v = { 1,0 };
+			}
+			else {
+				v = { -1, 0 };
+			}
 			for (auto& c : colliders) {
 				SDL_Rect cCol = c->getComponent<ColliderComponent>().collider;
-				if (player.getComponent<TransformComponent>().clingedWallPos == right) {
-					if (cCol.x == pCol.x + pCol.w && cCol.y + cCol.h >= pCol.y && cCol.y < pCol.y + pCol.h) {
-						stopWallCling = true;
+				if (Collision::DynamicRectRect(pCol, v, cCol, cp, cn, ct)) {
+					if (cn.x != 0 && cn.y == 0) {
+						stopWallCling = false; 
 					}
 				}
-				else {
-					if (cCol.x + cCol.w == pCol.x && cCol.y + cCol.h >= pCol.y && cCol.y < pCol.y + pCol.h) {
-						stopWallCling = true;
-					}
-				}
+
 			}
 
 			if (stopWallCling) {
