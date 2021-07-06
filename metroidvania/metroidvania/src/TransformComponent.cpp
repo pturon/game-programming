@@ -107,12 +107,9 @@ void TransformComponent::jump() {
 			state->setState(jumping);
 			velocity.y = static_cast<float>(-jumpHeight);
 		}
-		else if (state->currentState == wallCling) {
-			std::cout << "asd" << std::endl; 			
+		else if (state->currentState == wallCling) {				
 			stopWallCling();
 			state->setState(jumping);
-			velocity.x = 1; 
-			}
 			velocity.y = static_cast<float>(-jumpHeight);
 		}
 		else if (canDoubleJump) {
