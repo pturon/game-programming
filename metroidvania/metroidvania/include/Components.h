@@ -1,0 +1,12 @@
+#pragma once
+#include "EntityComponentSystem.h"
+#include "TransformComponent.h"
+#include "SpriteComponent.h"
+#include "KeyboardController.h"
+#include "ColliderComponent.h"
+#include "TileComponent.h"
+#include "AttackComponent.h"
+#include "StateComponent.h"
+#include "StatsComponent.h"
+#include "TransitionComponent.h"
+#include "BehaviourComponent.h"
