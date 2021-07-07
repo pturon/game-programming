@@ -160,7 +160,7 @@ void BossBehaviour::onHit(Direction d) {
 }
 
 void BossBehaviour::die() {
-
+	Game::end();
 }
 
 void BossBehaviour::startRage() {

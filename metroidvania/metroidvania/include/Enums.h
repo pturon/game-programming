@@ -46,3 +46,9 @@ enum State {
 	rageJump,
 	cooldown
 };
+
+enum Menu {
+	death, 
+	win, 
+	noMenu
+};

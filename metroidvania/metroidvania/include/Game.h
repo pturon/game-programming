@@ -12,6 +12,7 @@
 #include "Map.h"
 #include "Transition.h"
 #include "Behaviour.h"
+#include "MenuManager.h"
 
 
 class ColliderComponent; 
@@ -41,6 +42,8 @@ public:
 	static SDL_Rect camera; 
 
 	static bool rayHitsCollider(Vector2D origin, Vector2D ray);
+
+	static void end(); 
 
 private:
 	
